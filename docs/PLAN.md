@@ -66,7 +66,7 @@ can follow a day later if it must).
   helpers (`fmtDate`, `fmtTime`, relative "in 3 days" / "2 days late").
   *Done when:* unit tests cover text-only children, `javascript:` href dropped, `rel`/`target` set, string fallback,
   and the date formats.
-- [ ] **T1.2 `store.js` and `persist.js`** (P0, DESIGN 6). Records map; `all/get/put/remove/ext/batch/undo/subscribe`;
+- [x] **T1.2 `store.js` and `persist.js`** (P0, DESIGN 6). Records map; `all/get/put/remove/ext/batch/undo/subscribe`;
   ids from `crypto.getRandomValues` (base32, type prefix); `updated` set on writes; ownership enforced (a feature's
   `ctx.store` refuses writes to types it does not own and throws a plain error); persistence under `searchdesk1:state`
   with try/catch and debounce. If storage is blocked, the app runs in memory and shows one line "This browser is not
@@ -292,3 +292,9 @@ can follow a day later if it must).
 - 2026-10-16, T1.1: `h()` refuses `style`, `src` (except `data:image/...`), `action` and similar attributes, and drops
   relative and `#` hrefs; DESIGN 7.4 does not say so yet. Job date fields (`applied`, `followUp`, `closes`) are
   assumed to be `YYYY-MM-DD`; DESIGN 6 should say so. `Desk.makeT(table)` is the layered lookup for `ctx.t`.
+- 2026-10-16, T1.2: `ctx.store` comes from `Desk.store.scoped(featureId, types)`; it has no `undo` (the shell owns
+  undo). Undo depth is 1, as in DESIGN 6. `put` keeps an existing record's `source` on update. The store has no
+  hard delete yet: "Remove the made-up person" (T1.4) needs a core-only `purge(ids)`, and imports should go through
+  `Desk.merge` then one `batch('Import', ...)`. T1.5 must call `Desk.persist.load()` before mounting and show
+  `Desk.persist.message()` when `status()` is `'memory'`. Undo restores the old `updated`, so an undo does not
+  survive a sync to another device (design point, not a bug).
