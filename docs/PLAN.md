@@ -501,3 +501,8 @@ can follow a day later if it must).
 - 2026-10-16, T4.3: README.md has three parts (job seekers, workshop hosts, developers). Its button words and commands
   were checked against the code, and I ran the workshop build myself (`dist/workshop/searchdesk.html`, connect-src 'none').
   There is no doc for swapping in another city's locale pack beyond "point index.html at your file"; that belongs to the P2 `docs/LOCALE.md`.
+- 2026-10-16, PAUSED mid T4.2 (usage limit). The agent was stopped before it reported. Its files are uncommitted
+  and unverified: `.github/`, `core/hosting.js`, `sw.js`, `tests/e2e/test_hosting.py`, `tests/unit/hosting.test.js`,
+  plus edits to core/desk.js, desk.css, persist.js, strings.js, index.html, tools/build.py and test_build.py. To resume, run
+  all the suites and the dist e2e, finish what is missing, and then add the maintainer's Pages and DNS click list to
+  docs/MAINTAINER-TODO.md.
