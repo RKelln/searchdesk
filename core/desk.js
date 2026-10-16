@@ -231,6 +231,7 @@ window.Desk = window.Desk || {};
       fmt: FMT,
       profile: function () { return Desk.store.get('profile') || {}; },
       profileLines: function (p) { return Desk.prompt.profileLines(p === undefined ? (Desk.store.get('profile') || {}) : p); },
+      backupNudge: function () { return Desk.io && Desk.io.backupNudge ? Desk.io.backupNudge() : { show: false, text: '', days: null }; },
       recipe: function (r) { addRecipe(r, id); }
     });
   }

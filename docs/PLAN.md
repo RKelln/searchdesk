@@ -114,7 +114,7 @@ can follow a day later if it must).
   AI will see" preview that uses the same function the recipes use (`Desk.prompt.profileLines`).
   *Done when:* check: `profileLines` includes only shared, non-empty fields; e2e: switching one off removes it from
   the preview.
-- [ ] **T2.3 `home`** (P0, DESIGN 8.1). The "Today" list: overdue and due follow-ups, interviews in the next 7 days,
+- [x] **T2.3 `home`** (P0, DESIGN 8.1). The "Today" list: overdue and due follow-ups, interviews in the next 7 days,
   postings closing in 7 days, suggestions waiting (per recipe), starred events this week, pending AI question,
   backup nudge; plus the `home` slot. Empty state: three plain first steps.
   *Done when:* check: `logic.today(records, now)` returns the right items for a fixture at a fixed time; e2e: the
@@ -336,3 +336,6 @@ can follow a day later if it must).
 - 2026-10-16, T2.2: `Desk.prompt.profileLines` / `profileFields` exist ("<Label>: <value>", fixed order); the
   profile feature repeats the field list in its `logic` and a unit test keeps them in step. `store.put` replaces
   the whole record, so singleton writers must spread the existing record. `checks/run.js` now loads `core/prompt.js`.
+- 2026-10-16, T2.3: `ctx.backupNudge()` added. A pending AI question is guessed as "the newest prompt in 7 days
+  that no suggestion carries"; T3.x should add `answeredAt` to `prompt` records and Home should use it. T2.5 must
+  write `event-mark.copy.start` as local `YYYY-MM-DD[THH:MM]` or ISO. "This week" on Home is today..today+6.
