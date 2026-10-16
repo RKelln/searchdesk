@@ -9,6 +9,7 @@ def test_smoke_loads(page, app):
     wait_for_desk(page)
     assert page.title() == "Search Desk", page.title()
     ids = page.evaluate("() => Array.from(window.Desk.features)")
-    assert ids == BASE_FEATURES, ids
+    # The base features come first, in order; a feature someone added after them is fine.
+    assert ids[:len(BASE_FEATURES)] == BASE_FEATURES, ids
     # Every listed feature exists now, so a failed load is an error (strict).
     assert_no_errors(page, allow=[])

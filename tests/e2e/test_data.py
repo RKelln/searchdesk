@@ -202,8 +202,12 @@ def test_data_lists_ideas_you_could_build_with_a_brief_each(page, app):
     open_data(page, app)
     page.wait_for_selector('[data-test="ideas"]')
     ids = page.evaluate("() => Desk.planned.map(p => p.id)")
-    assert len(ids) >= 7
+    built = page.evaluate("() => Array.from(Desk.features)")
+    assert len(ids) + len(built) >= 7
+    # An idea someone has built (listed in Desk.features) is no longer shown as an idea.
     for must in ["sites", "calendar", "print", "bigtext", "pay", "reply-clock", "recipe-followup"]:
+        if must in built:
+            continue
         assert must in ids
         assert page.locator('[data-test="idea-%s"]' % must).count() == 1
     root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
