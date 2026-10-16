@@ -51,7 +51,7 @@ can follow a day later if it must).
   `window.Desk`).
   *Done when:* `node --test tests/unit/*.test.js` runs with one trivial passing test; `index.html` opens from `file://` with no
   console errors.
-- [ ] **T0.2 CONTRACT.md and AGENTS.md** (P0). `docs/CONTRACT.md` is DESIGN 7 made standalone, with one complete
+- [x] **T0.2 CONTRACT.md and AGENTS.md** (P0). `docs/CONTRACT.md` is DESIGN 7 made standalone, with one complete
   example feature. `AGENTS.md` covers: what the repo is (2 lines), the principles (DESIGN 2), the contract (a link
   to it, plus the rules in 7.5 verbatim), how to run tests and checks, "If the person has no idea what to build"
   (offer three from `docs/features/` that fit what they said, one at a time), "Working with someone's data" (DESIGN
@@ -284,3 +284,8 @@ can follow a day later if it must).
   `core/merge.js` and should move to the string table.
 - 2026-10-16, T1.3: unit tests get objects from the `vm` realm, so `assert.deepStrictEqual` against literals fails;
   JSON round-trip results before comparing.
+- 2026-10-16, T0.2: `checks/run.js` is node-only for now and does not load the pure core files first; T1.6 adds
+  that and the JXA host (file reading and output already go through a small `host` object). The id `example` falls
+  back to `docs/example-feature.js` and its check. The shell must call `def.mount(ctx)` as a method (the example
+  uses `this.logic`). The contract scan is word-based, so a comment that mentions a banned word fails a feature;
+  T1.6 should keep one banned-word list shared by the runner and the self-test.

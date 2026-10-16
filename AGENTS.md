@@ -1,0 +1,101 @@
+# AGENTS.md
+
+Search Desk is a job-search helper that runs in a web browser from plain files: no install, no server, no
+dependencies. It keeps a person's jobs, dates, events and free help in one place, and optionally helps them use a free
+AI chat by copy and paste.
+
+Features are single files that follow one contract. Most people who open this repo with an agent want to add or change
+a feature, so read the contract first: [`docs/CONTRACT.md`](docs/CONTRACT.md). The full design is in `docs/DESIGN.md`
+and the task list is in `docs/PLAN.md`.
+
+## Principles
+
+When two conflict, the earlier one wins.
+
+1. **Useful with no AI.** The tracker, events and help page work on their own. AI is optional and service-agnostic.
+2. **The free chat route is the main path.** Most users copy a question into a free chat and paste the answer back.
+   One tap to copy, one paste to bring it back, and nothing else unless something went wrong.
+3. **AI suggests; the person decides.** Anything from AI arrives as a suggestion. Taking one is one tap; ignoring it
+   costs nothing. The chat route never edits the person's own records.
+4. **Your data is yours.** One tap exports everything as a readable file. It imports back by file or paste. A merge
+   never loses newer data, and every bulk change can be undone.
+5. **Plain words.** Interface text is at about grade 6, all in one string table, so it can be translated later.
+6. **Small and readable.** No dependencies, no framework, no build step needed to run or extend it. Any feature file
+   can be read in one sitting.
+7. **Extensible by beginners.** Every feature is one file that follows one contract. A missing feature breaks nothing.
+8. **Safe by construction.** Text from AI or a feed is shown as text, never run as HTML or code. The page talks to one
+   network host, and the page itself enforces that.
+9. **The process is the product.** Recipes (the instructions sent to AI) are plain text anyone can change.
+
+## The contract
+
+Read [`docs/CONTRACT.md`](docs/CONTRACT.md). It has the `ctx` API, the slots, `h()`, checks and a complete example
+(`docs/example-feature.js`). The rules, word for word:
+
+1. **Talk to the app only through `ctx`.** No globals of your own, no reaching into another feature's DOM, no calling
+   another feature.
+2. **Read anything; write only your own types and your own `ext`.**
+3. **Never** use `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write`, `eval`, `new Function`, `fetch`,
+   `XMLHttpRequest`, `import()`, `localStorage` or timers that run forever. The store and `net` do the storage and
+   network work. The self-test scans every loaded feature's source for these words and fails the feature if it finds
+   one.
+4. **Pure logic goes in `logic`**, and `mount` only does the DOM work. Checks test `logic`.
+5. **Plain-word strings** go in `strings`.
+6. **Missing is fine.** Guard soft uses with `ctx.has('id')`. If a feature listed in `list.js` fails to load, the
+   shell shows a stub with its `name` and `purpose` (taken from `Desk.planned` or the list) and the line "This part is
+   not built yet." The rest of the app works normally.
+7. **Registering is idempotent.** Registering the same id twice replaces the first and logs a warning.
+8. **One file.** No other files except `checks/<id>.check.js` and `docs/features/<id>.md`.
+
+## Running tests and checks
+
+- Unit tests (needs Node): `node --test tests/unit/*.test.js`. Node 22 rejects a folder, so keep the glob.
+- Check one feature (Linux or anywhere with Node): `node checks/run.js <id>`. It loads `features/<id>.js` and
+  `checks/<id>.check.js`. Try it on the example with `node checks/run.js example`. This exists now.
+- Check one feature on a Mac with no Node: `bash checks/check.sh <id>`. This arrives with task T1.6; if
+  `checks/check.sh` is not there yet, it is not built yet.
+- Browser tests (needs `uv`): `uv run tests/e2e/run.py`. This arrives with task T1.7.
+- In the browser, open the app and go to `#selftest`. It runs every loaded feature's check and the contract scan.
+
+Run the checks before you say a feature is done, and tell the person what passed.
+
+## If the person has no idea what to build
+
+Do not ask an open question. Ask one short thing about them first (what kind of work they look for, what is hard in
+their search right now). Then look in `docs/features/`, where each planned feature has a short brief, and offer three
+that fit what they said. Offer them one at a time: say what it does in one plain sentence, and ask "Do you want this
+one?" Move to the next only if they say no. If `docs/features/` has no brief that fits, say so and ask what would
+help them most this week.
+
+## Working with someone's data
+
+For an agent that can read and write files (the person's exported backup sits in the folder).
+
+- **Reading:** the person exports to `searchdesk-backup-*.json` in the folder, and you read that.
+- **Writing:** write `data/inbox.js` containing `window.DESK_INBOX = { schema, records }`, with your records marked
+  `source: "ai"`. On load the page merges the inbox as one batch ("Brought in 5 changes from your helper · Undo"). The
+  merge is idempotent, so a reload does not duplicate anything.
+- Unlike the chat route, you can edit existing records. That is the person's choice, and undo covers it.
+- In demos, stay synthetic: use the made-up person in `data/example.js`, never real names, emails or phone numbers.
+- Never invent links. If you do not have the real address, leave the link empty.
+- Always write `source: "ai"` on what you add, and keep `updated` honest (the real time you made the change).
+- Never put a name, email or phone number in the profile. The profile has no field for them, on purpose.
+
+## Mac pitfalls
+
+The first workshop runs on managed macOS 14 Macs in Chrome. They have no Python, Node or git.
+
+- Scripts must be bash 3.2 and safe with BSD tools: `sed -i ''` (not `sed -i`), no `date -d`, no `timeout`,
+  `shasum -a 256` (not `sha256sum`), no associative arrays, no `mapfile`, no `${var,,}`.
+- Finder drops `.DS_Store` files into folders. Ignore them; never treat them as features or data.
+- File names are case-insensitive: `Sites.js` and `sites.js` are the same file. Use lowercase names.
+- Do not rely on Python, Node or git being there. Checks run through `osascript -l JavaScript` instead.
+
+## Other rules
+
+- No dependencies: no npm packages, no frameworks, no CDNs, no ES modules, no TypeScript. Classic scripts that attach
+  to `window.Desk`. Python tools use only the standard library and run with `uv run`.
+- Make anything that can be a pure function one, and write its unit test with it.
+- Interface text is plain words, about grade 6, with short sentences.
+- Change `core/`, `locale/` and `data/` only when the task needs it, and say so. Features and checks are the normal
+  place for new work.
