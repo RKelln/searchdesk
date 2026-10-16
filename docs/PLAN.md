@@ -137,7 +137,7 @@ can follow a day later if it must).
   back to the cache) but called only when `settings.liveEvents` is true.
   *Done when:* snapshot written with both tiers; check: filters by week and tier at a fixed `now`; e2e: star,
   dismiss, undo; a starred event survives a snapshot that no longer contains it.
-- [ ] **T2.6 `data/example.js` and workshop flags** (P0, DESIGN 6 Example data). The made-up person: "Amira", from
+- [x] **T2.6 `data/example.js` and workshop flags** (P0, DESIGN 6 Example data). The made-up person: "Amira", from
   `docs/inputs/example-person.md` (supplied by the maintainer), as the profile, plus 6 jobs across the stages with
   dates relative to load time (so "due tomorrow" is always true), plus 2 starred events. Make clear on screen that
   she is made up. `DESK_WORKSHOP` handling: `autoExample`, `liveEvents: false`, banner text.
@@ -417,3 +417,11 @@ can follow a day later if it must).
   `lead` suggestions (DESIGN 9.6: a link list on the AI screen, or `sites`), though the result line counts them as
   "added to Events". The recipe ctx has no `events`, so the feature reads them from its mount ctx. Core numbers
   aliases continuously (L1–L5, then C6..), not C21–C40 as DESIGN 9.6 says.
+- 2026-10-16, T2.6: `DESK_EXAMPLE` is a function: a profile plus 6 jobs, with dates built from today. It stars the
+  first library events still to come with "resume" and "interview" in the title, read from the snapshot at load time,
+  so it follows a regenerated snapshot. `Desk.start` loads the example once when `DESK_WORKSHOP.autoExample` is set
+  and the store is empty. A normal copy with Amira on screen now shows an "Amira (made up)" banner (`exampleBanner`;
+  DESIGN 6 said no banner). Open for T4.x packaging: there is no `data/workshop.js` file and no script tag yet; a
+  workshop copy needs `window.DESK_WORKSHOP = { autoExample: true, liveEvents: false }`. On a workshop copy,
+  removing Amira and reloading brings her back (fine for a practice computer). DESIGN 6's "the example's label" is
+  really the profile background plus the banner.

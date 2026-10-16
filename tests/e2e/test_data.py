@@ -138,7 +138,8 @@ def test_data_made_up_person_alone_then_removed(page, app):
 
 
 def test_data_no_example_data_hides_the_button(page, app):
-    open_data(page, app)  # data/example.js is still an empty stub
+    page.add_init_script("window.DESK_EXAMPLE = { records: [] };")  # runs before data/example.js, which keeps it
+    open_data(page, app)
     assert page.locator('[data-test="example-try"]').count() == 0
     assert_no_errors(page, allow=ALLOW_MISSING)
 

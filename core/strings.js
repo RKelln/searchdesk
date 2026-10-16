@@ -79,6 +79,8 @@ window.Desk = window.Desk || {};
     exampleOn: 'A made-up person is on this device. They are not in the copies you save.',
     exampleAdded: 'Added the made-up person.',
     exampleRemoved: 'Removed the made-up person. Your own things are still here.',
+    // example (T2.6)
+    exampleBanner: 'Amira (made up) is on this screen. She is not a real person. Remove her on the Data screen.',
     storageHeading: 'Saving on this device',
     storageOk: 'Saved in this browser. {n} things are kept here.',
     versionLine: 'Search Desk version {v}',

@@ -42,6 +42,12 @@ Do not change a name once used. Do not select by visible text, since text lives 
 | `[data-test="nav-<id>"]` | nav link for feature `<id>` |
 | `[data-test="<feature>-<thing>"]` | anything else, prefixed with the feature id, e.g. `jobs-add`, `jobs-row` |
 
+## Made-up person tests (`test_example.py`)
+
+A workshop copy is faked with an init script that sets `window.DESK_WORKSHOP = { autoExample: true, liveEvents: false }`
+(the real copy loads `data/workshop.js` instead). The banner is `[data-test="banner"]` (hidden when empty); it shows the
+workshop text, or "Amira (made up) is on this screen" when a normal copy has added her by hand.
+
 ## AI helper tests (`test_ai.py`)
 
 No real recipe exists yet, so the test adds a test-only feature with an init script that runs on `DOMContentLoaded`,

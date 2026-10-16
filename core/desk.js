@@ -386,6 +386,7 @@ window.Desk = window.Desk || {};
   function updateBanner() {
     var w = window.DESK_WORKSHOP;
     var text = w ? (typeof w.banner === 'string' && w.banner ? w.banner : T('workshopBanner')) : '';
+    if (!text && Desk.io && Desk.io.hasExample && Desk.io.hasExample()) text = T('exampleBanner');
     els.banner.textContent = text;
     els.banner.hidden = !text;
   }
@@ -620,6 +621,13 @@ window.Desk = window.Desk || {};
       updateNotice();
       Desk.persist.onStatus(updateNotice);
     }
+    // A workshop copy opens straight into the made-up person (once: only when there is nothing here yet).
+    try {
+      var wk = window.DESK_WORKSHOP;
+      if (wk && wk.autoExample && Desk.io && Desk.io.exampleAvailable() && !Desk.io.hasExample() &&
+          !Desk.store.all().length && !(Desk.store.get('settings') || {}).exampleLoaded) Desk.io.loadExample();
+    } catch (e) { logError(e); }
+    updateBanner();
     var order = defOrder.slice();
     order.forEach(function (id) { mountFeature(defs[id]); });
     var tabs = allTabs();
@@ -631,7 +639,7 @@ window.Desk = window.Desk || {};
     started = true;
     renderNav(tabs);
     renderMain(false);
-    Desk.store.subscribe(function () { scheduleRender(); });
+    Desk.store.subscribe(function () { updateBanner(); scheduleRender(); });
     window.addEventListener('hashchange', onHashChange);
     Desk.started = true;
   };
