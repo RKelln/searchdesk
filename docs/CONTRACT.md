@@ -48,7 +48,7 @@ To add a feature: put the file in `features/`, add its id to the list in `featur
 | `h(tag, attrs, ...children)` | build elements safely (section 4) |
 | `t(key, vars)` | this feature's strings, then the core strings; `{name}` in a string is replaced from `vars` |
 | `ui.toast(text, {undo})`, `ui.confirm(text, {yes, no}?)`, `ui.go(tab)` | small interface helpers. `ui.toast` with `{undo: true}` shows an Undo button for 10 seconds; it goes away if a newer change is made. `ui.confirm` asks a yes/no question and returns a Promise that resolves to `true` or `false`; `yes` and `no` are optional button words. |
-| `renderSlot(name, el, ...args)` | show the entries other features put in a slot (for example `ctx.renderSlot('job.panel', el, job)`); each gets its own empty block, an empty one is left out, and one that fails shows a short plain line instead. Buttons for `job.actions` and `event.actions` are made for you |
+| `renderSlot(name, el, ...args)` | show the entries other features put in a slot (for example `ctx.renderSlot('job.panel', el, job)`); each gets its own empty block, an empty one is left out, and one that fails shows a short plain line instead. Buttons for `job.actions` and `event.actions` are made for you (test name `action-<id>`). Returns how many entries it showed, so you can write "Nothing here" when it is 0 |
 | `route()` | the current screen and its parts, from the address: `#jobs/j_abc/edit` gives `{tab: 'jobs', args: ['j_abc', 'edit']}`; change it with `ui.go('jobs/j_abc')` |
 | `fmt.date(v)`, `fmt.time(v)`, `fmt.dateTime(v)`, `fmt.relative(v, now)`, `fmt.daysFrom(v, now)` | show dates in plain words ("Thu Oct 22", "6:30pm", "in 3 days", "2 days late"); `v` is `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM` or an ISO time |
 | `has(featureId)` | whether another feature is loaded, for soft `uses` |
@@ -78,6 +78,14 @@ untouched, so never delete what you do not own.
 | `settings` | a block on the Data and settings screen | `{id, title, render(el)}` |
 | `print` | a section in the printable summary (if `print` is loaded) | `{id, title, render(el)}` |
 | `ai` | a block on the AI screen, between the task list and the open task | `{id, title?, render(el, {selected, args}), paste?(text)}`; `selected` is the open task's recipe or null. `paste(text)` may read pasted text that is not an AI answer: return `null`, or `{text, render?(el)}` to show a result |
+
+Every slot entry needs an `id`. A `label` or `title` is the words people see, from your strings (`ctx.t('...')`).
+
+**The screen is drawn again after every store change**, so anything kept inside `render` (half-typed text, an open
+form) is lost. Keep that state in variables inside `mount`, and call `ctx.ui.go('<your tab id>')` to draw again. To
+change a record you own (for example a suggestion's `status`), `put` the whole record:
+`ctx.store.put(Object.assign({}, ctx.store.get(id), { status: 'taken' }))`. `ctx.locale` is frozen; read it only.
+Add the `data-test` names your tests use to `tests/e2e/README.md`.
 
 New slots are added to core, never improvised inside a feature. If a feature needs a slot that is not here, stop and
 say so.

@@ -245,7 +245,7 @@ can follow a day later if it must).
   P0 set too (setting `replyDays`, 0 = off).
   *Done when:* each brief has a "Done when" list a beginner's agent could test against and names the slots it needs
   (all of which exist in core), and the Data screen lists the ideas.
-- [ ] **T4.5 Reference builds of planned features** (P0: `sites`, `calendar`, `print`; P1: the rest). Build each
+- [x] **T4.5 Reference builds of planned features** (P0: `sites`, `calendar`, `print`; P1: the rest). Build each
   strictly from its brief, as a participant's agent would, in `reference/features/<id>.js` plus
   `reference/checks/<id>.check.js` (outside `features/`, so a normal or workshop copy never loads them). This tests
   the brief: **anything the brief did not say but the build needed goes back into the brief.**
@@ -479,3 +479,11 @@ can follow a day later if it must).
   safe names and four text types only, returns true or false (`Desk.io.saveText`, `downloadAllowed`). The bigtext,
   reply-clock and calendar briefs now use the real API. A flaky test seen once: `test_ai_odd_pastes_say_what_happened`
   on webkit with file (it passed on rerun).
+- 2026-10-16, T4.5: there are reference builds of sites (Sonnet), calendar and print (Haiku, on purpose, as a harder
+  test of the briefs) in `reference/` (features, checks, tests). They passed 29, 37 and 29 checks, and their e2e passed in
+  a worktree with each one listed. Each brief gained what the build needed: field names, sort orders, today's day
+  key, redraw and state, ICS rules. CONTRACT now says: every slot entry needs an `id`, `label` is the visible words,
+  action buttons are `action-<id>`, `renderSlot` returns a count, the screen redraws on every store change (keep
+  state in `mount`), `put` the whole record, and `ctx.locale` is frozen. Still to fix: when a participant lands a
+  planned feature, `test_smoke` (strict base list) and `test_data` (the P0 ideas must be listed) fail; make both
+  tolerate a built planned feature. Not done: the print preview hand check, and opening the .ics on a phone.

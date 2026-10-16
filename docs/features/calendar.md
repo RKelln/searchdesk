@@ -20,7 +20,7 @@ Record types: none. Set `types: []` and `uses: []`.
 Slots: `job.actions`, `event.actions`   Soft uses: none.
 
 Slot details:
-- Each slot entry needs an `id` and a `label` (a string key from `strings`, not the words themselves). Use the ids
+- Each slot entry needs an `id` and a `label`: the words on the button, from your strings (`ctx.t('jobButton')`). Use the ids
   `calendar-job` and `calendar-event`, so the buttons get the test names `action-calendar-job` and `action-calendar-event`.
 - `job.actions` runs as `run(job)` with the job record. It shows on every job, even one with no interview date.
 - `event.actions` runs as `run(event)` with a copy of the event. The fields are `id`, `title`, `start`, `end`, `venue`,
