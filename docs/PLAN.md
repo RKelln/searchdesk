@@ -276,8 +276,7 @@ can follow a day later if it must).
 - 2026-10-16, T0.1: Node 22 does not accept a folder for `node --test` (`node --test tests/unit` fails with
   "Cannot find module"). The command is now `node --test tests/unit/*.test.js` throughout this file.
 - 2026-10-16, T0.1: for T1.7, the Playwright Python package that `uv` picks may not match the browsers cached in
-  `~/.cache/ms-playwright`. Pin the Playwright version in the script metadata to match, run `playwright install`,
-  or point `executable_path` at `/usr/bin/chromium-browser` on this dev machine.
+  `~/.cache/ms-playwright`. (Resolved in T1.7: pinned `playwright==1.60.0`, which matches cached chromium-1223.)
 - 2026-10-16, T1.3: `merge()` returns a whole new state. T1.4 needs a store method that applies a merged state as
   one batch (so Undo works). Show only `kept` in the import report ("Kept N that were newer here"), not
   `unchanged`; "nothing new" means `added + updated + removed === 0`. The error sentences are inline in
@@ -298,3 +297,9 @@ can follow a day later if it must).
   `Desk.merge` then one `batch('Import', ...)`. T1.5 must call `Desk.persist.load()` before mounting and show
   `Desk.persist.message()` when `status()` is `'memory'`. Undo restores the old `updated`, so an undo does not
   survive a sync to another device (design point, not a bug).
+- 2026-10-16, T1.7: Chromium passes on both origins. WebKit (webkit-2287) is installed but cannot start on this
+  Ubuntu 24.04 dev machine (missing system libraries); the runner reports it SKIPPED. Needs
+  `sudo uv run --no-project --with playwright==1.60.0 playwright install-deps webkit` by the maintainer, else WebKit
+  is checked on a Mac (V-list). T1.7 stays unticked until WebKit runs. Later tasks: set `Desk.started = true` at the
+  end of boot, use the `data-test` names in `tests/e2e/README.md`, and note that `assert_no_errors` fails on 404s
+  (so optional data files need a quiet loader or a stub).
