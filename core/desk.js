@@ -337,7 +337,6 @@ window.Desk = window.Desk || {};
     } });
     Desk.screen('selftest', { label: 'selftestHeading', order: 1100, hidden: true, render: function (el) {
       el.appendChild(H('h2', {}, T('selftestHeading')));
-      el.appendChild(H('p', { class: 'muted' }, T('selftestSoon')));
     } });
   }
 

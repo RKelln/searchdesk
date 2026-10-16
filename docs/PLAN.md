@@ -91,7 +91,7 @@ can follow a day later if it must).
   *Done when:* e2e: the app boots with every base feature; with each base feature's file made to fail (Playwright
   route abort or a renamed file), the app still boots, the stub shows, and the other tabs work; at 320 px wide there
   is no horizontal scroll.
-- [ ] **T1.6 Checks and self-test** (P0, DESIGN 7.6, 7.5 rule 3). `checks/run.js` (node and JXA: detect
+- [x] **T1.6 Checks and self-test** (P0, DESIGN 7.6, 7.5 rule 3). `checks/run.js` (node and JXA: detect
   `typeof process` vs `ObjC`; read files with `fs` or `$.NSString.stringWithContentsOfFileEncodingError`; evaluate in
   global scope), `Desk.check(id, fn)` with `t.ok`/`t.eq`, `checks/check.sh` (bash 3.2; validates the id; `STOP:`
   lines), and `core/selftest.js` (`#selftest`: core checks, each loaded feature's check file loaded at runtime, and
@@ -313,3 +313,7 @@ can follow a day later if it must).
   `test_smoke` allows `/features/` and "Failed to load resource" until the base feature files exist; make it strict
   again after T2.x. WebKit + `file://` cannot serve faked feature scripts through `page.route`, so those shell cases
   run on the other three combinations only.
+- 2026-10-16, T1.6: the banned-word list and scan live in `core/contract.js` (new core file, after `h.js`; T4.1 must
+  inline it). The scan strips comments (a comment no longer fails a feature) but not strings, matches whole
+  identifiers, and covers every function on the def plus every `logic` function. DESIGN 7.5/7.6 should say so. The
+  JXA branch of `checks/run.js` and `check.sh` under `osascript` are untested (V4 on a Mac).

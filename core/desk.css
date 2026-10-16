@@ -193,3 +193,27 @@ dialog.confirm::backdrop { background: rgba(0, 0, 0, .5); }
   body { background: #fff; color: #000; }
   .screen { padding: 0; max-width: none; }
 }
+
+/* self-test (T1.6) */
+.st-summary { font-weight: 600; margin: 1rem 0; }
+.st-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.st-row { padding: .75rem; background: var(--surface); border: 1px solid var(--line); border-left-width: .4rem; border-radius: .4rem; }
+.st-row[data-status="pass"] { border-left-color: #1d7a3a; }
+.st-row[data-status="fail"] { border-left-color: var(--danger); }
+.st-row[data-status="none"], .st-row[data-status="missing"] { border-left-color: var(--line); }
+.st-badge { font-weight: 600; margin-right: .5rem; }
+.st-row[data-status="pass"] .st-badge { color: #1d7a3a; }
+.st-row[data-status="fail"] .st-badge { color: var(--danger); }
+.st-problems { margin: .5rem 0 0; color: var(--danger); }
+@media (prefers-color-scheme: dark) {
+  .st-row[data-status="pass"] { border-left-color: #6fcf8c; }
+  .st-row[data-status="pass"] .st-badge { color: #6fcf8c; }
+}
+
+/* Data screen: save, bring back, made-up person */
+.button-row { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 .75rem; }
+.paste-field, .file-field { margin: 0 0 .75rem; }
+.paste-field label, .file-field label { display: block; font-weight: 600; margin: 0 0 .25rem; }
+.paste-field textarea { width: 100%; box-sizing: border-box; margin: 0 0 .5rem; }
+.import-report { margin: .5rem 0 0; font-weight: 600; }
+.file-details { margin: .5rem 0 0; }
