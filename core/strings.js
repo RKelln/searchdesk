@@ -106,6 +106,7 @@ window.Desk = window.Desk || {};
     aiTruncated: 'The list was cut to fit. {n} rows were left out.',
     aiCopiedOpened: 'Copied. {service} is opening in a new tab. Paste the question there. Then copy the answer and come back.',
     aiCopiedPlain: 'Copied. Paste the question into your AI chat. Then copy the answer and come back.',
+    aiCopiedPart: 'Copied.',
     aiCopyHold: 'This browser would not copy by itself. Press and hold the text below to copy it.',
     aiHoldLabel: 'The text to copy',
     aiOpenLink: 'Open {service} yourself',

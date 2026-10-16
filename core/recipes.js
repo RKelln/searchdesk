@@ -9,6 +9,9 @@
 //                             rows are {id, cols}; opts = {options: {<optionId>: value}, args: [route parts after the id]}
 //   options                   [{id, label, choices: [{value, label}], default}] shown as selects, passed in opts.options
 //   answer, example, quota, required, synonyms, types   as for Desk.reply.parse (answer null = no answer is read back)
+//   copies, tips              (T3.6) extra buttons beside "Just copy" and a list of short tips under the preview.
+//                             copies = [{id, label, done, text(ctx, opts)}]: copies text(ctx, opts) alone; `done` is the
+//                             sentence shown after. tips = [plain sentences]. Both are plain strings from the feature.
 //   titles(ctx, promptRecord) -> {itemId: title} for matching a line by title (optional)
 //   kind                      the suggestion kind used when `apply` is left out (default 'item')
 //   apply(result, ctx)        result = the Desk.reply.parse result plus {bareCode, prompt}. Returns an array of
@@ -341,6 +344,7 @@ window.Desk = window.Desk || {};
   var copied = null;        // the last copy: {recipe, ok, text, service, opened, fix}
   var previewOpen = false;
   var fixStatus = null;     // {ok, text} after "Copy a fix-it message"
+  var partCopied = null;    // the last extra copy (def.copies): {recipe, id, ok, text, done}
 
   function services() {
     var l = window.DESK_LOCALE && Array.isArray(window.DESK_LOCALE.services) ? window.DESK_LOCALE.services : [];
@@ -379,6 +383,7 @@ window.Desk = window.Desk || {};
     if (!built) return;
     var svc = andOpen ? currentService() : null;
     Desk.io.copyText(built.text).then(function (ok) {
+      partCopied = null;
       copied = { recipe: def.id, ok: ok, text: built.text, service: svc, opened: false, truncated: built.dropped };
       if (ok && svc) { openService(svc); copied.opened = true; }
       latest = null; fixStatus = null;
@@ -387,6 +392,18 @@ window.Desk = window.Desk || {};
       if (!settings().seenPrivacyNote) { patch.seenPrivacyNote = true; copied.privacy = true; }
       if (svc && settings().service !== svc.id) patch.service = svc.id;
       if (Object.keys(patch).length) putSettings(patch);
+      draw();
+    });
+  }
+
+  // An extra copy button a recipe asks for (def.copies): copies one piece of text, with the same hold-and-press fallback.
+  function doCopyPart(def, part) {
+    var text = '';
+    try { text = String(part.text(recipeCtx(), optsFor(def)) || ''); } catch (e) { if (window.console) console.error(e); }
+    if (!text) return;
+    Desk.io.copyText(text).then(function (ok) {
+      partCopied = { recipe: def.id, id: part.id, ok: ok, text: text, done: String(part.done || '') };
+      copied = null;
       draw();
     });
   }
@@ -459,6 +476,11 @@ window.Desk = window.Desk || {};
     }
     var jc = H('button', { type: 'button', class: svc ? '' : 'primary ai-big', 'data-test': 'ai-copy', on: { click: function () { doCopy(def, false); } } }, T('aiCopy'));
     jc.disabled = blocked; row.appendChild(jc);
+    (Array.isArray(def.copies) ? def.copies : []).forEach(function (part) {
+      if (!part || typeof part.text !== 'function' || !part.label) return;
+      var pb = H('button', { type: 'button', 'data-test': 'ai-copy-' + part.id, on: { click: function () { doCopyPart(def, part); } } }, String(part.label));
+      pb.disabled = blocked; row.appendChild(pb);
+    });
     panel.appendChild(row);
 
     if (!Desk.store.get('settings') || !Desk.store.get('settings').seenPrivacyNote || (copied && copied.privacy)) {
@@ -474,6 +496,17 @@ window.Desk = window.Desk || {};
       if (built.truncated) panel.appendChild(H('p', { class: 'muted' }, T('aiTruncated', { n: built.dropped })));
     }
     if (copied && copied.recipe === def.id) panel.appendChild(copiedBlock());
+    if (partCopied && partCopied.recipe === def.id) {
+      var pc = H('div', { class: 'ai-copied', role: 'status', 'data-test': 'ai-part-copied' });
+      if (partCopied.ok) pc.appendChild(H('p', {}, partCopied.done || T('aiCopiedPart')));
+      else { pc.appendChild(H('p', {}, T('aiCopyHold'))); pc.appendChild(holdBox(partCopied.text, 'ai-part-fallback')); }
+      panel.appendChild(pc);
+    }
+    if (Array.isArray(def.tips) && def.tips.length) {
+      var tl = H('ul', { class: 'ai-tips', 'data-test': 'ai-tips' });
+      def.tips.forEach(function (tip) { tl.appendChild(H('li', {}, String(tip))); });
+      panel.appendChild(tl);
+    }
     el.appendChild(panel);
   }
 

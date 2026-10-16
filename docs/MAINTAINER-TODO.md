@@ -38,5 +38,5 @@ Things only you can do, in rough order of urgency for the Mon Oct 19, 2pm tag. T
 
 ## Decided (for the record)
 
-- 2026-10-17: use Togather staging (`staging.toronto.togather.foundation`); there is no production yet.
-- 2026-10-17: `tel:` links are allowed (digits only).
+- 2026-10-16: use Togather staging (`staging.toronto.togather.foundation`); there is no production yet.
+- 2026-10-16: `tel:` links are allowed (digits only).
