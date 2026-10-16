@@ -213,7 +213,7 @@ can follow a day later if it must).
   *Done when:* e2e: edit and save an instruction, and the next question uses it; reset brings back the original;
   export then import carries the edit; a fixture "improved" answer shows the side-by-side view, and Use this saves
   it; an answer that drops a placeholder shows the warning.
-- [ ] **T3.8 Your own AI tasks** (P0, cut early if late; DESIGN 9.11). `recipe-custom`: make, edit and delete a task
+- [x] **T3.8 Your own AI tasks** (P0, cut early if late; DESIGN 9.11). `recipe-custom`: make, edit and delete a task
   with the allowed placeholders only; it starts from the AI screen or a job's actions; the answer kind is none, or
   "save to this job's notes" (appended and dated); "Copy this recipe" as plain text, and pasting that text offers
   to add it.
@@ -450,3 +450,13 @@ can follow a day later if it must).
   prose. Coach "Copy only the instructions" now uses the edited template. Open: an edited coach prompt is not held to
   the 1,500 cap (a warning would be good). The dropped-placeholder warning is only as good as each recipe's
   `placeholders` list. `recipe-edit` records keep `source:'user'` even after Use this.
+- 2026-10-16, T3.8: `recipe-custom` is owned by the feature (DESIGN 6 says core; DESIGN should be updated). Each
+  record is registered with `ctx.recipe`, using its id, and re-synced on every store change. New core pieces:
+  `ctx.removeRecipe(id)`, and an `ai` slot (a block on the AI screen with an optional `paste(text)` hook for text that
+  is not an AI answer). Both have CONTRACT rows. The allowed words are `{profile}`, `{events}` and `{replyLanguage}`,
+  plus `{job}`, `{title}`, `{org}`, `{where}`, `{asks}` and `{posting}` for a task that starts from a job. Any other word stays visible as text.
+  "Save to this job's notes" makes a `job-note` suggestion; the job page's "Add to notes" appends it with a date and
+  marks it taken in one undo step. The shared text starts "[A task to share, from Search Desk]". A paste over 6,000
+  characters is refused. Smoke is now strict (no missing-feature allowance). Open: Home shows a waiting `job-note` as
+  "1 suggestion waiting: rc_xxxx" (the raw id); Home should skip it or name the job. "Copy this recipe" is disabled
+  until a job task's needs are met. `ctx.store.subscribe` is used but missing from CONTRACT.

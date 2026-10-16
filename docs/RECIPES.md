@@ -17,8 +17,44 @@ instructions can never stop the page from reading the answer.
 
 ## Make a recipe with no code
 
-In the app, open **AI helper**. (Your own tasks are planned in T3.8: a name, the instructions, and where it starts.)
-Use only these placeholders: `{profile}`, `{job}`, `{posting}`, `{events}` and `{replyLanguage}`.
+Make a task of your own in the app. See "Your own tasks" below.
+
+## Your own tasks
+
+Open **AI helper** and press **Make your own task**. Or open a job and press **Make a task for this job**.
+
+1. **Name** it, and write the **instructions**. Use these words in curly brackets. The page fills them in:
+   - Always: `{profile}` (what you chose to share in About me), `{events}` (your starred events) and `{replyLanguage}`.
+   - Only for a task that starts from a job: `{job}` (title, company, place, stage, what they ask for), `{title}`,
+     `{org}`, `{where}`, `{asks}` and `{posting}` (cut at 4,000 characters). Your job notes are never sent.
+2. A word that is not on the list, like `{notes}`, is shown as a warning and stays in the question as plain text. It is
+   never filled in.
+3. Choose **where it starts**: the AI screen, or a job. A job task opens from that job's page.
+4. Choose **what happens to the answer**. **Nothing** means you read it in the chat. **Save it to the job's notes** (job
+   tasks only) means you paste the answer back, open the job, and press **Add to notes**. It is added at the end of the
+   notes under a line like `AI answer, 2026-10-18:`. Undo takes it back.
+5. Your tasks go into your backup file with everything else.
+
+**Share a task.** Open it and press **Copy this recipe**. It copies plain text like this:
+
+```
+[A task to share, from Search Desk]
+Name: Thank-you note
+Starts from: job
+Answer: job-notes
+Words used: {profile}, {job}
+
+Instructions (between the lines):
+-----
+Write a short thank-you note for this interview.
+{profile}
+{job}
+-----
+```
+
+A friend pastes that text into the paste box on the AI screen. The page shows what is in it. Nothing is added until they
+press **Add it as my task**. It is only text, so a shared task cannot do more than a task you made by hand. Names are cut
+at 60 characters, instructions over 3,000 are refused, and a paste over 6,000 is refused unread.
 
 ## Make a recipe with code
 

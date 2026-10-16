@@ -115,4 +115,15 @@ Desk.check('jobs', (t, f) => {
   t.eq(L.draftExtras({ posting: 'x'.repeat(9000) }).posting.length, 8000, 'the posting is cut at 8,000');
   t.eq(L.draftExtras({ title: 'T' }), {}, 'nothing extra when the draft has none');
   t.ok(f.strings.takeIt && f.strings.notForMe && f.strings.draftsHeading, 'the draft lane has its words');
+  // ---- answers for the notes (T3.8): a dated append ----
+  t.eq(L.appendNote('', 'Dear team,\nThank you.', '2026-10-18'), { ok: true, notes: 'AI answer, 2026-10-18:\nDear team,\nThank you.' }, 'empty notes get the dated answer');
+  t.eq(L.appendNote('Call Sam.  \n', ' Be brief. ', '2026-10-18').notes, 'Call Sam.\n\nAI answer, 2026-10-18:\nBe brief.', 'it goes after the old notes, after a blank line');
+  t.eq(L.appendNote('a', 'b', 'not a date').notes, 'a\n\nAI answer, today:\nb', 'a bad date says "today"');
+  t.eq(L.appendNote('a', '   ', '2026-10-18').ok, false, 'an empty answer adds nothing');
+  const full = L.appendNote('n'.repeat(4900), 'x'.repeat(500), '2026-10-18');
+  t.ok(full.ok && full.notes.length <= 5000 && full.notes.endsWith('…'), 'a long answer is cut so the notes stay within 5,000 characters');
+  t.eq(L.appendNote('n'.repeat(4990), 'x'.repeat(500), '2026-10-18'), { ok: false, problem: 'noteNoRoom' }, 'with no room nothing is added');
+  t.ok(f.strings.noteNoRoom && f.strings.noteAdd && f.strings.notesReadyHeading, 'the note lane has its words');
+  const sg = (o) => Object.assign({ type: 'suggestion', kind: 'job-note', status: 'new', updated: '1', target: { job: 'j1', text: 'hi' } }, o);
+  t.eq(L.readyNotes([sg({ id: 'a' }), sg({ id: 'b', status: 'taken' }), sg({ id: 'c', target: { job: 'j2', text: 'x' } }), sg({ id: 'd', kind: 'job-draft' }), sg({ id: 'e', deleted: true }), sg({ id: 'f', target: { job: 'j1', text: ' ' } })], 'j1').map((x) => x.id), ['a'], 'only new job-note suggestions for that job are listed');
 });

@@ -58,7 +58,8 @@ To add a feature: put the file in `features/`, add its id to the list in `featur
 | `profileLines(profile?)` | the profile lines an AI question will contain: only fields whose "send to AI" switch is on (the same function the recipes use) |
 | `backupNudge()` | whether to remind the person to save a copy: `{show, text, days}` (`show` is true when there are changes since the last export and either 7 days have passed or there are 10 or more records; `days` is null if never exported). Used by Home |
 | `events.current()` / `events.refresh(opts?)` | the events to show: `{events, source, generated, note}` where `events` are `{id, title, start, end, venue, address, url, tier, tags}`, `source` is `'cache'` or `'snapshot'`. `current()` is instant. `refresh()` returns a Promise and asks `core/net.js` to fetch the latest only when live events are on (otherwise it just resolves `current()`); the screen is drawn again after a good fetch. `note` is a plain line when a fetch failed. Used by Events |
-| `recipe(def)` | register an AI recipe |
+| `recipe(def)` | register an AI recipe (the same id again replaces it) |
+| `removeRecipe(id)` | take back a recipe this feature registered (for example a task the person deleted) |
 
 Records are plain objects. Every record has `id`, `type`, `updated`, `source` (`user`, `ai`, `example`, `feed` or
 `import`), and sometimes `deleted: true` and `ext`. Unknown types and unknown `ext` keys are kept and exported
@@ -75,6 +76,7 @@ untouched, so never delete what you do not own.
 | `event.actions` | a button on an event row | `{id, label, run(event)}` |
 | `settings` | a block on the Data and settings screen | `{id, title, render(el)}` |
 | `print` | a section in the printable summary (if `print` is loaded) | `{id, title, render(el)}` |
+| `ai` | a block on the AI screen, between the task list and the open task | `{id, title?, render(el, {selected, args}), paste?(text)}`; `selected` is the open task's recipe or null. `paste(text)` may read pasted text that is not an AI answer: return `null`, or `{text, render?(el)}` to show a result |
 
 New slots are added to core, never improvised inside a feature. If a feature needs a slot that is not here, stop and
 say so.

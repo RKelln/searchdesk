@@ -234,3 +234,24 @@ test('needs turns strings and objects into {text, go}; a throwing needs is one p
 test('the paste handler is registered with the shell hook', () => {
   assert.ok(Desk.pasteHandlers.indexOf(R.handlePaste) >= 0);
 });
+
+test('an ai slot entry can read pasted text that is not an answer (T3.8)', () => {
+  fresh();
+  const saved = Desk.slots;
+  try {
+    let seen = [];
+    Desk.slots = { list: (name) => { seen.push(name); return [
+      { def: { id: 'bad', paste() { throw new Error('boom'); } } },
+      { def: { id: 'none', paste() { return null; } } },
+      { def: { id: 'shared', paste(t) { return /SHARED/.test(t) ? { text: 'Found one.', render() {} } : null; } } },
+    ]; } };
+    const hit = R.process('SHARED task');
+    assert.strictEqual(hit.kind, 'shared');
+    assert.strictEqual(hit.text, 'Found one.');
+    assert.strictEqual(typeof hit.render, 'function');
+    assert.strictEqual(hit.added, 0);
+    assert.deepStrictEqual(seen, ['ai']);
+    const miss = R.process('DESK-7Q3K\nL1 | Fits.');
+    assert.strictEqual(miss.kind, 'saved', 'an answer still goes the normal way');
+  } finally { Desk.slots = saved; }
+});

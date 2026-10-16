@@ -287,11 +287,23 @@ window.Desk = window.Desk || {};
   // Read pasted text. Finds the question it belongs to, parses, saves new suggestions as ONE batch, marks the question
   // answered, and returns what to show:
   //   {text, notes[], problem, rejected[], token, recipe, code, added, existing, render, kind}
-  // kind: 'saved' | 'already' | 'nothing' | 'question' | 'unknown' | 'none' | 'backup' | 'norecipe'.
+  // kind: 'saved' | 'already' | 'nothing' | 'question' | 'unknown' | 'none' | 'backup' | 'norecipe' | 'shared'.
   R.process = function (text) {
     var st = S(), res = { text: '', notes: [], problem: '', rejected: [], token: null, recipe: '', code: '', added: 0, existing: 0, render: null, kind: '' };
     function stop(kind, key) { res.kind = kind; res.text = T(key); return res; }
     if (Desk.io && Desk.io.detectPaste && Desk.io.detectPaste(text) === 'state') return stop('backup', 'aiIsBackup');
+    // (T3.8) an `ai` slot entry may read pasted text that is not an answer (a shared task): its paste(text) returns
+    // null, or {text, render(el)}. Shown like a result, and nothing is saved here.
+    var shared = Desk.slots && Desk.slots.list ? Desk.slots.list('ai') : [];
+    for (var si = 0; si < shared.length; si++) {
+      var sd = shared[si].def, got = null;
+      if (typeof sd.paste !== 'function') continue;
+      try { got = sd.paste(text); } catch (e) { if (window.console) console.error(e); }
+      if (got && typeof got.text === 'string') {
+        res.kind = 'shared'; res.text = got.text; res.render = typeof got.render === 'function' ? got.render : null;
+        return res;
+      }
+    }
     var prompts = R.promptsNewestFirst(st.all('prompt'));
     if (!prompts.length) return stop('none', 'aiNoQuestion');
     var first = Desk.reply.parse(text, { prompts: prompts });
@@ -683,14 +695,17 @@ window.Desk = window.Desk || {};
     var hidden = R.get(selected); // recipe edit (T3.7): a task that is not in the list can still be opened by its address
     if (ids.indexOf(selected) < 0 && !(route.args[0] && hidden && hidden.listed === false)) selected = ids[0] || '';
     el.appendChild(H('h2', {}, T('aiHeading')));
+    var def = null;
     if (!list.length) {
       el.appendChild(H('p', { class: 'muted', 'data-test': 'ai-none' }, T('aiNoTasks')));
     } else {
       el.appendChild(H('p', { class: 'muted' }, T('aiIntro')));
       taskList(el, list);
-      var def = R.get(selected);
-      if (def) taskPanel(el, def);
+      def = R.get(selected);
     }
+    // (T3.8) the `ai` slot: your own tasks (make, change, delete) sit between the task list and the open task
+    if (Desk.slots && Desk.slots.render) Desk.slots.render('ai', el, { selected: def || null, args: route.args.slice() });
+    if (def) taskPanel(el, def);
     pendingCard(el);
     pasteBlock(el);
     resultBlock(el);

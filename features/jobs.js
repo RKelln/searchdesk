@@ -24,6 +24,10 @@
 //   {title, org, where, closes, link, posting, asks: [text], notes}   (all optional; only the form's own fields are used)
 // Saving that form puts `posting` and `asks` on the job (they have no form field) and sets the suggestion's status to
 // 'taken' in the same batch. That is why this feature lists `suggestion` among its types.
+// `job-note` suggestions (T3.8, recipe-custom: "save the answer to this job's notes") show in that job's detail view as
+// "Answers ready for your notes": target {job: <job id>, text, task}. "Add to notes" appends the text to `notes` with a
+// date (logic.appendNote) and sets the suggestion to 'taken' in one undo step; "Not for me" sets it to 'dismissed'.
+// Only this feature writes `job`, so the AI's answer reaches the notes by the person's tap and through here.
 // The stage filter lives in a closure inside mount (it survives the shell's re-renders).
 Desk.register({
   id: 'jobs',
@@ -92,6 +96,11 @@ Desk.register({
     takeIt: 'Take it',
     notForMe: 'Not for me',
     draftPutAway: 'Put away.',
+    notesReadyHeading: 'Answers ready for your notes',
+    noteFrom: 'From your task "{task}"',
+    noteAdd: 'Add to notes',
+    noteAdded: 'Added to your notes.',
+    noteNoRoom: 'The notes are full. Make some room, then try again.',
   },
   css: `
     .jobs-top { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; margin-bottom: .75rem; }
@@ -259,6 +268,29 @@ Desk.register({
       if (asks.length) out.asks = asks;
       return out;
     },
+    // ---- answers for the notes (T3.8) ----
+    NOTES_MAX: 5000,
+    // The `job-note` suggestions waiting for one job: status 'new', target.job is the job id, newest first.
+    readyNotes(suggestions, jobId) {
+      return (Array.isArray(suggestions) ? suggestions : []).filter((s) => s && s.type === 'suggestion' && !s.deleted &&
+        s.kind === 'job-note' && s.status === 'new' && s.target && s.target.job === jobId &&
+        typeof s.target.text === 'string' && s.target.text.trim()).sort((a, b) => (a.updated < b.updated ? 1 : a.updated > b.updated ? -1 : 0));
+    },
+    // The notes with an answer added at the end, after a blank line, under a dated line: "AI answer, 2026-10-18:".
+    // `today` is 'YYYY-MM-DD'. The notes keep to NOTES_MAX characters: a long answer is cut with "…", and when there is
+    // no room for even a short piece the result is { ok: false, problem: 'noteNoRoom' } and nothing is added.
+    // -> { ok: true, notes } or { ok: false, problem }
+    appendNote(notes, text, today, max) {
+      const limit = max || this.NOTES_MAX;
+      const old = String(notes == null ? '' : notes).replace(/\s+$/, '');
+      const body = String(text == null ? '' : text).replace(/\r\n?/g, '\n').trim();
+      if (!body) return { ok: false, problem: 'noteNoRoom' };
+      const head = (old ? old + '\n\n' : '') + 'AI answer, ' + (this.isDate(today) ? today : 'today') + ':\n';
+      const room = limit - head.length;
+      if (room >= body.length) return { ok: true, notes: head + body };
+      if (room < 40) return { ok: false, problem: 'noteNoRoom' };
+      return { ok: true, notes: head + body.slice(0, room - 1).replace(/\s+$/, '') + '…' };
+    },
     // Split interviewAt into the two form values.
     splitInterview(v) {
       v = String(v || '');
@@ -305,6 +337,31 @@ Desk.register({
           on: { click: () => changeStage(job, s) } }, stageName(s)));
       });
       return box;
+    }
+
+    // The answers waiting to be added to this job's notes (T3.8). One undo step per tap.
+    function notesReady(job) {
+      const ready = logic.readyNotes(ctx.store.all('suggestion'), job.id);
+      if (!ready.length) return null;
+      return h('section', { class: 'jobs-ready', 'data-test': 'job-notes-ready' },
+        h('h3', {}, ctx.t('notesReadyHeading')),
+        ready.map((sg) => h('div', { class: 'jobs-row', 'data-test': 'job-note-ready', 'data-id': sg.id },
+          sg.target.task ? h('p', { class: 'jobs-meta' }, ctx.t('noteFrom', { task: sg.target.task })) : null,
+          h('p', { class: 'jobs-text', 'data-test': 'job-note-text' }, String(sg.target.text).slice(0, 4000)),
+          h('div', { class: 'jobs-detail-buttons' },
+            h('button', { type: 'button', class: 'primary', 'data-test': 'job-note-add', on: { click: () => {
+              const r = logic.appendNote(job.notes, sg.target.text, today());
+              if (!r.ok) { ctx.ui.toast(ctx.t(r.problem)); return; }
+              ctx.store.batch('Add an answer to the notes', () => {
+                ctx.store.put(Object.assign({}, job, { notes: r.notes }));
+                ctx.store.put(Object.assign({}, sg, { status: 'taken' }));
+              });
+              ctx.ui.toast(ctx.t('noteAdded'), { undo: true });
+            } } }, ctx.t('noteAdd')),
+            h('button', { type: 'button', 'data-test': 'job-note-dismiss', on: { click: () => {
+              ctx.store.batch('Put an answer away', () => ctx.store.put(Object.assign({}, sg, { status: 'dismissed' })));
+              ctx.ui.toast(ctx.t('draftPutAway'), { undo: true });
+            } } }, ctx.t('notForMe'))))));
     }
 
     function deleteJob(job) {
@@ -451,6 +508,7 @@ Desk.register({
           nextLine(job),
           stageButtons(job),
           facts,
+          notesReady(job),
           job.posting ? h('details', {}, h('summary', {}, ctx.t('dPosting')), h('p', { class: 'jobs-text' }, String(job.posting).slice(0, 8000))) : null,
           h('div', { class: 'jobs-detail-buttons' },
             h('button', { type: 'button', 'data-test': 'job-edit', on: { click: () => ctx.ui.go('jobs/' + job.id + '/edit') } }, ctx.t('edit')),

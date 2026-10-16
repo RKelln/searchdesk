@@ -41,7 +41,7 @@ window.Desk = window.Desk || {};
   Desk.shellUtil = { validId: validId, sortByOrder: sortByOrder, orderTabs: orderTabs, parseRoute: parseRoute };
 
   // ---- Registry ------------------------------------------------------------------------------
-  var SLOT_NAMES = ['tab', 'home', 'job.panel', 'job.actions', 'event.actions', 'settings', 'print'];
+  var SLOT_NAMES = ['tab', 'home', 'job.panel', 'job.actions', 'event.actions', 'settings', 'print', 'ai'];
   var ACTION_SLOTS = { 'job.actions': true, 'event.actions': true };
   var RESERVED_TABS = ['data', 'ai', 'selftest'];
   var defs = {};       // id -> registered definition
@@ -186,6 +186,10 @@ window.Desk = window.Desk || {};
     recipeDefs = recipeDefs.filter(function (r) { return r.def.id !== def.id; });
     recipeDefs.push({ owner: owner, def: def });
   }
+  // (T3.8) A feature takes back one of its own recipes (a deleted custom task). Another feature's recipe is never touched.
+  function removeRecipe(rid, owner) {
+    recipeDefs = recipeDefs.filter(function (r) { return !(r.owner === owner && r.def.id === rid); });
+  }
   Desk.recipeDefs = function () { return recipeDefs.slice(); }; // T3.3 reads this
 
   // ---- ctx -----------------------------------------------------------------------------------
@@ -240,7 +244,8 @@ window.Desk = window.Desk || {};
       // ctx.events: the events to show. current() is instant (the cache, else the snapshot) and refresh() asks
       // core/net.js to fetch when live events are on (it never fetches otherwise). Both give {events, source, generated, note}.
       events: EVENTS,
-      recipe: function (r) { addRecipe(r, id); }
+      recipe: function (r) { addRecipe(r, id); },
+      removeRecipe: function (rid) { removeRecipe(String(rid), id); }
     });
   }
 
