@@ -24,5 +24,10 @@ Do not change a name once used. Do not select by visible text, since text lives 
 | `[data-test="import-file"]`, `paste-button`, `import-report`, `import-undo` | Data screen: file picker, the Paste button, the result line, its Undo button |
 | `[data-test="example-try"]`, `example-remove` | Data screen: add or remove the made-up person |
 | `[data-test="storage-status"]`, `app-version`, `last-export` | Data screen: saving status, version line, "Last saved a copy" line |
+| `[data-test="help-entry"]`, `help-source`, `help-status`, `help-classes` | Help tab: one per entry (with `data-help-id`), its source link, the status line, the library-classes line |
+| `[data-test="profile-field-<key>"]`, `profile-share-<key>`, `profile-preview` | About me: the input for a profile field, its "Send to AI" checkbox, and the "What the AI will see" box (keys: roles, field, background, area, languages, replyLanguage, availability, avoid) |
+| `[data-test="job-add"]`, `job-form`, `job-title`, `job-save`, `job-cancel`, `job-problem` | Jobs: add button, form, title input, save, cancel, the problem line. Other inputs are `job-org`, `job-link`, `job-where`, `job-applied`, `job-followup`, `job-closes`, `job-interviewdate`, `job-interviewtime`, `job-nextstep`, `job-notes`, and the stage select `job-stage` |
+| `[data-test="job-row"]` (with `data-id`), `job-open`, `job-stage-<stage>`, `stage-filter-<stage or all>`, `job-empty`, `job-next` | Jobs list: a row, its open button, the stage buttons (list rows and detail), the filter buttons (each ends with its count), the empty line, the next-date line |
+| `[data-test="job-detail"]`, `job-detail-title`, `job-edit`, `job-delete`, `job-back`, `job-link`, `job-missing`, `job-actions` | Jobs detail view and its buttons. Routes: `#jobs`, `#jobs/new`, `#jobs/<id>`, `#jobs/<id>/edit` |
 | `[data-test="nav-<id>"]` | nav link for feature `<id>` |
 | `[data-test="<feature>-<thing>"]` | anything else, prefixed with the feature id, e.g. `jobs-add`, `jobs-row` |

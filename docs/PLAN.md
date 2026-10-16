@@ -119,7 +119,7 @@ can follow a day later if it must).
   backup nudge; plus the `home` slot. Empty state: three plain first steps.
   *Done when:* check: `logic.today(records, now)` returns the right items for a fixture at a fixed time; e2e: the
   example data shows items.
-- [ ] **T2.4 `help` and `locale/toronto.js`** (P0, DESIGN 8.1, 9.5, 11). The locale pack: `help` entries (Employment
+- [x] **T2.4 `help` and `locale/toronto.js`** (P0, DESIGN 8.1, 9.5, 11). The locale pack: `help` entries (Employment
   Ontario, 211, Toronto Public Library Career Coaches in Residence, library settlement workers / New to Canada,
   ACCES Employment, JVS Toronto; each with name, what, how to reach, who for, and the `https` source page), `sites` defaults (Job Bank
   first; general-audience-safe only), `services`, `events` (api, tiers), `postingRules` (with source links). The
@@ -324,3 +324,7 @@ can follow a day later if it must).
   e2e `clear_storage` does not stay cleared (the `pagehide` flush writes state back); fix the helper to load an
   empty state and flush, as `test_data.py`'s `wipe()` does. A file tombstone for an id never seen here counts as
   "Removed"; consider counting it separately in merge. DESIGN 6 should mention the device-local settings.
+- 2026-10-16, T2.4: `events.api` is null until the maintainer gives the Togather staging base URL; net.js must
+  treat null as "no live fetch". Tier shape is `{id, name, query}` (T2.5 may change it). Help copy is paraphrased
+  from `docs/inputs/toronto-help.md` and awaits the maintainer's review; TODOs in `locale/toronto.js` list the gaps.
+  Phone numbers are plain text because `h()` has no `tel:` links.
