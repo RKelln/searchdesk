@@ -17,7 +17,7 @@
 5. **The contract applies to core too** where it can: no `innerHTML`, text through `h()`, strings in the string table.
 6. **Interface text is plain words, about grade 6.** Short sentences. No jargon ("export" is fine; "JSON" is not shown
    to people except on the Data screen's details).
-7. **Test before you say done:** `node --test tests/unit`, then `uv run tests/e2e/run.py` once e2e exists (T1.7).
+7. **Test before you say done:** `node --test tests/unit/*.test.js`, then `uv run tests/e2e/run.py` once e2e exists (T1.7).
    Paste the summary line into your report. If something cannot be tested on Linux, add it to DESIGN section 15 and
    say so.
 8. **Mac pitfalls to keep in mind** (the first workshop runs on managed macOS 14 Macs in Chrome): no Python, Node
@@ -44,12 +44,12 @@ can follow a day later if it must).
 
 ## Phase 0: scaffold
 
-- [ ] **T0.1 Repo scaffold** (P0). Create the file tree in DESIGN 5 with empty or stub files: `index.html` loading the
+- [x] **T0.1 Repo scaffold** (P0). Create the file tree in DESIGN 5 with empty or stub files: `index.html` loading the
   core files in order, `features/list.js` with the base ids, `LICENSE` (MIT), `README.md` stub, `.gitignore`
   (`dist/`, `__pycache__`, `.DS_Store`), `CLAUDE.md` containing `@AGENTS.md`, `tests/unit/` with a loader helper
   (`tests/unit/_load.js`: builds a fake `window`, runs the named core files in a `vm` context, and returns
   `window.Desk`).
-  *Done when:* `node --test tests/unit` runs with one trivial passing test; `index.html` opens from `file://` with no
+  *Done when:* `node --test tests/unit/*.test.js` runs with one trivial passing test; `index.html` opens from `file://` with no
   console errors.
 - [ ] **T0.2 CONTRACT.md and AGENTS.md** (P0). `docs/CONTRACT.md` is DESIGN 7 made standalone, with one complete
   example feature. `AGENTS.md` covers: what the repo is (2 lines), the principles (DESIGN 2), the contract (a link
@@ -273,3 +273,8 @@ can follow a day later if it must).
 ## Found while working
 
 (Agents: add items here with the date and the task you were on.)
+- 2026-10-16, T0.1: Node 22 does not accept a folder for `node --test` (`node --test tests/unit` fails with
+  "Cannot find module"). The command is now `node --test tests/unit/*.test.js` throughout this file.
+- 2026-10-16, T0.1: for T1.7, the Playwright Python package that `uv` picks may not match the browsers cached in
+  `~/.cache/ms-playwright`. Pin the Playwright version in the script metadata to match, run `playwright install`,
+  or point `executable_path` at `/usr/bin/chromium-browser` on this dev machine.
