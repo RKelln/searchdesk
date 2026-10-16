@@ -9,6 +9,12 @@
 //                             rows are {id, cols}; opts = {options: {<optionId>: value}, args: [route parts after the id]}
 //   options                   [{id, label, choices: [{value, label}], default}] shown as selects, passed in opts.options
 //                             (`default` may be a function of the ctx below, e.g. one value in workshop mode)
+//   inputs                    (T3.5) text boxes the person fills in before the question is built:
+//                             [{id, label, help, multiline, max, inputmode}]. Passed to needs(ctx, opts) and data(ctx, opts)
+//                             as opts.inputs = {<inputId>: text} (cut at `max` characters). Kept in memory only.
+//   keep(ctx, opts)           (T3.5) -> a plain object saved on the question's prompt record as `keep`, so apply can use
+//                             it after a reload (apply gets result.prompt.keep). Optional.
+//   budget                    characters allowed in the question (default Desk.prompt.BUDGET)
 //   answer, example, quota, required, synonyms, types   as for Desk.reply.parse (answer null = no answer is read back)
 //   copies, tips              (T3.6) extra buttons beside "Just copy" and a list of short tips under the preview.
 //                             copies = [{id, label, done, text(ctx, opts)}]: copies text(ctx, opts) alone; `done` is the
@@ -205,6 +211,9 @@ window.Desk = window.Desk || {};
     S().putQuiet(Object.assign({}, settings(), patch));
   }
 
+  // recipe edit (T3.7): functions (def) -> node or null, added under a task's panel by core/recipe-edit.js
+  R.panelExtras = R.panelExtras || [];
+
   var recipeCtxCache = null;
   function recipeCtx() {
     if (recipeCtxCache) return recipeCtxCache;
@@ -222,16 +231,18 @@ window.Desk = window.Desk || {};
         relative: function (v, n, o) { return Desk.fmtRelative(v, n, o); }, daysFrom: function (v, n) { return Desk.daysFrom(v, n); }
       }),
       t: function (k, v) { return Desk.t(k, v); },
-      route: function () { return Desk.route(); }
+      route: function () { return Desk.route(); },
+      // recipe edit (T3.7): the person's changed instructions for a recipe id, or null (use the recipe's own template)
+      edited: function (id) { return editedTemplate({ id: id }); }
     });
     return recipeCtxCache;
   }
   R.ctx = recipeCtx;
 
   // Problems that stop a question: [{text, go}]. A recipe that throws is reported as one problem.
-  R.needs = function (def) {
+  R.needs = function (def, opts) {
     var raw;
-    try { raw = def.needs ? def.needs(recipeCtx()) : []; } catch (e) { if (window.console) console.error(e); return [{ text: T('aiTaskError'), go: '' }]; }
+    try { raw = def.needs ? def.needs(recipeCtx(), opts || { options: {}, args: [], inputs: {} }) : []; } catch (e) { if (window.console) console.error(e); return [{ text: T('aiTaskError'), go: '' }]; }
     return (Array.isArray(raw) ? raw : []).map(function (n) {
       return typeof n === 'string' ? { text: n, go: '' } : { text: String(n && n.text || ''), go: String(n && n.go || '') };
     }).filter(function (n) { return n.text; });
@@ -253,7 +264,7 @@ window.Desk = window.Desk || {};
   // -> {text, code, record, size, truncated, dropped, missing} or null when the recipe has no template.
   R.buildQuestion = function (def, opts, code) {
     var o = opts || {}, ctx = recipeCtx();
-    var data = Object.assign({ profile: ctx.profileLines() }, def.data ? def.data(ctx, { options: o.options || {}, args: o.args || [] }) : {});
+    var data = Object.assign({ profile: ctx.profileLines() }, def.data ? def.data(ctx, { options: o.options || {}, args: o.args || [], inputs: o.inputs || {} }) : {});
     if (data.replyLanguage === undefined && replyLanguage()) data.replyLanguage = replyLanguage();
     var edited = editedTemplate(def);
     var built = Desk.prompt.build(def, data, {
@@ -264,9 +275,13 @@ window.Desk = window.Desk || {};
   };
 
   // Remember a built question as a prompt record (only when the recipe reads an answer back).
-  R.remember = function (def, built) {
+  R.remember = function (def, built, opts) {
     if (!def.answer) return null;
-    return Desk.prompt.remember(Object.assign({}, built.record, { created: Desk.now().toISOString() }));
+    var rec = Object.assign({}, built.record, { created: Desk.now().toISOString() });
+    if (typeof def.keep === 'function') {
+      try { var k = def.keep(recipeCtx(), opts || { options: {}, args: [], inputs: {} }); if (isObj(k)) rec.keep = k; } catch (e) { if (window.console) console.error(e); }
+    }
+    return Desk.prompt.remember(rec);
   };
 
   // Read pasted text. Finds the question it belongs to, parses, saves new suggestions as ONE batch, marks the question
@@ -341,6 +356,7 @@ window.Desk = window.Desk || {};
   var H = Desk.h;
   var selected = '';        // task id
   var optionValues = {};    // task id -> {option id: value}
+  var inputValues = {};     // task id -> {input id: text} (def.inputs)
   var draft = null;         // {key, def, built}
   var copied = null;        // the last copy: {recipe, ok, text, service, opened, fix}
   var previewOpen = false;
@@ -365,7 +381,9 @@ window.Desk = window.Desk || {};
   function optsFor(def) {
     var vals = optionValues[def.id] || {}, out = {};
     (def.options || []).forEach(function (o) { out[o.id] = vals[o.id] !== undefined ? vals[o.id] : optDefault(o); });
-    return { options: out, args: Desk.route().args.slice(1) };
+    var ins = {}, iv = inputValues[def.id] || {};
+    (def.inputs || []).forEach(function (i) { ins[i.id] = String(iv[i.id] || '').slice(0, i.max || 20000); });
+    return { options: out, args: Desk.route().args.slice(1), inputs: ins };
   }
   // The question shown under "What will be sent" is the one that gets copied (same code), until it is used.
   function currentDraft(def) {
@@ -390,7 +408,7 @@ window.Desk = window.Desk || {};
       copied = { recipe: def.id, ok: ok, text: built.text, service: svc, opened: false, truncated: built.dropped };
       if (ok && svc) { openService(svc); copied.opened = true; }
       latest = null; fixStatus = null;
-      R.remember(def, built);
+      R.remember(def, built, optsFor(def));
       var patch = {};
       if (!settings().seenPrivacyNote) { patch.seenPrivacyNote = true; copied.privacy = true; }
       if (svc && settings().service !== svc.id) patch.service = svc.id;
@@ -444,10 +462,35 @@ window.Desk = window.Desk || {};
   // Draws the screen again where it is (focus and scroll kept), for changes that live only in this file's variables.
   function draw() { if (Desk.redraw) Desk.redraw(); else Desk.ui.go(window.location.hash.replace(/^#/, '') || 'ai'); }
 
+  // Text boxes a recipe asks for (def.inputs). Typing keeps the text and, only when the "ready" state changes, draws again
+  // (so a button turns on or off); the preview text is updated in place.
+  function inputsBlock(def, wasBlocked) {
+    if (!Array.isArray(def.inputs) || !def.inputs.length) return null;
+    var box = H('div', { class: 'ai-inputs', 'data-test': 'ai-inputs' });
+    def.inputs.forEach(function (i) {
+      var id = 'ai-in-' + def.id + '-' + i.id;
+      var ta = H(i.multiline ? 'textarea' : 'input', Object.assign({ id: id, 'data-test': 'ai-in-' + i.id, maxlength: String(i.max || 20000) },
+        i.multiline ? { rows: '8' } : { type: 'text', inputmode: i.inputmode || 'text' }));
+      ta.value = (inputValues[def.id] || {})[i.id] || '';
+      ta.addEventListener('input', function () {
+        inputValues[def.id] = Object.assign({}, inputValues[def.id]);
+        inputValues[def.id][i.id] = ta.value;
+        var blocked = R.needs(def, optsFor(def)).length > 0;
+        if (blocked !== wasBlocked) { wasBlocked = blocked; draw(); return; }
+        var pre = document.querySelector('[data-test="ai-preview-text"]');
+        if (pre && !blocked) { var b = currentDraft(def); if (b) pre.textContent = b.text; }
+      });
+      box.appendChild(H('div', { class: 'ai-input' }, H('label', { for: id }, i.label), i.help ? H('p', { class: 'muted' }, i.help) : null, ta));
+    });
+    return box;
+  }
+
   function taskPanel(el, def) {
     var panel = H('section', { class: 'ai-panel', 'data-test': 'ai-panel', 'aria-label': R.titleOf(def) });
     panel.appendChild(H('h3', {}, R.titleOf(def)));
-    var needs = R.needs(def);
+    var needs = R.needs(def, optsFor(def));
+    var inb = inputsBlock(def, needs.length > 0);
+    if (inb) panel.appendChild(inb);
     if (needs.length) {
       var nb = H('div', { class: 'ai-needs', 'data-test': 'ai-needs', role: 'status' });
       needs.forEach(function (n) {
@@ -510,6 +553,10 @@ window.Desk = window.Desk || {};
       def.tips.forEach(function (tip) { tl.appendChild(H('li', {}, String(tip))); });
       panel.appendChild(tl);
     }
+    // recipe edit (T3.7)
+    R.panelExtras.forEach(function (fn) {
+      try { var node = fn(def); if (node) panel.appendChild(node); } catch (e) { if (window.console) console.error(e); }
+    });
     el.appendChild(panel);
   }
 
@@ -633,7 +680,8 @@ window.Desk = window.Desk || {};
     var route = Desk.route(), list = R.list().filter(function (e) { return e.def.listed !== false; });
     if (route.args[0]) selected = route.args[0];
     var ids = list.map(function (e) { return e.def.id; });
-    if (ids.indexOf(selected) < 0) selected = ids[0] || '';
+    var hidden = R.get(selected); // recipe edit (T3.7): a task that is not in the list can still be opened by its address
+    if (ids.indexOf(selected) < 0 && !(route.args[0] && hidden && hidden.listed === false)) selected = ids[0] || '';
     el.appendChild(H('h2', {}, T('aiHeading')));
     if (!list.length) {
       el.appendChild(H('p', { class: 'muted', 'data-test': 'ai-none' }, T('aiNoTasks')));

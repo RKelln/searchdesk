@@ -190,7 +190,7 @@ can follow a day later if it must).
   `apply` makes event and lead suggestions; taking an event suggestion stars it.
   *Done when:* check: `build` on the example data gives at most 20 L and 20 C rows with starred and dismissed left
   out; e2e: the full round trip with a fixture answer puts suggestions in the Events lane.
-- [ ] **T3.5 `recipe-posting`** (P0, cut first if late; DESIGN 9.7). The posting box and the link field; build;
+- [x] **T3.5 `recipe-posting`** (P0, cut first if late; DESIGN 9.7). The posting box and the link field; build;
   apply as one `job-draft` suggestion; "Take it" opens the job form pre-filled; saving keeps the posting text in
   `job.posting` and `ASKS` in `job.asks`.
   *Done when:* check: the fields parse to a draft, synonyms map, `CLOSES` "unknown" leaves the date empty, and a long
@@ -432,3 +432,13 @@ can follow a day later if it must).
   work across New Year and leap days. An alias followed by a digit parses again. Multi-alias lines are now
   `rejected` with code `multi-alias` ("Give one item per line."). Accepted as is: a lowercase trailing prose line is
   glued to the last reason.
+- 2026-10-16, T3.5: the answer is field lines (TITLE, ORG, WHERE, CLOSES, PAY, AI-SCREENING, ASKS, FIT). It becomes one
+  `job-draft` suggestion with a fixed id, so pasting the same answer twice adds nothing. The link and posting come
+  from the prompt record (`keep`), never from the AI. Take it is in both the result and a "Ready for you to check" lane
+  on Jobs; both go to `#jobs/new/<suggestion id>`. Saving marks the draft taken in the same batch. PAY, AI-SCREENING
+  and FIT go to `notes` until a checklist exists. New in `core/recipes.js`: recipe `inputs` (text boxes, given as
+  `opts.inputs`), `keep(ctx, opts)` saved on the prompt record, and a per-recipe `budget`. `checks/run.js` now loads
+  `core/reply.js`. Now jobs and events both list `suggestion` in `types`, so a core `takeSuggestion` is worth doing,
+  and CONTRACT should say so. The prompt record holds up to 8,000 characters of posting, and it goes into the backup.
+  This recipe and T3.7 were built at the same time, so this commit also carries T3.7's two small hooks in
+  `core/recipes.js` (`panelExtras`, `edited`). They do nothing until `core/recipe-edit.js` lands.

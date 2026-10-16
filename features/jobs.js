@@ -18,12 +18,18 @@
 //
 // Routes (ctx.route() -> {tab, args}; this screen reads the hash through ctx.ui.go):
 //   #jobs  list      #jobs/new  add form      #jobs/<id>  detail      #jobs/<id>/edit  edit form
+//   #jobs/new/<suggestion id>  add form filled from a `job-draft` suggestion (T3.5, recipe-posting)
+// job-draft suggestions (status 'new') show as a lane at the top of the list: "Take it" opens the form above, "Not for
+// me" sets the status to 'dismissed'. The draft is the suggestion's `target`:
+//   {title, org, where, closes, link, posting, asks: [text], notes}   (all optional; only the form's own fields are used)
+// Saving that form puts `posting` and `asks` on the job (they have no form field) and sets the suggestion's status to
+// 'taken' in the same batch. That is why this feature lists `suggestion` among its types.
 // The stage filter lives in a closure inside mount (it survives the shell's re-renders).
 Desk.register({
   id: 'jobs',
   name: 'Jobs',
   purpose: 'Keep track of the jobs you want or have applied for.',
-  types: ['job'],
+  types: ['job', 'suggestion'],
   strings: {
     tabLabel: 'Jobs',
     heading: 'Your jobs',
@@ -81,6 +87,11 @@ Desk.register({
     dLink: 'Open the posting',
     dWhere: 'Where',
     actionsHeading: 'More you can do',
+    draftsHeading: 'Ready for you to check',
+    draftFrom: 'From a posting you pasted',
+    takeIt: 'Take it',
+    notForMe: 'Not for me',
+    draftPutAway: 'Put away.',
   },
   css: `
     .jobs-top { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; margin-bottom: .75rem; }
@@ -227,6 +238,27 @@ Desk.register({
       out.type = 'job';
       return out;
     },
+    // The `job-draft` suggestions to show: status 'new', newest first. -> [suggestion]
+    drafts(suggestions) {
+      return (Array.isArray(suggestions) ? suggestions : []).filter((s) => s && s.type === 'suggestion' && !s.deleted &&
+        s.kind === 'job-draft' && s.status === 'new').sort((a, b) => (a.updated < b.updated ? 1 : a.updated > b.updated ? -1 : 0));
+    },
+    // The form values a draft fills in. Dates that are not 'YYYY-MM-DD' and links that are not http(s) are left out.
+    draftToForm(draft) {
+      const t = (draft && typeof draft === 'object') ? draft : {};
+      const s = (v) => (typeof v === 'string' ? v : '');
+      return { title: s(t.title), org: s(t.org), where: s(t.where), link: s(t.link), closes: this.isDate(t.closes) ? t.closes : '', notes: s(t.notes) };
+    },
+    // The fields a draft adds that the form does not have: the posting (cut at 8,000) and asks (a list of text).
+    draftExtras(draft) {
+      const t = (draft && typeof draft === 'object') ? draft : {};
+      const out = {};
+      const posting = typeof t.posting === 'string' ? t.posting.trim().slice(0, 8000) : '';
+      if (posting) out.posting = posting;
+      const asks = this.lines(t.asks).map((a) => a.trim().slice(0, 300)).filter((a) => a).slice(0, 6);
+      if (asks.length) out.asks = asks;
+      return out;
+    },
     // Split interviewAt into the two form values.
     splitInterview(v) {
       v = String(v || '');
@@ -302,18 +334,34 @@ Desk.register({
           nextLine(j),
           stageButtons(j)));
       });
+      const drafts = logic.drafts(ctx.store.all('suggestion'));
+      const lane = drafts.length ? h('section', { class: 'jobs-drafts', 'data-test': 'job-drafts' },
+        h('h3', {}, ctx.t('draftsHeading')),
+        h('ul', { class: 'jobs-list' }, drafts.map((d) => {
+          const t = d.target || {};
+          return h('li', { class: 'jobs-row', 'data-test': 'job-draft-row', 'data-id': d.id },
+            h('h3', {}, t.title || ctx.t('draftFrom')),
+            [t.org, t.where].filter((x) => x).length ? h('p', { class: 'jobs-meta' }, [t.org, t.where].filter((x) => x).join(' · ')) : null,
+            h('div', { class: 'jobs-detail-buttons' },
+              h('button', { type: 'button', class: 'primary', 'data-test': 'job-draft-take', on: { click: () => ctx.ui.go('jobs/new/' + d.id) } }, ctx.t('takeIt')),
+              h('button', { type: 'button', 'data-test': 'job-draft-dismiss', on: { click: () => {
+                ctx.store.batch('Put a draft away', () => ctx.store.put(Object.assign({}, d, { status: 'dismissed' })));
+                ctx.ui.toast(ctx.t('draftPutAway'), { undo: true });
+              } } }, ctx.t('notForMe'))));
+        }))) : null;
       el.append(
         h('div', { class: 'jobs-top' },
           h('h2', {}, ctx.t('heading')),
           h('button', { type: 'button', class: 'primary', 'data-test': 'job-add', on: { click: () => ctx.ui.go('jobs/new') } }, ctx.t('add'))),
+        lane,
         filterBox,
         shown.length ? list : h('p', { 'data-test': 'job-empty' }, ctx.t(all.length ? 'emptyFilter' : 'empty')));
     }
 
     // ---- form ----
-    function renderForm(el, job) {
+    function renderForm(el, job, draft) {
       const isNew = !job;
-      const j = job || { stage: 'saved' };
+      const j = job || Object.assign({ stage: 'saved' }, draft ? logic.draftToForm(draft.target) : {});
       const iv = logic.splitInterview(j.interviewAt);
       const problem = h('p', { class: 'jobs-problem', role: 'alert', 'data-test': 'job-problem' });
       const inputs = {};
@@ -357,7 +405,13 @@ Desk.register({
         if (!r.ok) { inputs.title.focus(); return; }
         let saved;
         ctx.store.batch(isNew ? 'Add job' : 'Edit job', () => {
-          saved = ctx.store.put(logic.applyForm(job, r.job));
+          const rec = logic.applyForm(job, r.job);
+          if (draft) {
+            Object.assign(rec, logic.draftExtras(draft.target));
+            const cur = ctx.store.get(draft.id);
+            if (cur && cur.status === 'new') ctx.store.put(Object.assign({}, cur, { status: 'taken' }));
+          }
+          saved = ctx.store.put(rec);
         });
         ctx.ui.toast(ctx.t(r.warnings.indexOf('linkDropped') >= 0 ? 'savedNoLink' : 'saved'));
         ctx.ui.go('jobs/' + saved.id);
@@ -413,7 +467,11 @@ Desk.register({
       render(el) {
         const args = ctx.route().args;
         if (!args.length) { renderList(el); return; }
-        if (args[0] === 'new') { renderForm(el, null); return; }
+        if (args[0] === 'new') {
+          const d = args[1] ? ctx.store.get(args[1]) : null;
+          renderForm(el, null, d && d.type === 'suggestion' && d.kind === 'job-draft' && d.status === 'new' && !d.deleted ? d : null);
+          return;
+        }
         const job = ctx.store.get(args[0]);
         if (!job || job.type !== 'job' || job.deleted) {
           el.append(h('p', { 'data-test': 'job-missing' }, ctx.t('notFound')),

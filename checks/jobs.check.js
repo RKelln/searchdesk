@@ -5,7 +5,7 @@ Desk.check('jobs', (t, f) => {
   const mk = (o) => Object.assign({ type: 'job', title: 'T', stage: 'saved', updated: '2026-10-01T10:00:00Z' }, o);
 
   t.eq(f.id, 'jobs', 'the feature has its id');
-  t.eq(f.types, ['job'], 'it owns the job type');
+  t.eq(f.types, ['job', 'suggestion'], 'it owns the job type, and suggestions (to take a job draft)');
   t.ok(typeof f.mount === 'function', 'it has a mount function');
   t.eq(L.STAGES, ['saved', 'applied', 'interview', 'offer', 'closed'], 'the five stages');
 
@@ -102,4 +102,17 @@ Desk.check('jobs', (t, f) => {
   t.eq(L.lines(['a', '', 'b']), ['a', 'b'], 'lines from a list');
   t.eq(L.lines('x'), ['x'], 'lines from text');
   t.eq(L.lines(undefined), [], 'lines from nothing');
+
+  // job drafts (T3.5)
+  const sug = (id, status, updated, kind) => ({ type: 'suggestion', id: id, kind: kind || 'job-draft', status: status, updated: updated });
+  t.eq(L.drafts([sug('a', 'new', '1'), sug('b', 'taken', '2'), sug('c', 'new', '3'), sug('d', 'new', '4', 'event'), { type: 'suggestion', id: 'e', kind: 'job-draft', status: 'new', deleted: true }]).map((x) => x.id),
+    ['c', 'a'], 'only new job drafts are listed, newest first');
+  t.eq(L.draftToForm({ title: 'T', org: 'O', where: 'W', link: 'https://x.org', closes: '2026-11-02', notes: 'N', posting: 'P' }),
+    { title: 'T', org: 'O', where: 'W', link: 'https://x.org', closes: '2026-11-02', notes: 'N' }, 'a draft fills the form fields');
+  t.eq(L.draftToForm({ title: 'T', closes: 'unknown' }).closes, '', 'a closing date that is not a date is left out');
+  t.eq(L.draftToForm(null).title, '', 'no draft gives an empty form');
+  t.eq(L.draftExtras({ posting: ' text ', asks: ['a', '', 'b'] }), { posting: 'text', asks: ['a', 'b'] }, 'the posting and asks are kept');
+  t.eq(L.draftExtras({ posting: 'x'.repeat(9000) }).posting.length, 8000, 'the posting is cut at 8,000');
+  t.eq(L.draftExtras({ title: 'T' }), {}, 'nothing extra when the draft has none');
+  t.ok(f.strings.takeIt && f.strings.notForMe && f.strings.draftsHeading, 'the draft lane has its words');
 });
