@@ -80,7 +80,7 @@ Desk.register({
       order: 20,
       render(el) {
         const profile = ctx.store.get('profile') || {};
-        const lines = (window.Desk && Desk.prompt && Desk.prompt.profileLines) ? Desk.prompt.profileLines(profile) : [];
+        const lines = ctx.profileLines(profile);
 
         const fields = logic.fields.map((f) => {
           const id = 'profile-field-' + f.key;

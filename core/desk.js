@@ -206,6 +206,15 @@ window.Desk = window.Desk || {};
 
   function has(id) { return !!defs[id] && !broken[id]; }
 
+  // Date helpers from strings.js, for features (contract rule 1: features use ctx, not Desk).
+  var FMT = Object.freeze({
+    date: function (v, o) { return Desk.fmtDate(v, o); },
+    time: function (v) { return Desk.fmtTime(v); },
+    dateTime: function (v, o) { return Desk.fmtDateTime(v, o); },
+    relative: function (v, now, o) { return Desk.fmtRelative(v, now, o); },
+    daysFrom: function (v, now) { return Desk.daysFrom(v, now); }
+  });
+
   function makeCtx(def) {
     var id = def.id;
     return Object.freeze({
@@ -218,7 +227,10 @@ window.Desk = window.Desk || {};
       has: has,
       locale: localeCopy(),
       now: function () { return Desk.now(); },
+      route: function () { return Desk.route(); },
+      fmt: FMT,
       profile: function () { return Desk.store.get('profile') || {}; },
+      profileLines: function (p) { return Desk.prompt.profileLines(p === undefined ? (Desk.store.get('profile') || {}) : p); },
       recipe: function (r) { addRecipe(r, id); }
     });
   }

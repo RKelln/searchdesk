@@ -7,7 +7,7 @@
 //
 // Dates: 'YYYY-MM-DD', no time zone, never shifted. `interviewAt` is a date plus an OPTIONAL time, stored as
 // local wall-clock text: 'YYYY-MM-DD' or 'YYYY-MM-DDTHH:MM' (no zone, no seconds). The form has a date input and a
-// time input; a time without a date is dropped. Desk.fmtDateTime shows both forms.
+// time input; a time without a date is dropped. ctx.fmt.dateTime shows both forms.
 //
 // Next date (logic.nextDate): by stage, the soonest of these that is still relevant
 //   saved: closes (not after it has passed), followUp (overdue counts)
@@ -16,7 +16,7 @@
 //   offer: followUp (overdue counts)      closed: nothing
 // Ties go followUp, then interview, then closes.
 //
-// Routes (the shell gives Desk.route() -> {tab, args}; this screen reads the hash through ctx.ui.go):
+// Routes (ctx.route() -> {tab, args}; this screen reads the hash through ctx.ui.go):
 //   #jobs  list      #jobs/new  add form      #jobs/<id>  detail      #jobs/<id>/edit  edit form
 // The stage filter lives in a closure inside mount (it survives the shell's re-renders).
 Desk.register({
@@ -248,8 +248,8 @@ Desk.register({
     const stageName = (s) => ctx.t('stage.' + s);
     const when = (v) => {
       if (!v) return '';
-      const p = Desk.fmtDateTime(v, { now: ctx.now() });
-      return p + ' (' + Desk.fmtRelative(v.slice(0, 10), ctx.now()) + ')';
+      const p = ctx.fmt.dateTime(v, { now: ctx.now() });
+      return p + ' (' + ctx.fmt.relative(v.slice(0, 10), ctx.now()) + ')';
     };
     const nextLine = (job) => {
       const n = logic.nextDate(job, today());
@@ -377,7 +377,7 @@ Desk.register({
       function fact(label, node) { if (node) facts.append(h('dt', {}, ctx.t(label)), h('dd', {}, node)); }
       const iv = job.interviewAt;
       fact('dWhere', job.where);
-      fact('dApplied', job.applied ? Desk.fmtDate(job.applied, { now: ctx.now() }) : '');
+      fact('dApplied', job.applied ? ctx.fmt.date(job.applied, { now: ctx.now() }) : '');
       fact('dFollowUp', when(job.followUp));
       fact('dInterview', when(iv));
       fact('dCloses', when(job.closes));
@@ -411,7 +411,7 @@ Desk.register({
       label: ctx.t('tabLabel'),
       order: 10,
       render(el) {
-        const args = Desk.route().args;
+        const args = ctx.route().args;
         if (!args.length) { renderList(el); return; }
         if (args[0] === 'new') { renderForm(el, null); return; }
         const job = ctx.store.get(args[0]);
