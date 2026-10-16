@@ -2,6 +2,36 @@
 
 import json
 
+class Skip(Exception):
+    """Raised by a test that cannot run in this setup; the runner prints it as `skip` (not a failure)."""
+
+
+def skip_if_built(app, why="needs separate feature or data files, which a built single file does not have"):
+    if getattr(app, "built", False):
+        raise Skip(why)
+
+
+def csp_safe_waits(page):
+    """Playwright's wait_for_function evaluates its expression with eval, which a page with a real CSP (the built
+    file) refuses. page.evaluate goes through the debugger and is not blocked, so poll with that instead. Same
+    arguments and the same truthy rule. Used by the runner on built files only, so the CSP stays switched on."""
+    import time
+    from playwright.sync_api import TimeoutError as PWTimeout
+
+    def wait_for_function(expression, arg=None, timeout=None, polling=None):
+        limit = (10000 if timeout is None else timeout) / 1000.0
+        end = time.time() + limit
+        while True:
+            value = page.evaluate(expression, arg) if arg is not None else page.evaluate(expression)
+            if value:
+                return value
+            if limit and time.time() > end:
+                raise PWTimeout("wait_for_function timed out after %d ms: %s" % (limit * 1000, expression[:200]))
+            time.sleep(0.05)
+
+    page.wait_for_function = wait_for_function
+
+
 TOAST = '[data-test="toast"]'
 PASTE_BOX = '[data-test="paste-box"]'
 

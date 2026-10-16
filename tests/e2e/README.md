@@ -64,3 +64,11 @@ The data comes from `data/events-snapshot.js`. Cases serve a small made-up snaps
 date by adding `Desk.setNow(...)` to the end of that script, so they skip WebKit on `file://` like the shell cases.
 One case reads the real committed snapshot (it fixes the date inside the snapshot's window, 2026-10-20). Live events
 are tested by faking the Togather host with `page.route` after setting `settings.liveEvents`.
+
+## Testing a built file
+
+`uv run tools/build.py` then `uv run tests/e2e/run.py --app dist/searchdesk.html`. `app.built` is true for a single
+built file, which has a CSP and no separate feature or data files. A test that needs those calls
+`helpers.skip_if_built(app, why)` (the runner prints `skip`, not a failure). The runner swaps `page.wait_for_function`
+for a polling version on built files, because Playwright's version uses `eval`, which the CSP refuses.
+`test_csp.py` runs only on a built file.

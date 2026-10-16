@@ -1,7 +1,7 @@
 """Shell tests (T1.5). No features/<id>.js files exist in the repo yet, so the base features are
 served by Playwright routes as tiny fakes that register a tab (the recipe-* ones register no tab)."""
 
-from helpers import assert_no_errors, wait_for_desk, read_toasts
+from helpers import assert_no_errors, wait_for_desk, read_toasts, skip_if_built
 
 # Browsers log a console error without the URL for a file that is not there (expected: the stubs cover it).
 ALLOW_MISSING = ["/features/", "Failed to load resource"]
@@ -55,6 +55,7 @@ def serve_fakes(page, failing=None, throwing=None):
 
 
 def routable(page, app):
+    skip_if_built(app)  # a built file has no separate feature or data files to fake
     return not (page.context.browser.browser_type.name == "webkit" and app.origin == "file")
 
 

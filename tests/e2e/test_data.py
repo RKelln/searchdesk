@@ -181,7 +181,11 @@ def test_data_copy_as_text_and_status_lines(page, app):
         assert "Copied" in page.locator('[data-test="toast"]').first.inner_text()
     assert "never" not in page.locator('[data-test="last-export"]').inner_text()
     assert page.locator('[data-test="storage-status"]').inner_text().startswith("Saved in this browser")
-    assert page.locator('[data-test="app-version"]').inner_text() == "Search Desk version dev"
+    version = page.locator('[data-test="app-version"]').inner_text()
+    if app.built:  # tools/build.py stamps the version: a tag or the date, then + and a short hash
+        assert re.fullmatch(r"Search Desk version \S+\+[0-9a-f]{8}", version), version
+    else:
+        assert version == "Search Desk version dev"
     assert_no_errors(page, allow=ALLOW_MISSING)
 
 

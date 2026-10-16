@@ -5,7 +5,7 @@ file, so they skip WebKit on file:// (it cannot serve routed scripts). One case 
 
 import json
 
-from helpers import assert_no_errors, wait_for_desk, read_toasts
+from helpers import assert_no_errors, wait_for_desk, read_toasts, skip_if_built
 
 ALLOW_MISSING = ["/features/", "Failed to load resource"]
 ROW = '[data-test="event-row"]'
@@ -42,6 +42,7 @@ def serve(page, events):
 
 
 def routable(page, app):
+    skip_if_built(app)  # a built file has no separate feature or data files to fake
     return not (page.context.browser.browser_type.name == "webkit" and app.origin == "file")
 
 

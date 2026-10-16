@@ -29,8 +29,11 @@ ORIGINS = ["file", "http"]
 
 
 class App:
-    def __init__(self, origin, url):
-        self.origin, self.url = origin, url
+    """origin: 'file' or 'http'. built: True when the page is a single built file (tools/build.py), where the
+    feature and data files do not exist separately and the CSP is on."""
+
+    def __init__(self, origin, url, built=False):
+        self.origin, self.url, self.built = origin, url, built
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
@@ -63,13 +66,14 @@ def main():
     ap.add_argument("--engine", choices=ENGINES)
     ap.add_argument("--origin", choices=ORIGINS)
     ap.add_argument("--headed", action="store_true")
-    ap.add_argument("--app", default="index.html", help="page to open, relative to the repo root")
+    ap.add_argument("--app", default="index.html", help="page to open, relative to the repo root (e.g. dist/searchdesk.html)")
     args = ap.parse_args()
 
     app_file = (ROOT / args.app).resolve()
     if not app_file.is_file():
         sys.exit(f"e2e: app file not found: {app_file}")
     rel = app_file.relative_to(ROOT).as_posix()
+    built = 'src="core/desk.js"' not in app_file.read_text(encoding="utf-8")
 
     tests = [t for t in discover() if not args.keyword or args.keyword in t[0]]
     if not tests:
@@ -79,7 +83,7 @@ def main():
 
     srv = start_server()
     urls = {"file": app_file.as_uri(), "http": f"http://127.0.0.1:{srv.server_port}/{rel}"}
-    passed = failed = skipped = 0
+    passed = failed = skipped = skipped_cases = 0
 
     with sync_playwright() as pw:
         for engine in [args.engine] if args.engine else ENGINES:
@@ -108,10 +112,15 @@ def main():
                     page = ctx.new_page()
                     page.set_default_timeout(10000)
                     helpers.attach_monitor(page)
+                    if built:
+                        helpers.csp_safe_waits(page)
                     try:
-                        fn(page, App(origin, urls[origin]))
+                        fn(page, App(origin, urls[origin], built))
                         print(f"PASS {label}")
                         passed += 1
+                    except helpers.Skip as e:
+                        print(f"skip {label}: {e}")
+                        skipped_cases += 1
                     except Exception:
                         print(f"FAIL {label}\n" + "".join("    " + l for l in traceback.format_exc().splitlines(True)))
                         failed += 1
@@ -119,7 +128,8 @@ def main():
                         ctx.close()
             browser.close()
     srv.shutdown()
-    print(f"e2e: {passed} passed, {failed} failed" + (f", {skipped} engine(s) skipped" if skipped else ""))
+    print(f"e2e: {passed} passed, {failed} failed" + (f", {skipped} engine(s) skipped" if skipped else "")
+          + (f", {skipped_cases} case(s) skipped" if skipped_cases else ""))
     sys.exit(1 if failed else 0)
 
 

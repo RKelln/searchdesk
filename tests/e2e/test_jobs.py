@@ -1,6 +1,6 @@
 """Jobs tests (T2.1): add, edit, change stage, filter, delete and undo."""
 
-from helpers import assert_no_errors, wait_for_desk, read_toasts
+from helpers import assert_no_errors, wait_for_desk, read_toasts, skip_if_built
 
 # Other base features may still be missing (their files 404 and the shell shows stubs).
 ALLOW_MISSING = ["/features/", "Failed to load resource"]
@@ -141,6 +141,7 @@ def test_jobs_detail_hosts_slots(page, app):
 
 
 def test_jobs_selftest_is_green(page, app):
+    skip_if_built(app, "the self-test loads checks/*.check.js, which a built file does not carry")
     page.goto(app.url + "#selftest")
     wait_for_desk(page, started=True)
     page.wait_for_function("document.querySelector('[data-test=\"selftest-summary\"]')"

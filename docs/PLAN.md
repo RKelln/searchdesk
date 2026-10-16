@@ -223,7 +223,7 @@ can follow a day later if it must).
 
 ## Phase 4: ship
 
-- [ ] **T4.1 `tools/build.py`** (P0, DESIGN 12, 14). Inline in boot order: core, then locale, snapshot, example, and
+- [x] **T4.1 `tools/build.py`** (P0, DESIGN 12, 14). Inline in boot order: core, then locale, snapshot, example, and
   every feature in `list.js`. `workshop.js` and `data/inbox.js` are never inlined. Compute sha256 for each inline
   script into the CSP `<meta>`; stamp `Desk.version`; write `dist/searchdesk.html`, `dist/index.html` (the same file),
   `manifest.webmanifest` and icons. Flags: `--features a,b` (only these), `--without a,b`.
@@ -487,3 +487,14 @@ can follow a day later if it must).
   state in `mount`), `put` the whole record, and `ctx.locale` is frozen. Still to fix: when a participant lands a
   planned feature, `test_smoke` (strict base list) and `test_data` (the P0 ideas must be listed) fail; make both
   tolerate a built planned feature. Not done: the print preview hand check, and opening the .ics on a phone.
+- 2026-10-16, T4.1: `uv run tools/build.py [--workshop [--banner T]] [--features a,b | --without a,b] [--out DIR]`.
+  It reads the boot order from index.html and the features from list.js, and writes 29 hashed inline scripts (735 KB).
+  The CSP is `default-src 'none'`, with script hashes only, `style-src 'unsafe-inline'` (feature CSS is injected at run time; CSS
+  cannot run code here), `img-src data:`, and `connect-src` set to the origin of `locale.events.api`. `--workshop` inlines
+  the `DESK_WORKSHOP` stanza with `connect-src 'none'`. There is no external `data/workshop.js`, because hash-only
+  scripts would block it on file://. The manifest link is added at run time, on http(s) only. `Desk.version` is the tag
+  or date plus 8 hex of a source hash; use it as the service worker cache key. In the e2e, `--app dist/searchdesk.html` is
+  detected as built: 64 routed or self-test cases are skipped, and `test_csp` runs only there. Playwright's
+  `wait_for_function` uses eval, so a polling helper replaces it on built files. Tests now open `#ai/fixtureq` by
+  name, since load order differs when built. Open: `data/inbox.js` cannot work in a built file (T5.3 decides), and
+  `#selftest` is neutral when built. DESIGN 12 could record the style-src and manifest choices.

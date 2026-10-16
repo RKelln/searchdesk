@@ -67,7 +67,7 @@ Hope this helps."""
 
 def open_ai(page, app, with_profile=True):
     page.add_init_script(INIT)
-    page.goto(app.url + "#ai")
+    page.goto(app.url + "#ai/fixtureq")  # the task is named so a built file (real recipes registered first) opens it too
     wait_for_desk(page, started=True)
     page.wait_for_selector('[data-test="ai-task-fixtureq"]')
     if with_profile:
