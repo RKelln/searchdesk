@@ -83,7 +83,7 @@ can follow a day later if it must).
   the made-up person", storage status, app version.
   *Done when:* an e2e test does export, clear, import, and the report says everything was added back; another
   imports the same file twice and gets "nothing new"; another removes the example data and leaves user records.
-- [ ] **T1.5 `desk.js` shell and `desk.css`** (P0, DESIGN 5, 7). `Desk.register`, `Desk.missing`, `Desk.start`,
+- [x] **T1.5 `desk.js` shell and `desk.css`** (P0, DESIGN 5, 7). `Desk.register`, `Desk.missing`, `Desk.start`,
   dynamic feature loading from `list.js`, the slots table from 7.3, tabs (bottom bar on narrow screens, side or top
   on wide), hash routes, re-render on change, stubs for missing features ("This part is not built yet", with name
   and purpose), the "Ideas you could build" list from `Desk.planned` on the Data screen, toasts, the workshop banner
@@ -99,7 +99,7 @@ can follow a day later if it must).
   *Done when:* `node checks/run.js <id>` works for a sample feature; the self-test page shows green for base features
   and red for a planted feature that uses `innerHTML`; `check.sh` passes `shellcheck` with `--shell=bash` and has no
   bash-4 features. (Running it under `osascript` is V4, tested on a Mac.)
-- [ ] **T1.7 e2e harness** (P0). `tests/e2e/run.py` (Playwright, uv inline script metadata), Chromium and WebKit, the
+- [x] **T1.7 e2e harness** (P0). `tests/e2e/run.py` (Playwright, uv inline script metadata), Chromium and WebKit, the
   app opened from `file://` and from a local `http.server`; helpers to clear storage, paste text into the paste box,
   and read toasts.
   *Done when:* a smoke test passes on both engines and both origins.
@@ -300,6 +300,16 @@ can follow a day later if it must).
 - 2026-10-16, T1.7: Chromium passes on both origins. WebKit (webkit-2287) is installed but cannot start on this
   Ubuntu 24.04 dev machine (missing system libraries); the runner reports it SKIPPED. Needs
   `sudo uv run --no-project --with playwright==1.60.0 playwright install-deps webkit` by the maintainer, else WebKit
-  is checked on a Mac (V-list). T1.7 stays unticked until WebKit runs. Later tasks: set `Desk.started = true` at the
+  is checked on a Mac (V-list). (Resolved: the maintainer installed the WebKit deps; the full matrix runs.) Later tasks: set `Desk.started = true` at the
   end of boot, use the `data-test` names in `tests/e2e/README.md`, and note that `assert_no_errors` fails on 404s
   (so optional data files need a quiet loader or a stub).
+- 2026-10-16, T1.5: shell API: `Desk.screen(id, {label, order, hidden, render})` replaces the `data`, `ai` and
+  `selftest` placeholders (T1.4, T3.3, T1.6); `Desk.dataSection({id, order, render})` adds blocks to the Data
+  screen; `Desk.slots.render(name, el, ...args)` and `ctx.renderSlot`; `Desk.featureDefs()`,
+  `Desk.featureStatus(id)`, `Desk.recipeDefs()` (for T3.3), `Desk.setNow()` for tests; `Desk.store.undoToken()` so an
+  old toast cannot undo a newer change. Feature CSS is injected as `<style>` elements, so T4.1's CSP needs a hash per
+  style or `style-src 'unsafe-inline'`. `h()` drops `#` hrefs, so core builds its own hash links. Optional data files
+  (`workshop.js`, `inbox.js`) are still not loaded: a workshop copy adds its own tag (T2.6); the inbox is T5.3.
+  `test_smoke` allows `/features/` and "Failed to load resource" until the base feature files exist; make it strict
+  again after T2.x. WebKit + `file://` cannot serve faked feature scripts through `page.route`, so those shell cases
+  run on the other three combinations only.

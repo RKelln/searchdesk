@@ -13,6 +13,7 @@ window.Desk = window.Desk || {};
   var undoStack = [];
   var subs = [];
   var droppedCount = 0;
+  var tokenSeq = 0; // each undo step gets its own number
   var open = null; // the batch in progress: { label, before: {id: record|null}, ids: {} }
 
   function clone(x) { return x === undefined ? x : JSON.parse(JSON.stringify(x)); }
@@ -78,7 +79,7 @@ window.Desk = window.Desk || {};
     open = null;
     var ids = Object.keys(mine.before);
     if (ids.length) {
-      undoStack.push({ label: mine.label, before: mine.before, after: fingerprint(ids), at: nowMs() });
+      undoStack.push({ label: mine.label, before: mine.before, after: fingerprint(ids), at: nowMs(), tok: ++tokenSeq });
       if (undoStack.length > UNDO_DEPTH) undoStack.shift();
       notify(mine.label, ids);
     }
@@ -209,6 +210,8 @@ window.Desk = window.Desk || {};
     remove: function (id) { return remove(id, null); },
     ext: function (id, patch, featureId) { return ext(id, patch, featureId, null); },
     batch: batch, undo: undo,
+    // A number naming the step undo() would undo now, or null. A new batch gives a new number.
+    undoToken: function () { return undoStack.length ? undoStack[undoStack.length - 1].tok : null; },
     canUndo: function () { return undoStack.length > 0; },
     undoLabel: function () { return undoStack.length ? undoStack[undoStack.length - 1].label : null; },
     subscribe: function (fn) {
@@ -258,7 +261,7 @@ window.Desk = window.Desk || {};
         var want = step.after[id], r = rec(id);
         if (want === undefined || (r ? String(r.updated) : null) !== want) return false;
       }
-      undoStack = [clone({ label: typeof step.label === 'string' ? step.label : '', before: step.before, after: step.after, at: step.at })];
+      undoStack = [clone({ label: typeof step.label === 'string' ? step.label : '', before: step.before, after: step.after, at: step.at, tok: ++tokenSeq })];
       return true;
     }
   };

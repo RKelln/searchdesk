@@ -47,7 +47,8 @@ To add a feature: put the file in `features/`, add its id to the list in `featur
 | `slot(name, def)` | add UI at a named place (section 3) |
 | `h(tag, attrs, ...children)` | build elements safely (section 4) |
 | `t(key, vars)` | this feature's strings, then the core strings; `{name}` in a string is replaced from `vars` |
-| `ui.toast(text, {undo})`, `ui.confirm(text)`, `ui.go(tab)` | small interface helpers |
+| `ui.toast(text, {undo})`, `ui.confirm(text, {yes, no}?)`, `ui.go(tab)` | small interface helpers. `ui.toast` with `{undo: true}` shows an Undo button for 10 seconds; it goes away if a newer change is made. `ui.confirm` asks a yes/no question and returns a Promise that resolves to `true` or `false`; `yes` and `no` are optional button words. |
+| `renderSlot(name, el, ...args)` | show the entries other features put in a slot (for example `ctx.renderSlot('job.panel', el, job)`); each gets its own empty block, an empty one is left out, and one that fails shows a short plain line instead. Buttons for `job.actions` and `event.actions` are made for you |
 | `has(featureId)` | whether another feature is loaded, for soft `uses` |
 | `locale` | the locale pack (local help, sites, rules), read-only |
 | `now()` | the current time (tests can fix it) |

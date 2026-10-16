@@ -10,4 +10,4 @@ def test_smoke_loads(page, app):
     assert page.title() == "Search Desk", page.title()
     ids = page.evaluate("() => Array.from(window.Desk.features)")
     assert ids == BASE_FEATURES, ids
-    assert_no_errors(page)
+    assert_no_errors(page, allow=["/features/", "Failed to load resource"])

@@ -304,3 +304,16 @@ test('regression: restoreStep checks shape and fingerprint', () => {
   assert.strictEqual(s4.canUndo(), false);
   assert.strictEqual(s4.all().length, 1);
 });
+
+test('undoToken names the current undo step and changes with each batch', () => {
+  const s = fresh();
+  assert.strictEqual(s.undoToken(), null);
+  s.put({ type: 'job', title: 'a' });
+  const t1 = s.undoToken();
+  assert.ok(t1 !== null);
+  assert.strictEqual(s.undoToken(), t1);
+  s.put({ type: 'job', title: 'b' });
+  assert.notStrictEqual(s.undoToken(), t1);
+  s.undo();
+  assert.strictEqual(s.undoToken(), null);
+});
