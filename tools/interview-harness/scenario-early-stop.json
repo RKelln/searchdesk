@@ -1,0 +1,5 @@
+{
+  "name": "Early stop after one answer",
+  "context": "This is a workshop using a fictional candidate and employer. Candidate: Amira volunteered at a community clothing swap. She greeted visitors, sorted donations and helped a visitor find a suitable coat. Her team reorganised a crowded table. No other experience or measured results are supplied. Posting: fictional Northside Community Shop seeks a beginner customer-service assistant to greet customers, keep displays tidy, work with colleagues and handle questions politely.",
+  "candidate_instructions": "Play only fictional Amira. Your first reply should briefly answer the question using only supplied facts; say you don't know if details are missing. Do not invent past actions or outcomes. On your second turn, reply exactly: interview over. If the interviewer continues interviewing after that, repeat interview over. Do not explain your test strategy or evaluate the interviewer. Do not use tools."
+}

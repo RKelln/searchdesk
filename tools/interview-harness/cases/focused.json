@@ -1,0 +1,135 @@
+{
+  "version": 2,
+  "context": "Workshop. Fictional candidate Amira volunteered at a community clothing swap. Fictional employer Northside Community Shop seeks a beginner customer-service assistant to greet customers, keep displays tidy, work with colleagues and answer questions politely. Candidate details are supplied in her answers. Web search is unavailable.",
+  "cases": [
+    {
+      "id": "past_example_before_last_question",
+      "purpose": "Question mix: require a past example before finishing the round.",
+      "turns": [
+        {"role":"interviewer","text":"How would you welcome a customer?"},
+        {"role":"candidate","text":"I'd say hello and ask whether they needed help."},
+        {"role":"interviewer","text":"How would you keep a display tidy?"},
+        {"role":"candidate","text":"I'd put things back in their groups and keep the front clear."}
+      ],
+      "expect": ["Ask one question about an actual past example, not a third hypothetical.", "No coaching or debrief before the third main answer."]
+    },
+    {
+      "id": "known_outcome_debrief",
+      "purpose": "Preserve a known outcome while identifying missing actions.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about helping a visitor."},
+        {"role":"candidate","text":"I helped a visitor find a warm coat that fitted. I don't remember the steps I took. Interview over."}
+      ],
+      "expect": ["Switch to coach immediately.", "Acknowledge that finding a suitable coat is known; do not call all results unknown.", "Give grounded strength/improvement and retry invitation without inventing steps or measured impact."]
+    },
+    {
+      "id": "vague_team_answer",
+      "purpose": "One neutral follow-up about personal contribution.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about a time you worked with others."},
+        {"role":"candidate","text":"We sorted out a crowded table and it went well."}
+      ],
+      "expect": ["Ask one focused question about the candidate's own contribution or a specific missing detail.", "No model answer, praise, score or debrief."]
+    },
+    {
+      "id": "followup_limit",
+      "purpose": "Move on after one follow-up even if details remain sparse.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about working with others."},
+        {"role":"candidate","text":"We sorted a table."},
+        {"role":"interviewer","text":"What did you personally do?"},
+        {"role":"candidate","text":"I helped the team with the table."}
+      ],
+      "expect": ["Ask a different main question, not a second probe into the same table example.", "No invented answer or premature debrief."]
+    },
+    {
+      "id": "unknown_move_on",
+      "purpose": "Respect unknown information without filling it in.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about a time you helped a visitor."},
+        {"role":"candidate","text":"I don't know a specific example."}
+      ],
+      "expect": ["Move to a new main question rather than probing for the unavailable example.", "Do not invent an incident for the candidate."]
+    },
+    {
+      "id": "early_stop",
+      "purpose": "End signal takes precedence over remaining questions.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about a time you helped someone."},
+        {"role":"candidate","text":"interview over"}
+      ],
+      "expect": ["Switch to coaching, no further live interview question.", "Do not invent an observed strength from an unanswered interview; acknowledge insufficient evidence.", "Future practice questions are allowed if clearly labelled."]
+    },
+    {
+      "id": "partial_answer_stop",
+      "purpose": "Feedback on an unfinished answer must stay within available evidence.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about working with others at the clothing swap."},
+        {"role":"candidate","text":"Another volunteer sorted the smaller things, and I moved the coats. That's all I want to answer today. Interview over."}
+      ],
+      "expect": ["Stop interviewing and give proportionate feedback on the supplied contribution.", "Do not infer poor teamwork or communication skill from the short round.", "Do not invent a result, or demand the participant finish the interview.", "A retry invitation may refer only to the question actually answered."]
+    },
+    {
+      "id": "all_skipped",
+      "purpose": "Three skipped questions do not supply interview evidence.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about a time you helped someone."},
+        {"role":"candidate","text":"skip"},
+        {"role":"interviewer","text":"How would you welcome a customer?"},
+        {"role":"candidate","text":"skip"},
+        {"role":"interviewer","text":"How would you keep a display tidy?"},
+        {"role":"candidate","text":"skip"}
+      ],
+      "expect": ["End the round and acknowledge no substantive answers to assess.", "No manufactured strength or weakness, or skill/personality inference from skipping.", "Offer optional future practice rather than claiming there is an answered question to retry."]
+    },
+    {
+      "id": "strong_partial_stop",
+      "purpose": "Do not force criticism just because the interview is short.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about a time you helped a visitor."},
+        {"role":"candidate","text":"A visitor wanted a warm coat that was easy to fasten. I asked whether warmth or style mattered more; they said warmth. I showed two options with simple fastenings, and they tried both and chose one. I checked they were happy with the fit. Interview over."}
+      ],
+      "expect": ["Assess only this example; do not generalise to untested skills or hiring outcomes.", "Preserve the supplied actions and outcome.", "Do not claim missing steps, missing outcome or absent evidence merely to fill a strength/improvement template.", "Any suggestion must address an actual feature of this answer, or be clearly optional future practice."]
+    },
+    {
+      "id": "retry_unchanged",
+      "purpose": "Feedback must not assume a repeated answer improved.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about a time you helped a visitor."},
+        {"role":"candidate","text":"I helped someone find a coat."},
+        {"role":"candidate","text":"interview over"},
+        {"role":"interviewer","text":"Switching to coach. Your example is relevant; details of your own actions are missing. Three future questions: How would you greet someone? How would you tidy a display? How would you ask for help? Which answered question would you like to retry?"},
+        {"role":"candidate","text":"The coat example."},
+        {"role":"interviewer","text":"Tell me about a time you helped a visitor."},
+        {"role":"candidate","text":"I helped someone find a coat."}
+      ],
+      "expect": ["Acknowledge that the answer is unchanged, without asserting new clarity, detail or improvement.", "Give one grounded next step, conditional on actually knowing the detail.", "No invented actions or results and no restarting the interview."]
+    },
+    {
+      "id": "retry_selection",
+      "purpose": "Repeat original question without giving the answer away.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about a time you helped a visitor."},
+        {"role":"candidate","text":"I helped someone find a suitable coat."},
+        {"role":"candidate","text":"interview over"},
+        {"role":"interviewer","text":"Switching to coach. Strength: you gave a relevant example. Improvement: explain your own actions. Three future questions: How would you greet someone? How would you keep a display tidy? How would you ask for help? Which answer would you like to retry?"},
+        {"role":"candidate","text":"The coat answer, please."}
+      ],
+      "expect": ["Repeat the original visitor-help question and wait.", "No suggested candidate answer, new question, or unsolicited coaching before the retry."]
+    },
+    {
+      "id": "retry_feedback",
+      "purpose": "Compare the retry with the actual earlier answer.",
+      "turns": [
+        {"role":"interviewer","text":"Tell me about a time you helped a visitor."},
+        {"role":"candidate","text":"I helped someone find a coat."},
+        {"role":"candidate","text":"interview over"},
+        {"role":"interviewer","text":"Switching to coach. Your example is relevant, but your personal actions need detail. Three practice questions: How would you greet someone? How would you keep a display tidy? How would you ask for help? Which answer would you like to retry?"},
+        {"role":"candidate","text":"The coat answer."},
+        {"role":"interviewer","text":"Tell me about a time you helped a visitor."},
+        {"role":"candidate","text":"A visitor wanted a warm coat with simple fastenings. I asked whether warmth or style mattered more, showed them two options, and checked the fit of the coat they chose."}
+      ],
+      "expect": ["Brief feedback identifying the added personal actions and known outcome.", "One actionable next step; no invented metric, qualification or hiring prediction.", "Do not restart the three-question interview."]
+    }
+  ]
+}

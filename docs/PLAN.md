@@ -195,7 +195,7 @@ can follow a day later if it must).
   `job.posting` and `ASKS` in `job.asks`.
   *Done when:* check: the fields parse to a draft, synonyms map, `CLOSES` "unknown" leaves the date empty, and a long
   posting is cut at 8,000 characters; e2e: round trip to a saved job with its posting kept.
-- [ ] **T3.6 `recipe-coach`** (P0, DESIGN 9.8). The template (the coach instructions: research, interview,
+- [x] **T3.6 `recipe-coach`** (P0, DESIGN 9.8). The template (the coach instructions: research, interview,
   feedback, in that order; hard cap 1,500 characters with the options filled in); the context part (job, posting
   cut to 4,000 characters, shared profile, `stories` if present), which is not counted in the cap; options (kind,
   number of questions, research on or off, language); copy and open; the voice and "keep these instructions" tips;
@@ -374,3 +374,13 @@ can follow a day later if it must).
   as a bad URL; `process` works around it — fix in reply.js with the review items above. Paste box redraws must be
   deferred (focus restore refills a same-id textarea). A feature has no ctx way to copy and open a question in one
   tap; add `ctx.ai.ask(id, opts)` if T3.6 needs it. Real clipboard writes are only exercised in Chromium.
+- 2026-10-16, T3.6: the default instructions are interviewer prompt v4 byte for byte (golden file
+  `tests/unit/golden/coach-v4.txt`; 1,481 characters; the longest option mix is 1,499 and the shortest 1,269). The default is
+  3 questions, not 5: only 3 has been through the harness, and 2, 4 and 5 are untested. New optional recipe fields
+  `copies` and `tips` are in `core/recipes.js`; they went into history early, inside `1836e30`. The harness lives in
+  `tools/interview-harness/` (`export-prompt.js` prints the release text; `runs/` is ignored; 3 runs are kept in
+  `evidence/`). Open: v4's line "Workshops: fictional person only" goes to real users too (maintainer decision);
+  the harness's Amira (a beginner in retail) is not the example Amira (an AP clerk), so the real example person still needs a
+  fixture; the `story` field names are a guess until `stories` exists; T3.7 must give the edited template to
+  "Copy only the instructions"; `test_ai.py` relies on its fixture recipe being registered first. DESIGN 9.8
+  still describes 5 questions and paraphrased steps; v4 is the source of truth.

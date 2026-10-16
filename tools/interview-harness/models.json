@@ -1,0 +1,5 @@
+{
+  "coordinator": "gpt-6-luna",
+  "candidate": "gpt-6-luna",
+  "interviewer": "gpt-6.1-sol"
+}
