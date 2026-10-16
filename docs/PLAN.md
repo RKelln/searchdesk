@@ -73,7 +73,7 @@ can follow a day later if it must).
   saving. Save a copy before you close it."
   *Done when:* unit tests for each method, ownership refusal, the tombstone being hidden by default, undo of a batch,
   subscribe firing once per batch, and storage that throws.
-- [ ] **T1.3 `merge.js`** (P0, DESIGN 6 Merge). Pure `merge(local, incoming)` and its report.
+- [x] **T1.3 `merge.js`** (P0, DESIGN 6 Merge). Pure `merge(local, incoming)` and its report.
   *Done when:* unit tests: newer wins both ways; tie broken by device; tombstone newer wins; unknown types and
   unknown `ext` kept; `example` records not imported; idempotent (merge twice = once); a wrong `schema` is rejected
   with a sentence.
@@ -278,3 +278,9 @@ can follow a day later if it must).
 - 2026-10-16, T0.1: for T1.7, the Playwright Python package that `uv` picks may not match the browsers cached in
   `~/.cache/ms-playwright`. Pin the Playwright version in the script metadata to match, run `playwright install`,
   or point `executable_path` at `/usr/bin/chromium-browser` on this dev machine.
+- 2026-10-16, T1.3: `merge()` returns a whole new state. T1.4 needs a store method that applies a merged state as
+  one batch (so Undo works). Show only `kept` in the import report ("Kept N that were newer here"), not
+  `unchanged`; "nothing new" means `added + updated + removed === 0`. The error sentences are inline in
+  `core/merge.js` and should move to the string table.
+- 2026-10-16, T1.3: unit tests get objects from the `vm` realm, so `assert.deepStrictEqual` against literals fails;
+  JSON round-trip results before comparing.
