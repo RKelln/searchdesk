@@ -1,0 +1,37 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L3",
+   "id": "ev_c",
+   "fields": {
+    "why": "she says she is shy, and this is gentle."
+   },
+   "marks": [
+    "name"
+   ],
+   "unknown": null,
+   "line": "Networking for Introverts - she says she is shy, and this is gentle."
+  },
+  {
+   "kind": "L",
+   "alias": "L4",
+   "id": "ev_d",
+   "fields": {
+    "why": "the core skill for the jobs she wants."
+   },
+   "marks": [
+    "name"
+   ],
+   "unknown": null,
+   "line": "\"Excel Basics for Bookkeeping\": the core skill for the jobs she wants."
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

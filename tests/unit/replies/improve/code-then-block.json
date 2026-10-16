@@ -1,0 +1,11 @@
+{
+ "recipe": "improve",
+ "prompts": [
+  {
+   "code": "H2WX",
+   "recipe": "improve",
+   "aliases": {}
+  }
+ ],
+ "answer": "text"
+}

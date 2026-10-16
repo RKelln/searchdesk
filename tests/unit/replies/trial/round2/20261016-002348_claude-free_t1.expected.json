@@ -1,0 +1,109 @@
+{
+ "code": null,
+ "codeStatus": "missing",
+ "promptCode": "DESK-TRL1",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L10",
+   "id": "01M51EX80M5XWGCJ265Y58BQV1",
+   "fields": {
+    "why": "Evening resume session at Malvern, in Scarborough: help adapting her 6 years of AP experience to a Canadian resume, free, close to home."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 5,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX80M5XWGCJ265Y58BQV1\",\"score\":5,\"reason\":\"Evening resume session at Malvern, in Scarborough: help adapting her 6 years of AP experience to a Canadian resume, free, close to hom…"
+  },
+  {
+   "kind": "L",
+   "alias": "L11",
+   "id": "01M51EX8FCB3A94N9ZX7C8XSRH",
+   "fields": {
+    "why": "Evening mock-interview practice at Malvern lets her rehearse speaking in a small, low-stakes group, which suits her nerves with strangers."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 5,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX8FCB3A94N9ZX7C8XSRH\",\"score\":5,\"reason\":\"Evening mock-interview practice at Malvern lets her rehearse speaking in a small, low-stakes group, which suits her nerves with strang…"
+  },
+  {
+   "kind": "L",
+   "alias": "L12",
+   "id": "01M51EX8ABZYBA1B19EA07TYD2",
+   "fields": {
+    "why": "Free 1-on-1 ACCES session at Albert Campbell (Scarborough) for newcomers: no group speaking, but it is a weekday afternoon, so check her schedule."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 4,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX8ABZYBA1B19EA07TYD2\",\"score\":4,\"reason\":\"Free 1-on-1 ACCES session at Albert Campbell (Scarborough) for newcomers: no group speaking, but it is a weekday afternoon, so check h…"
+  },
+  {
+   "kind": "L",
+   "alias": "L22",
+   "id": "01M51EX7Q0J9MY33Y2ARTAE3BQ",
+   "fields": {
+    "why": "Thursday evening: using AI tools to search for and tailor bookkeeping or admin job applications, a free, practical skill."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX7Q0J9MY33Y2ARTAE3BQ\",\"score\":3,\"reason\":\"Thursday evening: using AI tools to search for and tailor bookkeeping or admin job applications, a free, practical skill.\"}"
+  },
+  {
+   "kind": "L",
+   "alias": "L16",
+   "id": "01M51EX7T0K5KR0DE01JHGST8S",
+   "fields": {
+    "why": "Saturday morning at Taylor Memorial, a Scarborough branch: free look at how AI is changing office and finance work."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX7T0K5KR0DE01JHGST8S\",\"score\":3,\"reason\":\"Saturday morning at Taylor Memorial, a Scarborough branch: free look at how AI is changing office and finance work.\"}"
+  },
+  {
+   "kind": "L",
+   "alias": "L46",
+   "id": "01M51EX8D8HWGAFT1Y9GXT8C0R",
+   "fields": {
+    "why": "Evening session on imposter syndrome: helpful for an experienced clerk who may undervalue her skills and feels nervous in new settings."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX8D8HWGAFT1Y9GXT8C0R\",\"score\":3,\"reason\":\"Evening session on imposter syndrome: helpful for an experienced clerk who may undervalue her skills and feels nervous in new settings…"
+  },
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Toronto Public Library",
+    "url": "https://www.torontopubliclibrary.ca/",
+    "why": "Free library card gives access to job-search help, free workshops and computers at branches near her in Scarborough."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "{\"t\":\"new\",\"title\":\"Toronto Public Library\",\"url\":\"https://www.torontopublicl ibrary.ca/\",\"why\":\"Free library card gives access to job-search help, free workshops and computers at branches near her in…"
+  },
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "ACCES Employment",
+    "url": "https://accesemployment.ca/",
+    "why": "Free employment services for newcomers, including career coaching and employer connections in office and finance roles."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "{\"t\":\"new\",\"title\":\"ACCES Employment\",\"url\":\"https://accesemployment.ca/\",\"why\":\"Free employment services for newcomers, including career coaching and employer connections in office and finance roles.…"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

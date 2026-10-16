@@ -1,0 +1,22 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L3",
+   "id": "ev_c",
+   "fields": {
+    "why": "Learn to start a chat."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "**L3** | Learn to start a chat."
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

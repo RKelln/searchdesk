@@ -1,0 +1,22 @@
+{
+ "code": "DESK-K9M2",
+ "codeStatus": "found",
+ "promptCode": "DESK-K9M2",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_x",
+   "fields": {
+    "why": "Resolves to the newest question."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | Resolves to the newest question."
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

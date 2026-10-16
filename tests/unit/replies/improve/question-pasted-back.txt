@@ -1,0 +1,8 @@
+[A question from Search Desk. Code: DESK-H2WX]
+
+stuff
+
+HOW TO ANSWER
+Put your whole answer inside one code block.
+First line: DESK-H2WX
+Then your answer as plain text.

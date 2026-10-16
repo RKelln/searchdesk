@@ -1,0 +1,4 @@
+DESK-H2WX
+Pick events for {profile}.
+{items}
+What changed: I cut the first line.

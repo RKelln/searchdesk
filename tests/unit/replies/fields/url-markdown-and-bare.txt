@@ -1,0 +1,4 @@
+DESK-7Q3K
+NEW | Library | [Library](https://www.torontopubliclibrary.ca/) | Link as markdown.
+NEW | Council | www.toronto.ca/community | Bare www.
+NEW | Bad scheme | javascript:alert(1) | nope

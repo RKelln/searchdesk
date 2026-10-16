@@ -1,0 +1,3 @@
+DESK-7Q3K
+NEW | Nothing | https://localhost/ | No dot.
+NEW | Blank | | No link.

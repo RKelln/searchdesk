@@ -1,0 +1,33 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Free resume review."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | Free resume review."
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "Mock interviews."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L2 | Mock interviews."
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

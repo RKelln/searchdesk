@@ -1,0 +1,14 @@
+[A question from Search Desk, a job-search page. Code: DESK-7Q3K]
+
+Pick the events most likely to help this person.
+
+alias | date | title | venue
+L1 | 2026-10-20 | Resume Help for Newcomers | Malvern
+C6 | 2026-10-22 | City Job Fair at Metro Hall | Metro Hall
+
+HOW TO ANSWER
+Put your whole answer inside one code block.
+First line: DESK-7Q3K
+Then one line for each pick, like this:
+L1 | why this one fits, in one sentence
+Write the reasons in English.

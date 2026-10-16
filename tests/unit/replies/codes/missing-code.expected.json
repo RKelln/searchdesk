@@ -1,0 +1,33 @@
+{
+ "code": null,
+ "codeStatus": "missing",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Free resume review."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | Free resume review."
+  },
+  {
+   "kind": "C",
+   "alias": "C6",
+   "id": "ev_f",
+   "fields": {
+    "why": "Employers hire on the spot."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "C6 | Employers hire on the spot."
+  }
+ ],
+ "rejected": [],
+ "ignored": 0,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

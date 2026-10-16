@@ -1,0 +1,95 @@
+{
+ "code": null,
+ "codeStatus": "missing",
+ "promptCode": "DESK-TRL1",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L10",
+   "id": "01M51EX80M5XWGCJ265Y58BQV1",
+   "fields": {
+    "why": "Evening resume session at Malvern, in Scarborough: rework her six years of AP experience into a Canadian-format resume, free and local."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 5,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX80M5XWGCJ265Y58BQV1\",\"score\":5,\"reason\":\"Evening resume session at Malvern, in Scarborough: rework her six years of AP experience into a Canadian-format resume, free and local…"
+  },
+  {
+   "kind": "L",
+   "alias": "L11",
+   "id": "01M51EX8FCB3A94N9ZX7C8XSRH",
+   "fields": {
+    "why": "Mock interview practice at Malvern in the evening: a low-pressure way for a nervous speaker to rehearse, in her own area."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 5,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX8FCB3A94N9ZX7C8XSRH\",\"score\":5,\"reason\":\"Mock interview practice at Malvern in the evening: a low-pressure way for a nervous speaker to rehearse, in her own area.\"}"
+  },
+  {
+   "kind": "L",
+   "alias": "L6",
+   "id": "01M51EX8C5PKM5SDRWPCAQRK1D",
+   "fields": {
+    "why": "Thursday evening session on answering tough interview questions, e.g. explaining a gap or foreign experience; a structured room to practise with others."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 4,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX8C5PKM5SDRWPCAQRK1D\",\"score\":4,\"reason\":\"Thursday evening session on answering tough interview questions, e.g. explaining a gap or foreign experience; a structured room to pra…"
+  },
+  {
+   "kind": "L",
+   "alias": "L12",
+   "id": "01M51EX8ABZYBA1B19EA07TYD2",
+   "fields": {
+    "why": "One-on-one with ACCES Employment (newcomer job help) at Albert Campbell, Scarborough; a quiet way to meet an advisor, but a weekday afternoon."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX8ABZYBA1B19EA07TYD2\",\"score\":3,\"reason\":\"One-on-one with ACCES Employment (newcomer job help) at Albert Campbell, Scarborough; a quiet way to meet an advisor, but a weekday af…"
+  },
+  {
+   "kind": "L",
+   "alias": "L22",
+   "id": "01M51EX7Q0J9MY33Y2ARTAE3BQ",
+   "fields": {
+    "why": "Thursday evening on using AI in a job search; practical for tailoring bookkeeping and admin applications, though Brentwood is a longer TTC ride."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX7Q0J9MY33Y2ARTAE3BQ\",\"score\":3,\"reason\":\"Thursday evening on using AI in a job search; practical for tailoring bookkeeping and admin applications, though Brentwood is a longer…"
+  },
+  {
+   "kind": "L",
+   "alias": "L16",
+   "id": "01M51EX7T0K5KR0DE01JHGST8S",
+   "fields": {
+    "why": "Saturday morning AI-and-career talk at Taylor Memorial in Scarborough; fits her weekend time and gives a chance to chat with locals."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX7T0K5KR0DE01JHGST8S\",\"score\":3,\"reason\":\"Saturday morning AI-and-career talk at Taylor Memorial in Scarborough; fits her weekend time and gives a chance to chat with locals.\"}"
+  },
+  {
+   "kind": "L",
+   "alias": "L46",
+   "id": "01M51EX8D8HWGAFT1Y9GXT8C0R",
+   "fields": {
+    "why": "Evening session on imposter syndrome; speaks to her nervousness with strangers and may help her feel ready for networking."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX8D8HWGAFT1Y9GXT8C0R\",\"score\":3,\"reason\":\"Evening session on imposter syndrome; speaks to her nervousness with strangers and may help her feel ready for networking.\"}"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

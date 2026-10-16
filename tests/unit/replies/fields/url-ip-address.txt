@@ -1,0 +1,2 @@
+DESK-7Q3K
+NEW | Router | https://192.168.0.1/admin | An address.

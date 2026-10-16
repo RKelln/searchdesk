@@ -1,0 +1,44 @@
+{
+ "code": "DESK-P4RT",
+ "codeStatus": "found",
+ "promptCode": "DESK-P4RT",
+ "accepted": [
+  {
+   "kind": "TITLE",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "value": "Clerk"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "TITLE | Clerk"
+  },
+  {
+   "kind": "CLOSES",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "value": ""
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "CLOSES | unknown"
+  },
+  {
+   "kind": "PAY",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "value": "not stated"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "PAY | not stated"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

@@ -1,0 +1,43 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Library",
+    "url": "https://www.torontopubliclibrary.ca/",
+    "why": "Link as markdown."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "NEW | Library | [Library](https://www.torontopubliclibrary.ca/) | Link as markdown."
+  },
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Council",
+    "url": "https://www.toronto.ca/community",
+    "why": "Bare www."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "NEW | Council | www.toronto.ca/community | Bare www."
+  }
+ ],
+ "rejected": [
+  {
+   "line": "NEW | Bad scheme | javascript:alert(1) | nope",
+   "reason": "The web address has no usable host.",
+   "code": "bad-url"
+  }
+ ],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

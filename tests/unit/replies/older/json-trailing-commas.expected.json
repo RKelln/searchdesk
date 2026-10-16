@@ -1,0 +1,48 @@
+{
+ "code": null,
+ "codeStatus": "missing",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Free resume review."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"L1\",\"score\":3,\"reason\":\"Free resume review.\",}"
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "Mock interviews."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 2,
+   "line": "{\"t\":\"pick\",\"id\":\"ev_b\",\"score\":2,\"reason\":\"Mock interviews.\"}"
+  },
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "TPL",
+    "url": "https://www.torontopubliclibrary.ca/",
+    "why": "Free."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "{\"t\":\"new\",\"title\":\"TPL\",\"url\":\"https://www.torontopubliclibrary.ca/\",\"why\":\"Free.\",}"
+  }
+ ],
+ "rejected": [],
+ "ignored": 0,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

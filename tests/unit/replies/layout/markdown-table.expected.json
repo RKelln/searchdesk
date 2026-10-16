@@ -1,0 +1,33 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Free resume review."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "| L1 | Free resume review. |"
+  },
+  {
+   "kind": "C",
+   "alias": "C7",
+   "id": "ev_g",
+   "fields": {
+    "why": "Tax skills help bookkeepers."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "| C7 | Tax skills help bookkeepers. |"
+  }
+ ],
+ "rejected": [],
+ "ignored": 2,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

@@ -1,0 +1,71 @@
+{
+ "code": null,
+ "codeStatus": "missing",
+ "promptCode": "DESK-TRL1",
+ "accepted": [
+  {
+   "kind": "C",
+   "alias": "C4",
+   "id": "01M4VX5MFR80E4CKZ21SV9W7A6",
+   "fields": {
+    "why": "Evening sit-down dinner with a set topic gives easy conversation starters for a nervous newcomer to meet local people. Check cost first."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M4VX5MFR80E4CKZ21SV9W7A6\",\"score\":3,\"reason\":\"Evening sit-down dinner with a set topic gives easy conversation starters for a nervous newcomer to meet local people. Check cost firs…"
+  },
+  {
+   "kind": "C",
+   "alias": "C20",
+   "id": "01M5158GZ9WV53ZP6GPCZXN19Q",
+   "fields": {
+    "why": "Job-seeker co-working hang, the closest fit to her goal, but Monday 11:00 clashes with her free time and the host group is specific."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 2,
+   "line": "{\"t\":\"pick\",\"id\":\"01M5158GZ9WV53ZP6GPCZXN19Q\",\"score\":2,\"reason\":\"Job-seeker co-working hang, the closest fit to her goal, but Monday 11:00 clashes with her free time and the host group is specific.\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C19",
+   "id": "01M4VZGYDWPF08S8VWQ98AJQGB",
+   "fields": {
+    "why": "Free evening film gives a shared topic to talk about with strangers; pub afterwards is optional so she can skip spending."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 2,
+   "line": "{\"t\":\"pick\",\"id\":\"01M4VZGYDWPF08S8VWQ98AJQGB\",\"score\":2,\"reason\":\"Free evening film gives a shared topic to talk about with strangers; pub afterwards is optional so she can skip spending.\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C21",
+   "id": "01M4W0F29XJCDQG7BM9DMK2AYV",
+   "fields": {
+    "why": "In Scarborough on Lawrence Ave E, so a short TTC trip; meets neighbours in a hands-on setting where talking is easy."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 2,
+   "line": "{\"t\":\"pick\",\"id\":\"01M4W0F29XJCDQG7BM9DMK2AYV\",\"score\":2,\"reason\":\"In Scarborough on Lawrence Ave E, so a short TTC trip; meets neighbours in a hands-on setting where talking is easy.\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C10",
+   "id": "01M4W0F2AYAEC7WZ13CH723E3Q",
+   "fields": {
+    "why": "Free short training adds a community skill and a volunteer-style line for her resume; small room helps with meeting people."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 2,
+   "line": "{\"t\":\"pick\",\"id\":\"01M4W0F2AYAEC7WZ13CH723E3Q\",\"score\":2,\"reason\":\"Free short training adds a community skill and a volunteer-style line for her resume; small room helps with meeting people.\"}"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

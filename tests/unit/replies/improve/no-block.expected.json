@@ -1,0 +1,21 @@
+{
+ "code": "DESK-H2WX",
+ "codeStatus": "found",
+ "promptCode": "DESK-H2WX",
+ "accepted": [
+  {
+   "kind": "TEXT",
+   "alias": null,
+   "id": null,
+   "text": "Pick events for {profile}.\n{items}",
+   "summary": "I cut the first line.",
+   "fields": {},
+   "marks": [],
+   "line": ""
+  }
+ ],
+ "rejected": [],
+ "ignored": 0,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

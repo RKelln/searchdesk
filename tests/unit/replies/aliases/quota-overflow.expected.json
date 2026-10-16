@@ -1,0 +1,44 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "a"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | a"
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "b"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L2 | b"
+  },
+  {
+   "kind": "C",
+   "alias": "C6",
+   "id": "ev_f",
+   "fields": {
+    "why": "f"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "C6 | f"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 4,
+ "looksLikeQuestion": false
+}

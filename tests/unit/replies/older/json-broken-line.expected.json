@@ -1,0 +1,16 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [],
+ "rejected": [
+  {
+   "line": "{\"t\":\"pick\",\"id\":\"L1\",\"reason\":\"cut off",
+   "reason": "This line is cut off or is not written correctly.",
+   "code": "unreadable"
+  }
+ ],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

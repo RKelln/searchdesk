@@ -1,0 +1,24 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L3",
+   "id": "ev_c",
+   "fields": {
+    "why": "is gentle."
+   },
+   "marks": [
+    "name"
+   ],
+   "unknown": null,
+   "line": "L42 | Networking for Introverts is gentle."
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

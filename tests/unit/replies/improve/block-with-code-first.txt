@@ -1,0 +1,8 @@
+```
+DESK-H2WX
+Pick events that help {profile} meet people.
+
+Up to {quotaL} from L.
+{items}
+```
+What changed: I made the first line shorter.

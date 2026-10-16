@@ -1,0 +1,21 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [],
+ "rejected": [
+  {
+   "line": "NEW | Nothing | https://localhost/ | No dot.",
+   "reason": "The web address has no usable host.",
+   "code": "bad-url"
+  },
+  {
+   "line": "NEW | Blank | | No link.",
+   "reason": "A line is missing its url.",
+   "code": "missing-field"
+  }
+ ],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

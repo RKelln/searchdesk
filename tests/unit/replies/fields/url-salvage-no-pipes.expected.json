@@ -1,0 +1,24 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Toronto Public Library",
+    "url": "https://www.torontopubliclibrary.ca/",
+    "why": "free computers"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "NEW: Toronto Public Library https://www.torontopubliclibrary.ca/ - free computers"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

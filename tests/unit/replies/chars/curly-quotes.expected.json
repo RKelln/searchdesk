@@ -1,0 +1,35 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "It's a \"free\" session and she'll like it."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | It's a \"free\" session and she'll like it."
+  },
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Toronto Public Library",
+    "url": "https://www.torontopubliclibrary.ca/",
+    "why": "Free 'job help'."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "NEW | Toronto Public Library | https://www.torontopubliclibrary.ca/ | Free 'job help'."
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

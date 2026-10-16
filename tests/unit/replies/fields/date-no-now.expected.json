@@ -1,0 +1,26 @@
+{
+ "code": "DESK-P4RT",
+ "codeStatus": "found",
+ "promptCode": "DESK-P4RT",
+ "accepted": [
+  {
+   "kind": "CLOSES",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "value": ""
+   },
+   "marks": [
+    "date-unknown"
+   ],
+   "unknown": {
+    "value": "Nov 2"
+   },
+   "line": "CLOSES | Nov 2"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

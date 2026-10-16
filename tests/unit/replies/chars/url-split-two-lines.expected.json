@@ -1,0 +1,35 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Free resume review."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | Free resume review."
+  },
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Toronto Public Library",
+    "url": "https://www.torontopubliclibrary.ca/",
+    "why": "Free job help and computers."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "NEW | Toronto Public Library | https://www.torontopublic / library.ca/ | Free job help and computers."
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

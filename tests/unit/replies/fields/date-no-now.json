@@ -1,0 +1,37 @@
+{
+ "recipe": "posting",
+ "prompts": [
+  {
+   "code": "P4RT",
+   "recipe": "posting",
+   "aliases": {}
+  }
+ ],
+ "answer": {
+  "TITLE": [
+   "value"
+  ],
+  "ORG": [
+   "value"
+  ],
+  "WHERE": [
+   "value"
+  ],
+  "CLOSES": [
+   "value"
+  ],
+  "PAY": [
+   "value"
+  ],
+  "AI-SCREENING": [
+   "value"
+  ],
+  "ASKS": [
+   "value"
+  ],
+  "FIT": [
+   "value"
+  ]
+ },
+ "now": ""
+}

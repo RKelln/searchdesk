@@ -1,0 +1,33 @@
+{
+ "code": "DESK-P4RT",
+ "codeStatus": "found",
+ "promptCode": "DESK-P4RT",
+ "accepted": [
+  {
+   "kind": "TITLE",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "value": "Clerk"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "TITLE | Clerk"
+  },
+  {
+   "kind": "CLOSES",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "value": "2027-09-01"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "CLOSES | Sep 1"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

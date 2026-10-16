@@ -1,0 +1,37 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Toronto Public Library",
+    "url": "https://www.torontopubliclibrary.ca/",
+    "why": "Free help."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "NEW - Toronto Public Library - https://www.torontopubliclibrary.ca/ - Free help."
+  },
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Ontario Works",
+    "url": "https://www.ontario.ca/page/ontario-works",
+    "why": ""
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "NEW: Ontario Works | https://www.ontario.ca/page/ontario-works"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

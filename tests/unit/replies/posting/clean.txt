@@ -1,0 +1,11 @@
+```
+DESK-P4RT
+TITLE | Accounts Payable Clerk
+ORG | Northside Foods
+WHERE | Scarborough, ON
+CLOSES | 2026-11-02
+PAY | $22 an hour
+AI-SCREENING | not stated
+ASKS | Three years of AP, Excel, English
+FIT | Her six years of AP work match well.
+```

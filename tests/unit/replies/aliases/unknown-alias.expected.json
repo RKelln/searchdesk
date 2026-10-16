@@ -1,0 +1,33 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Free resume review."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | Free resume review."
+  }
+ ],
+ "rejected": [
+  {
+   "line": "L42 | An item that was never in the question.",
+   "reason": "L42 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "C99 | Another.",
+   "reason": "C99 is not one of the items in the question.",
+   "code": "unknown-alias"
+  }
+ ],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

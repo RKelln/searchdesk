@@ -1,0 +1,16 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [],
+ "rejected": [
+  {
+   "line": "NEW | Router | https://192.168.0.1/admin | An address.",
+   "reason": "The web address has no usable host.",
+   "code": "bad-url"
+  }
+ ],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

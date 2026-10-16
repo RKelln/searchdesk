@@ -1,0 +1,33 @@
+{
+ "code": "DESK-P4RT",
+ "codeStatus": "found",
+ "promptCode": "DESK-P4RT",
+ "accepted": [
+  {
+   "kind": "TITLE",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "value": "Clerk | Level 2"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "TITLE | Clerk | Level 2"
+  },
+  {
+   "kind": "ASKS",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "value": "Excel | Word | English"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "ASKS | Excel | Word | English"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

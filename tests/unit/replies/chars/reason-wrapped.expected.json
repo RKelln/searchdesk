@@ -1,0 +1,33 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Free resume review for newcomers, close to home and in the evening, so she can go after any day job."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | Free resume review for newcomers, close to home and in the / evening, so she can go after any day job."
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "Mock interviews build confidence."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L2 | Mock interviews build confidence."
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

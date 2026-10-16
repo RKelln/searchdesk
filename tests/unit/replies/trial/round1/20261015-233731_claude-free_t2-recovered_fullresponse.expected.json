@@ -1,0 +1,96 @@
+{
+ "code": null,
+ "codeStatus": "missing",
+ "promptCode": "DESK-TRL1",
+ "accepted": [
+  {
+   "kind": "C",
+   "alias": "C22",
+   "id": "01KT4VDJ2TVKSXABP5XSN1NQBR",
+   "fields": {
+    "why": "Small business owners at this expo often need bookkeeping help; a Tuesday 9am daytime event, so check the ticket price first."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01KT4VDJ2TVKSXABP5XSN1NQBR\",\"score\":3,\"reason\":\"Small business owners at this expo often need bookkeeping help; a Tuesday 9am daytime event, so check the ticket price first.\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C4",
+   "id": "01M4VX5MFR80E4CKZ21SV9W7A6",
+   "fields": {
+    "why": "A seated dinner with a set theme gives easy talking points, good for meeting people when you are nervous with strangers."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M4VX5MFR80E4CKZ21SV9W7A6\",\"score\":3,\"reason\":\"A seated dinner with a set theme gives easy talking points, good for meeting people when you are nervous with strangers.\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C21",
+   "id": "01M4W0F29XJCDQG7BM9DMK2AYV",
+   "fields": {
+    "why": "Held in Scarborough on Lawrence Ave E, so a short TTC trip; a hands-on workshop makes chatting with neighbours easy."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M4W0F29XJCDQG7BM9DMK2AYV\",\"score\":3,\"reason\":\"Held in Scarborough on Lawrence Ave E, so a short TTC trip; a hands-on workshop makes chatting with neighbours easy.\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C19",
+   "id": "01M4VZGYDWPF08S8VWQ98AJQGB",
+   "fields": {
+    "why": "Free film, then optional pub chat; you can leave early to save money while practising small talk with locals."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 2,
+   "line": "{\"t\":\"pick\",\"id\":\"01M4VZGYDWPF08S8VWQ98AJQGB\",\"score\":2,\"reason\":\"Free film, then optional pub chat; you can leave early to save money while practising small talk with locals.\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C20",
+   "id": "01M5158GZ9WV53ZP6GPCZXN19Q",
+   "fields": {
+    "why": "A co-work hangout for people between jobs, so job-search chat is natural; Monday 11am, and check that the group welcomes you."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 2,
+   "line": "{\"t\":\"pick\",\"id\":\"01M5158GZ9WV53ZP6GPCZXN19Q\",\"score\":2,\"reason\":\"A co-work hangout for people between jobs, so job-search chat is natural; Monday 11am, and check that the group welcomes you.\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C5",
+   "id": "01M5158H3BDT5SBDAYDAHWX806",
+   "fields": {
+    "why": "Free online session, no TTC fare or crowd; practical newcomer knowledge on renting, though not job-related."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 2,
+   "line": "{\"t\":\"pick\",\"id\":\"01M5158H3BDT5SBDAYDAHWX806\",\"score\":2,\"reason\":\"Free online session, no TTC fare or crowd; practical newcomer knowledge on renting, though not job-related.\"}"
+  },
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Toronto Public Library",
+    "url": "https://www.torontopubliclibrary.ca/",
+    "why": "Free branches in Scarborough with computers, job-search help and free programs for newcomers."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "{\"t\":\"new\",\"title\":\"Toronto Public Library\",\"url\":\"https://www.torontopubliclibrary.ca/\",\"why\":\"Free branches in Scarborough with computers, job-search help and free programs for newcomers.\"}"
+  }
+ ],
+ "rejected": [],
+ "ignored": 5,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

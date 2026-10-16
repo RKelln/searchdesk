@@ -1,0 +1,33 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Free resume review."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | Free resume review."
+  },
+  {
+   "kind": "L",
+   "alias": "L4",
+   "id": "ev_d",
+   "fields": {
+    "why": "Excel is asked for in most bookkeeping jobs."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L4 | Excel is asked for in most bookkeeping jobs."
+  }
+ ],
+ "rejected": [],
+ "ignored": 3,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

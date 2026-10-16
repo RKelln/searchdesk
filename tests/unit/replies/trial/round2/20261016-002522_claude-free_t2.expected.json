@@ -1,0 +1,95 @@
+{
+ "code": null,
+ "codeStatus": "missing",
+ "promptCode": "DESK-TRL1",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L10",
+   "id": "01M51EX80M5XWGCJ265Y58BQV1",
+   "fields": {
+    "why": "Evening resume session at Malvern in Scarborough; helps recast six years of AP experience into a Canadian-style resume for bookkeeping roles."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 5,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX80M5XWGCJ265Y58BQV1\",\"score\":5,\"reason\":\"Evening resume session at Malvern in Scarborough; helps recast six years of AP experience into a Canadian-style resume for bookkeeping…"
+  },
+  {
+   "kind": "L",
+   "alias": "L11",
+   "id": "01M51EX8FCB3A94N9ZX7C8XSRH",
+   "fields": {
+    "why": "Evening mock interviews at Malvern, near home; a low-pressure way to practise speaking to strangers before real bookkeeping interviews."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 5,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX8FCB3A94N9ZX7C8XSRH\",\"score\":5,\"reason\":\"Evening mock interviews at Malvern, near home; a low-pressure way to practise speaking to strangers before real bookkeeping interviews…"
+  },
+  {
+   "kind": "L",
+   "alias": "L12",
+   "id": "01M51EX8ABZYBA1B19EA07TYD2",
+   "fields": {
+    "why": "Free 1-on-1 with ACCES Employment (newcomer-focused); a private setting suits her nerves and can map AP experience to Canadian admin roles."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 4,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX8ABZYBA1B19EA07TYD2\",\"score\":4,\"reason\":\"Free 1-on-1 with ACCES Employment (newcomer-focused); a private setting suits her nerves and can map AP experience to Canadian admin r…"
+  },
+  {
+   "kind": "L",
+   "alias": "L8",
+   "id": "01M51EX841S8X7BXNKE2Q5G2CF",
+   "fields": {
+    "why": "Woodside Square is in Scarborough; explains how hiring works in Canada, which she has had only 14 months to learn about."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 4,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX841S8X7BXNKE2Q5G2CF\",\"score\":4,\"reason\":\"Woodside Square is in Scarborough; explains how hiring works in Canada, which she has had only 14 months to learn about.\"}"
+  },
+  {
+   "kind": "L",
+   "alias": "L14",
+   "id": "01M51EX7VBHAG7W11BA6MQX39C",
+   "fields": {
+    "why": "Teaches networking from scratch, which she needs since she knows no one here; weekday 1pm, so only go if she can make that time."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX7VBHAG7W11BA6MQX39C\",\"score\":3,\"reason\":\"Teaches networking from scratch, which she needs since she knows no one here; weekday 1pm, so only go if she can make that time.\"}"
+  },
+  {
+   "kind": "L",
+   "alias": "L46",
+   "id": "01M51EX8D8HWGAFT1Y9GXT8C0R",
+   "fields": {
+    "why": "Evening session on imposter syndrome; speaks to the confidence gap newcomers with foreign experience often feel."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX8D8HWGAFT1Y9GXT8C0R\",\"score\":3,\"reason\":\"Evening session on imposter syndrome; speaks to the confidence gap newcomers with foreign experience often feel.\"}"
+  },
+  {
+   "kind": "L",
+   "alias": "L16",
+   "id": "01M51EX7T0K5KR0DE01JHGST8S",
+   "fields": {
+    "why": "Saturday morning at Taylor Memorial in Scarborough; AI skills are increasingly asked for in bookkeeping and admin job postings."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M51EX7T0K5KR0DE01JHGST8S\",\"score\":3,\"reason\":\"Saturday morning at Taylor Memorial in Scarborough; AI skills are increasingly asked for in bookkeeping and admin job postings.\"}"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

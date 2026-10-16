@@ -1,0 +1,4 @@
+{"t":"pick","id":"L1","score":3,"reason":"Free resume review."}
+{"t":"pick","id":"ev_b","score":2,"reason":"Mock interviews."}
+{"t":"new","title":"Toronto Public Library","url":"https://www.torontopubliclibrary.ca/","why":"Free."}
+{"t":"check","ran_code":false,"errors_fixed":0}

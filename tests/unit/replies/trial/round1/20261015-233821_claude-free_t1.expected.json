@@ -1,0 +1,84 @@
+{
+ "code": null,
+ "codeStatus": "missing",
+ "promptCode": "DESK-TRL1",
+ "accepted": [
+  {
+   "kind": "C",
+   "alias": "C22",
+   "id": "01KT4VDJ2TVKSXABP5XSN1NQBR",
+   "fields": {
+    "why": "Business expo run by a women's networking group: small-business owners who may need a bookkeeper. Weekday 9am, so check she can attend."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01KT4VDJ2TVKSXABP5XSN1NQBR\",\"score\":3,\"reason\":\"Business expo run by a women's networking group: small-business owners who may need a bookkeeper. Weekday 9am, so check she can attend…"
+  },
+  {
+   "kind": "C",
+   "alias": "C20",
+   "id": "01M5158GZ9WV53ZP6GPCZXN19Q",
+   "fields": {
+    "why": "Casual cafe meetup for unemployed people, low pressure to chat, bring job-search work. Mon 11am, so only if daytime works."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M5158GZ9WV53ZP6GPCZXN19Q\",\"score\":3,\"reason\":\"Casual cafe meetup for unemployed people, low pressure to chat, bring job-search work. Mon 11am, so only if daytime works.\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C4",
+   "id": "01M4VX5MFR80E4CKZ21SV9W7A6",
+   "fields": {
+    "why": "Evening community dinner with a set theme, an easy way to practise talking with strangers and meet locals. Check cost first."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 3,
+   "line": "{\"t\":\"pick\",\"id\":\"01M4VX5MFR80E4CKZ21SV9W7A6\",\"score\":3,\"reason\":\"Evening community dinner with a set theme, an easy way to practise talking with strangers and meet locals. Check cost first.\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C19",
+   "id": "01M4VZGYDWPF08S8VWQ98AJQGB",
+   "fields": {
+    "why": "Free film plus social hour: the film gives her something to talk about while practising small talk. Drinks optional, keep spending low."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 2,
+   "line": "{\"t\":\"pick\",\"id\":\"01M4VZGYDWPF08S8VWQ98AJQGB\",\"score\":2,\"reason\":\"Free film plus social hour: the film gives her something to talk about while practising small talk. Drinks optional, keep spending low…"
+  },
+  {
+   "kind": "C",
+   "alias": "C10",
+   "id": "01M4W0F2AYAEC7WZ13CH723E3Q",
+   "fields": {
+    "why": "Small hands-on evening training; a useful safety skill for office jobs and a gentle way to meet people in a shared task."
+   },
+   "marks": [],
+   "unknown": null,
+   "score": 2,
+   "line": "{\"t\":\"pick\",\"id\":\"01M4W0F2AYAEC7WZ13CH723E3Q\",\"score\":2,\"reason\":\"Small hands-on evening training; a useful safety skill for office jobs and a gentle way to meet people in a shared task.\"}"
+  },
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Toronto Public Library",
+    "url": "https://www.torontopubliclibrary.ca/",
+    "why": "Free branch in Scarborough with job-search help, computers, and free classes and clubs for meeting people."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "{\"t\":\"new\",\"title\":\"Toronto Public Library\",\"url\":\"https://www.torontopubliclibrary.ca/\",\"why\":\"Free branch in Scarborough with job-search help, computers, and free classes and clubs for meeting peopl…"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

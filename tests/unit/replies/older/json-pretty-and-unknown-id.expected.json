@@ -1,0 +1,28 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "Mock interviews."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "{ \"t\": \"pick\", \"id\": \"L2\", \"reason\": \"Mock interviews.\" }"
+  }
+ ],
+ "rejected": [
+  {
+   "line": "{\"t\":\"pick\",\"id\":\"nope\",\"reason\":\"x\"}",
+   "reason": "That item is not in the question.",
+   "code": "unknown-alias"
+  }
+ ],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

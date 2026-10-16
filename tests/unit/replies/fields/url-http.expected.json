@@ -1,0 +1,26 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "Old Site",
+    "url": "http://example.org/jobs",
+    "why": "Plain http."
+   },
+   "marks": [
+    "http"
+   ],
+   "unknown": null,
+   "line": "NEW | Old Site | http://example.org/jobs | Plain http."
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

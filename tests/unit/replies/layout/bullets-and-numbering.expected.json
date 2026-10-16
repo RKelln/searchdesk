@@ -1,0 +1,77 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Free resume review."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "- L1 | Free resume review."
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "Mock interviews build confidence."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "* L2: Mock interviews build confidence."
+  },
+  {
+   "kind": "C",
+   "alias": "C6",
+   "id": "ev_f",
+   "fields": {
+    "why": "Employers hire on the spot."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "• C6 - Employers hire on the spot."
+  },
+  {
+   "kind": "L",
+   "alias": "L3",
+   "id": "ev_c",
+   "fields": {
+    "why": "Networking basics."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "1. L3 | Networking basics."
+  },
+  {
+   "kind": "C",
+   "alias": "C7",
+   "id": "ev_g",
+   "fields": {
+    "why": "Tax clinic."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "2) C7 | Tax clinic."
+  },
+  {
+   "kind": "L",
+   "alias": "L4",
+   "id": "ev_d",
+   "fields": {
+    "why": "Excel basics (bare number after a list number)."
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "3. 4 | Excel basics (bare number after a list number)."
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}
