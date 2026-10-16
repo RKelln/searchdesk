@@ -42,6 +42,7 @@ window.Desk = window.Desk || {};
   var R = Desk.reply = Desk.reply || {};
   var MAX_FIELD = 300;
   var MAX_REJECTED = 50;
+  var MAX_GLUE = 1000;   // a record is not extended past this many characters of wrapped lines
 
   var BUILTIN_SYNONYMS = {
     TITLE: ['JOB TITLE', 'ROLE', 'POSITION'],
@@ -134,15 +135,16 @@ window.Desk = window.Desk || {};
     function withYear(mo, d, y) {
       if (!y) {
         if (ny === null) return { unknown: true };
-        y = ny;
-        if (mo < nm || (mo === nm && d < nd)) {
-          // already past this year: up to 31 days back it stays this year; else next year only when that is soon
-          if (!validYMD(ny, mo, d)) return { unknown: true };
-          var back = dayNo(ny, nm, nd) - dayNo(ny, mo, d);
-          if (back <= 31) y = ny;
-          else if (validYMD(ny + 1, mo, d) && dayNo(ny + 1, mo, d) - dayNo(ny, nm, nd) <= 183) y = ny + 1;
-          else return { unknown: true };
+        // a date up to 31 days back is the most recent past one (last year too, around New Year); a date further
+        // back is next year's only when that is within 183 days ahead; else unknown
+        var today = dayNo(ny, nm, nd), cand = [ny - 1, ny, ny + 1], found = 0, ci;
+        for (ci = 0; ci < cand.length && !found; ci++) {
+          if (!validYMD(cand[ci], mo, d)) continue;
+          var diff = dayNo(cand[ci], mo, d) - today;
+          if (ci === 0 ? (diff >= -31 && diff < 0) : ci === 1 ? diff >= -31 : diff <= 183) found = cand[ci];
         }
+        if (!found) return { unknown: true };
+        y = found;
       } else if (y < 100) y += 2000;
       return validYMD(y, mo, d) ? { value: y + '-' + pad(mo) + '-' + pad(d) } : { unknown: true };
     }
@@ -227,6 +229,8 @@ window.Desk = window.Desk || {};
         }
       });
     }
+    S.minTitle = 12; S.maxTitle = 400;
+    S.titles.forEach(function (t) { t.variants.forEach(function (v) { if (v.length * 3 + 100 > S.maxTitle) S.maxTitle = v.length * 3 + 100; }); });
     return S;
   }
   function fieldType(S, kind, field) {
@@ -237,7 +241,12 @@ window.Desk = window.Desk || {};
   function isTableSeparator(s) { return /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(s); }
   function clean(line) {
     var s = line.replace(LEAD_RE, '');
-    s = s.replace(/\*+|`+|__/g, '');
+    // markup (**bold**, `code`, __x__) goes, but never inside a web address
+    if (/[*`_]/.test(s)) s = s.replace(/(https?:\/\/\S+)|\*+|`+|__/gi, function (all, url) {
+      if (!url) return '';
+      var tail = /(?:[*`]+|__)+$/.exec(url);
+      return tail && tail.index > 0 ? url.slice(0, tail.index) : url;
+    });
     s = s.trim().replace(/^\|\s*/, '');
     if (s.charAt(s.length - 1) === '|') s = s.slice(0, -1); // (not /\s*\|$/: quadratic on long runs of spaces)
     s = s.replace(LEAD_RE, '').trim();
@@ -254,6 +263,7 @@ window.Desk = window.Desk || {};
   // alias token at the start: returns {letter, num, rest} or null.
   // A bare number (no letter) counts only with "|", a tab or two or more spaces after it. `loose` (a JSON id) also
   // takes a bare number alone.
+  var MULTI = /^\s*[&+,\/]\s*(?:[A-Za-z]-?\d|\d{1,3}\s*(?:[,&|+\/]|$))/;
   function aliasToken(S, s, depth, loose) {
     var m = /^[(\[#<]*[ \t]*(?:([A-Za-z])[ \t-]*)?0*(\d{1,3})(?![0-9A-Za-z])[)\]>]*\.?/.exec(s);
     if (!m) return null;
@@ -263,15 +273,16 @@ window.Desk = window.Desk || {};
     sm = SEP.exec(rest);
     if (!sm && letter && S.letters[letter] && /^[ \t]+\S/.test(rest)) sm = [rest.match(/^[ \t]+/)[0]];
     if (!sm && /^\s*$/.test(rest)) { if (!letter && !loose) return null; sm = [rest]; }
-    if (!sm) return null;
+    if (!sm) return letter && MULTI.test(rest) ? { multi: true } : null;
     var sep = sm[0];
     if (!letter && !loose && sep.indexOf('|') < 0 && sep.indexOf('\t') < 0 && !/^ {2,}$/.test(sep)) return null;
     var after = rest.slice(sep.length);
     if (letter) {
       // "L1-2 | both", "L1:30", "L1 & L3 | x": not one clear alias
-      if (/^[:\-\u2013\u2014]$/.test(sep) && /^\d/.test(after)) return null;
-      if (sep === ' ' && /^[&,+\/\d]/.test(after)) return null;
-      if (/^[&+,\/]\s*[A-Za-z]?-?\d/.test(after)) return null;
+      if (/^[\-\u2013\u2014]$/.test(sep) && /^\d/.test(after)) return { multi: true };   // L1-2
+      if (/^[:]$/.test(sep) && /^\d/.test(after)) return null;                            // L1:30
+      if (MULTI.test(' ' + after)) return { multi: true };
+      after = after.replace(/^[+\/]\s+/, '');
     }
     rest = after;
     if (!letter && !(depth > 0)) { // a list number in front of a real alias ("1 | L3 | why")
@@ -284,7 +295,9 @@ window.Desk = window.Desk || {};
   // An exact title counts only when it starts the text (after bullets, numbers, quotes, bold) or follows a short
   // label or separator ("Pick: <title> - why"). A title in the middle of prose is not a pick: "I would skip <title>".
   function titleAtStart(S, s) {
+    if (!S.titles.length || s.length < S.minTitle) return null;   // (cheap exits keep a long paste fast)
     var body = s.replace(/^[^\p{L}\p{N}]+/u, '');
+    if (body.length > S.maxTitle) body = body.slice(0, S.maxTitle);
     var n = ' ' + words(body) + ' ', hits = [];
     S.titles.forEach(function (t) {
       for (var i = 0; i < t.variants.length; i++) if (n.indexOf(' ' + t.variants[i] + ' ') === 0) { hits.push({ t: t, v: t.variants[i] }); return; }
@@ -294,10 +307,13 @@ window.Desk = window.Desk || {};
     var why = stripLead(body.replace(re, ' ').replace(/\s+/g, ' ').replace(/^[\s"',.()\[\]]+|[\s"',(\[]+$/g, ''));
     return { item: hits[0].t.item, why: why };
   }
+  // a label that says no: "Skip: <title>", "Not for me - <title>"
+  var NEGATIVE = /^\W*(?:skip|avoid|not|no|nope|pass|ignore|exclude|drop|reject|remove|never|worst|bad|don'?t|do not|cannot|can'?t|won'?t|would not|wouldn'?t|least)\b/i;
   function lineTitleMatch(S, s) {
     var r = titleAtStart(S, s);
     if (r) return r;
     var m = /^[^|:\u2013\u2014]{1,25}?(?:[:|\u2013\u2014]|\s-\s)\s*/.exec(s);
+    if (m && NEGATIVE.test(m[0])) return null;
     return m ? titleAtStart(S, s.slice(m[0].length)) : null;
   }
 
@@ -354,11 +370,12 @@ window.Desk = window.Desk || {};
     if (!tok && /^\d{1,3}[.)]\s+/.test(s)) tok = aliasToken(S, s.replace(/^\d{1,3}[.)]\s+/, ''), 0);
     if (!tok && hasLetters) { // a short label in front: "Top pick: L1 | why", "Pick L1 | why"
       m = /^(?:(?:top\s+|my\s+|best\s+)?(?:pick|choice)s?\s+|[^|:]{1,25}:\s+)(?=\S)/i.exec(s);
-      if (m) {
+      if (m && !NEGATIVE.test(m[0])) {
         var t2 = aliasToken(S, s.slice(m[0].length), 0);
         if (t2 && t2.letter && S.letters[t2.letter]) tok = t2;
       }
     }
+    if (tok && tok.multi) return hasLetters ? { bad: true, reason: 'Give one item per line.', code: 'multi-alias' } : null;
     if (tok && hasLetters) {
       var item = S.byNum[tok.num];
       if (!S.prompt) return { bad: true, reason: 'This page has no question to match this answer to.', code: 'no-question' };
@@ -470,7 +487,8 @@ window.Desk = window.Desk || {};
       var prev = units[units.length - 1];
       if (prev && !afterBlank) {
         var open = prev.res.bad || prev.res.short, cand, k, r2;
-        if (open) {
+        if (prev.cleaned.length > MAX_GLUE) { /* long enough: more lines are prose (keeps this linear) */ }
+        else if (open) {
           for (k = 0; k < 2; k++) {
             cand = prev.cleaned + (k ? ' ' : '') + cleaned;
             r2 = parseRecord(S, cand);

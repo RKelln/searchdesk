@@ -425,3 +425,10 @@ can follow a day later if it must).
   workshop copy needs `window.DESK_WORKSHOP = { autoExample: true, liveEvents: false }`. On a workshop copy,
   removing Amira and reloading brings her back (fine for a practice computer). DESIGN 6's "the example's label" is
   really the profile background plus the banner.
+- 2026-10-16, T3.2 second review: an independent review of 9f1f6d3 found 5 more problems, now fixed with fixtures `e1`–`e5`.
+  Markup is no longer stripped inside URLs. Gluing stops at 1,000 characters (`MAX_GLUE`), which removes a quadratic
+  slowdown: 100 KB floods parse in 60 ms or less. A label that says no (`Skip: <title>`) no longer imports. Yearless
+  dates now consider last year (up to 31 days back), then this year, then next year (up to 183 days ahead), so they
+  work across New Year and leap days. An alias followed by a digit parses again. Multi-alias lines are now
+  `rejected` with code `multi-alias` ("Give one item per line."). Accepted as is: a lowercase trailing prose line is
+  glued to the last reason.

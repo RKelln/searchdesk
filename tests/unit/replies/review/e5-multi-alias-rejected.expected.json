@@ -1,0 +1,48 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L4",
+   "id": "ev_d",
+   "fields": {
+    "why": "fine"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L4 | fine"
+  }
+ ],
+ "rejected": [
+  {
+   "line": "L1-2 | both",
+   "reason": "Give one item per line.",
+   "code": "multi-alias"
+  },
+  {
+   "line": "L1 & L3 | x",
+   "reason": "Give one item per line.",
+   "code": "multi-alias"
+  },
+  {
+   "line": "L1, L2 | y",
+   "reason": "Give one item per line.",
+   "code": "multi-alias"
+  },
+  {
+   "line": "L1 + L3 | z",
+   "reason": "Give one item per line.",
+   "code": "multi-alias"
+  },
+  {
+   "line": "L1/L2 | w",
+   "reason": "Give one item per line.",
+   "code": "multi-alias"
+  }
+ ],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

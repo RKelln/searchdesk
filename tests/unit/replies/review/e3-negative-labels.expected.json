@@ -1,0 +1,24 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L5",
+   "id": "ev_e",
+   "fields": {
+    "why": "good"
+   },
+   "marks": [
+    "name"
+   ],
+   "unknown": null,
+   "line": "Pick: Canadian Workplace Culture Talk | good"
+  }
+ ],
+ "rejected": [],
+ "ignored": 6,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

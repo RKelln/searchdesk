@@ -15,8 +15,29 @@
    "line": "L1 | fine"
   }
  ],
- "rejected": [],
- "ignored": 5,
+ "rejected": [
+  {
+   "line": "L1-2 | both",
+   "reason": "Give one item per line.",
+   "code": "multi-alias"
+  },
+  {
+   "line": "L1 & L3 | x",
+   "reason": "Give one item per line.",
+   "code": "multi-alias"
+  },
+  {
+   "line": "L1/L2 | y",
+   "reason": "Give one item per line.",
+   "code": "multi-alias"
+  },
+  {
+   "line": "L4 + L5 | z",
+   "reason": "Give one item per line.",
+   "code": "multi-alias"
+  }
+ ],
+ "ignored": 1,
  "dropped": 0,
  "looksLikeQuestion": false
 }

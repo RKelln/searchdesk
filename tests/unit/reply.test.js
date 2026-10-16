@@ -105,6 +105,17 @@ test('reply: date forms (weekday, trailing time, ranges, yearless past)', () => 
   assert.strictEqual(d('Nov 2', ''), 'unknown');
 });
 
+test('reply: a 100 KB flood of wrapped lines parses in linear time', () => {
+  const ctx = readJson(path.join(base, 'layout', 'clean-block.json'));
+  for (const unit of ['b\n', ' b\n', 'b b b b b b b b b b b b b b b b b b b b\n']) {
+    const text = 'DESK-7Q3K\nL1 | a\n' + unit.repeat(Math.ceil(100000 / unit.length));
+    let best = Infinity, r;   // best of three: other test files run in parallel and can steal the CPU
+    for (let i = 0; i < 3; i++) { const t0 = Date.now(); r = Desk.reply.parse(text, ctx); best = Math.min(best, Date.now() - t0); }
+    assert.ok(best < 100, 'took ' + best + ' ms');
+    assert.strictEqual(r.accepted.length, 1);
+  }
+});
+
 // ---- purity ---------------------------------------------------------------------------------------------------------------------
 test('reply.js touches no clock, randomness or page', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', '..', 'core', 'reply.js'), 'utf8').replace(/\/\/.*$/gm, '');
