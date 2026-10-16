@@ -30,5 +30,18 @@ Do not change a name once used. Do not select by visible text, since text lives 
 | `[data-test="job-row"]` (with `data-id`), `job-open`, `job-stage-<stage>`, `stage-filter-<stage or all>`, `job-empty`, `job-next` | Jobs list: a row, its open button, the stage buttons (list rows and detail), the filter buttons (each ends with its count), the empty line, the next-date line |
 | `[data-test="job-detail"]`, `job-detail-title`, `job-edit`, `job-delete`, `job-back`, `job-link`, `job-missing`, `job-actions` | Jobs detail view and its buttons. Routes: `#jobs`, `#jobs/new`, `#jobs/<id>`, `#jobs/<id>/edit` |
 | `[data-test="home-item"]` (with `data-kind`), `home-open`, `home-empty`, `home-step-job`, `home-step-profile`, `home-step-help`, `home-nudge`, `home-nudge-go` | Home: one row per thing that needs you (kinds: followUp, interview, closes, event, suggestions, question) and its button, the empty state and its three step buttons, the backup reminder and its button |
+| `[data-test="ai-task-<id>"]`, `ai-needs`, `ai-needs-fix`, `ai-service` (buttons have `data-service`), `ai-opt-<optionId>` | AI helper: a task button, the "what is missing" block and its fix button, the service picker, a recipe's option select |
+| `[data-test="ai-copy-open"]`, `ai-copy`, `ai-copied`, `ai-copy-fallback`, `ai-open-link`, `ai-privacy`, `ai-preview` (the details; text in `ai-preview-text`) | AI helper: Copy and open, Just copy, the status after a copy, the press-and-hold box when copying failed, the link to open the chat yourself, the first-copy privacy line, "What will be sent" |
+| `[data-test="ai-pending"]` (with `data-code`), `ai-pending-clear` | AI helper: the waiting-for-an-answer card and its button. The paste box there is `paste-box` (with `paste-button`) |
+| `[data-test="ai-result"]`, `ai-result-text`, `ai-note`, `ai-undo`, `ai-problem`, `ai-rejected`, `ai-fixit`, `ai-fixit-status`, `ai-fixit-fallback` | AI helper: the result block, its line, notes, Undo, the unreadable-lines sentence and list, "Copy a fix-it message" and its status |
+| `[data-test="ai-better"]`, `ai-better-text`, `ai-better-save`, `ai-better-done` | AI helper: "Could be better", its optional sentence, Save, the thanks line |
 | `[data-test="nav-<id>"]` | nav link for feature `<id>` |
 | `[data-test="<feature>-<thing>"]` | anything else, prefixed with the feature id, e.g. `jobs-add`, `jobs-row` |
+
+## AI helper tests (`test_ai.py`)
+
+No real recipe exists yet, so the test adds a test-only feature with an init script that runs on `DOMContentLoaded`,
+before the shell boots (works on file:// in WebKit too, unlike `page.route`). The same script records every clipboard
+write in `window.__copied` and every `window.open` in `window.__opened` (and returns null), makes `readText` return
+`window.__clip`, and `window.__failCopy = true` makes both copy routes fail. Read what was copied from `__copied`
+instead of the real clipboard, since WebKit does not grant clipboard permissions.

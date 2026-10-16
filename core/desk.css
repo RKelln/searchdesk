@@ -217,3 +217,29 @@ dialog.confirm::backdrop { background: rgba(0, 0, 0, .5); }
 .paste-field textarea { width: 100%; box-sizing: border-box; margin: 0 0 .5rem; }
 .import-report { margin: .5rem 0 0; font-weight: 600; }
 .file-details { margin: .5rem 0 0; }
+
+/* AI helper (T3.3) */
+.ai-tasks, .ai-services { display: grid; gap: .5rem; margin: 0 0 1rem; }
+.ai-task, .ai-service { display: grid; gap: .15rem; text-align: left; min-height: 44px; padding: .6rem .75rem; background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: .5rem; font: inherit; }
+.ai-task.active, .ai-service.active { border: 2px solid var(--accent); }
+.ai-blurb, .ai-account { color: var(--muted); font-size: .9rem; }
+.ai-panel { background: var(--surface); border: 1px solid var(--line); border-radius: .5rem; padding: .75rem; margin: 0 0 1rem; }
+.ai-need { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; color: var(--danger); font-weight: 600; }
+.ai-buttons { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 .75rem; }
+.ai-big { min-height: 3.25rem; padding: .5rem 1.25rem; font-size: 1.1rem; }
+.ai-buttons button:disabled { opacity: .5; }
+.ai-privacy, .ai-copied { margin: 0 0 .75rem; }
+.ai-copied textarea { width: 100%; }
+.ai-preview { margin: 0 0 .75rem; }
+.ai-preview-text { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 20rem; overflow: auto; padding: .5rem; border: 1px solid var(--line); border-radius: .4rem; font: .85rem/1.4 ui-monospace, Menlo, Consolas, monospace; }
+.ai-pending { border: 2px solid var(--accent); border-radius: .5rem; padding: .75rem; margin: 0 0 1rem; background: var(--surface); }
+.ai-pending h3 { margin-bottom: .25rem; }
+.ai-paste textarea { min-height: 8rem; }
+.ai-result { border: 1px solid var(--line); border-left-width: .4rem; border-radius: .5rem; padding: .75rem; margin: 0 0 1rem; background: var(--surface); }
+.ai-result-line { font-weight: 600; }
+.ai-problem { color: var(--danger); font-weight: 600; margin: 0 0 .25rem; }
+.ai-rejected { margin: 0 0 .75rem; padding-left: 1.25rem; }
+.ai-better-wrap { margin-top: .75rem; display: grid; gap: .5rem; justify-items: start; }
+.ai-better-wrap textarea { width: 100%; }
+.ai-option { display: grid; gap: .25rem; margin: 0 0 .75rem; }
+.ai-option label { font-weight: 600; }

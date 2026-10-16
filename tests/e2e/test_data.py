@@ -154,10 +154,12 @@ def test_data_paste_box_imports_a_copy_and_explains_other_text(page, app):
     page.wait_for_function("() => document.querySelector('[data-test=import-report]').textContent.startsWith('Added 3')")
     assert user_titles(page) == ["Dishwasher", "Line cook"]
     assert page.locator('[data-test="paste-box"]').input_value() == ""
-    # an AI answer gets a plain pointer, nothing is changed
+    # an AI answer goes to the AI helper (T3.3), which says there is no question to match it to; nothing is changed
     paste_into_paste_box(page, "DESK-7Q3K\nL1 | fits you well")
-    page.wait_for_function("() => /AI answer/.test(document.querySelector('[data-test=import-report]').textContent)")
-    assert "Open the AI helper" in report_text(page)
+    page.wait_for_function("() => location.hash.startsWith('#ai')")
+    page.wait_for_function("() => /no question yet/.test(document.querySelector('[data-test=ai-result-text]').textContent)")
+    page.evaluate("() => { location.hash = '#data'; }")
+    page.wait_for_selector('[data-screen="data"] [data-test="paste-box"]')
     # something else gets one sentence
     paste_into_paste_box(page, "just some words")
     page.wait_for_function("() => /does not look like/.test(document.querySelector('[data-test=import-report]').textContent)")

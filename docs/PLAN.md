@@ -175,7 +175,7 @@ can follow a day later if it must).
     `tests/unit/replies/trial/` by the maintainer with their question's event list), and JSON with trailing commas.
 
   Report the share of trial lines accepted: the target is all of them.
-- [ ] **T3.3 `recipes.js`: the AI helper screen** (P0, DESIGN 9.1, 9.2, 9.5, 9.9, 9.10). Recipe registry; the
+- [x] **T3.3 `recipes.js`: the AI helper screen** (P0, DESIGN 9.1, 9.2, 9.5, 9.9, 9.10). Recipe registry; the
   screen: a list of tasks, `needs()` messages with a link to fix each, the service picker, "Copy and open <service>"
   (clipboard with the fallbacks from DESIGN 4, then `window.open`), "Just copy", "What will be sent", the first-copy
   privacy line, the pending-question card (also on Home), the big paste box that parses on `paste` and on `input`
@@ -366,3 +366,11 @@ can follow a day later if it must).
   (11) without `ctx.example`, the pasted-back example line is accepted;
   (12) smaller gaps: `#1 L3`, `Top pick: L1`, a second answer block, uncapped `rejected`.
   Add a fixture for each. The full review: the T3.2 reviewer's report from the session of 2026-10-16.
+- 2026-10-16, T3.3: the recipe def shape is documented at the top of `core/recipes.js` (`title`, `needs` may return
+  `{text, go}`, `options`, `data(ctx, opts)`, `apply` → suggestions or `{suggestions, records, render}`; recipe
+  ctx is read-only). `#ai/<recipeId>/<args>` starts a task (coach from a job: `ai/coach/<jobId>`). Prompts get
+  `answeredAt` in the same batch as their suggestions; Home should switch to `Desk.recipes.pendingPrompt` logic
+  (no `answeredAt`). Parser gap: the "NEW | title | url | why" format line in a pasted-back question is rejected
+  as a bad URL; `process` works around it — fix in reply.js with the review items above. Paste box redraws must be
+  deferred (focus restore refills a same-id textarea). A feature has no ctx way to copy and open a question in one
+  tap; add `ctx.ai.ask(id, opts)` if T3.6 needs it. Real clipboard writes are only exercised in Chromium.

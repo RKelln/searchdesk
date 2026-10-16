@@ -489,6 +489,9 @@ window.Desk = window.Desk || {};
     });
   }
 
+  // Draw the current screen again (keeps focus and scroll). For core screens whose state is not in the store.
+  Desk.redraw = function () { if (started) renderMain(true); };
+
   function onHashChange() {
     if (!started) return;
     var before = current.tab;
