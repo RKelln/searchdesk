@@ -61,7 +61,7 @@ can follow a day later if it must).
 
 ## Phase 1: core
 
-- [ ] **T1.1 `h.js` and `strings.js`** (P0, DESIGN 7.4, 13). `h(tag, attrs, ...children)` with the link rules;
+- [x] **T1.1 `h.js` and `strings.js`** (P0, DESIGN 7.4, 13). `h(tag, attrs, ...children)` with the link rules;
   `Desk.strings` plus `t(key, vars)` with `{var}` substitution and a fallback that shows the key; date formatting
   helpers (`fmtDate`, `fmtTime`, relative "in 3 days" / "2 days late").
   *Done when:* unit tests cover text-only children, `javascript:` href dropped, `rel`/`target` set, string fallback,
@@ -289,3 +289,6 @@ can follow a day later if it must).
   back to `docs/example-feature.js` and its check. The shell must call `def.mount(ctx)` as a method (the example
   uses `this.logic`). The contract scan is word-based, so a comment that mentions a banned word fails a feature;
   T1.6 should keep one banned-word list shared by the runner and the self-test.
+- 2026-10-16, T1.1: `h()` refuses `style`, `src` (except `data:image/...`), `action` and similar attributes, and drops
+  relative and `#` hrefs; DESIGN 7.4 does not say so yet. Job date fields (`applied`, `followUp`, `closes`) are
+  assumed to be `YYYY-MM-DD`; DESIGN 6 should say so. `Desk.makeT(table)` is the layered lookup for `ctx.t`.
