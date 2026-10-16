@@ -56,8 +56,14 @@ def wait_for_desk(page, started=False, timeout=10000):
 
 
 def clear_storage(page):
-    """Clear localStorage and sessionStorage, then reload so the app starts fresh."""
-    page.evaluate("() => { try { localStorage.clear(); sessionStorage.clear(); } catch (e) {} }")
+    """Empty the store and storage, then reload so the app starts fresh.
+
+    A plain localStorage.clear() is undone by persist's pagehide save, so empty the store first."""
+    page.evaluate("""() => {
+        try { if (window.Desk && Desk.store && Desk.persist) {
+            Desk.store.load({schema: 'searchdesk/1', records: {}}); Desk.persist.flush(); } } catch (e) {}
+        try { localStorage.clear(); sessionStorage.clear(); } catch (e) {}
+    }""")
     page.reload()
 
 
