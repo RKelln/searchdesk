@@ -1,0 +1,10 @@
+{"t":"pick","id":"01M51EX80M5XWGCJ265Y58BQV1","score":5,"reason":"Evening resume session at Malvern, in Scarborough: help adapting her 6 years of AP experience to a Canadian resume, free, close to home."}
+{"t":"pick","id":"01M51EX8FCB3A94N9ZX7C8XSRH","score":5,"reason":"Evening mock-interview practice at Malvern lets her rehearse speaking in a small, low-stakes group, which suits her nerves with strangers."}
+{"t":"pick","id":"01M51EX8ABZYBA1B19EA07TYD2","score":4,"reason":"Free 1-on-1 ACCES session at Albert Campbell (Scarborough) for newcomers: no group speaking, but it is a weekday afternoon, so check her schedule."}
+{"t":"pick","id":"01M51EX7Q0J9MY33Y2ARTAE3BQ","score":3,"reason":"Thursday evening: using AI tools to search for and tailor bookkeeping or admin job applications, a free, practical skill."}
+{"t":"pick","id":"01M51EX7T0K5KR0DE01JHGST8S","score":3,"reason":"Saturday morning at Taylor Memorial, a Scarborough branch: free look at how AI is changing office and finance work."}
+{"t":"pick","id":"01M51EX8D8HWGAFT1Y9GXT8C0R","score":3,"reason":"Evening session on imposter syndrome: helpful for an experienced clerk who may undervalue her skills and feels nervous in new settings."}
+{"t":"new","title":"Toronto Public Library","url":"https://www.torontopublicl
+ibrary.ca/","why":"Free library card gives access to job-search help, free workshops and computers at branches near her in Scarborough."}
+{"t":"new","title":"ACCES Employment","url":"https://accesemployment.ca/","why":"Free employment services for newcomers, including career coaching and employer connections in office and finance roles."}
+{"t":"check","ran_code":false,"errors_fixed":1}

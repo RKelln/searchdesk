@@ -1,0 +1,96 @@
+You are helping a job seeker decide which local events are worth an evening.
+
+PERSON
+Amira (made-up person). Moved to Toronto 14 months ago. Six years as an accounts-payable clerk in her home country. Looking for office administration or bookkeeping work in Toronto. Lives in Scarborough, travels by TTC, free on evenings and weekends, very little spare money, English is good but she is nervous speaking to strangers. Knows no one in the field here yet.
+
+EVENTS (id | start | name | place). A mix of library programmes and city events. These are the only events you may pick:
+01M51EX8881DYFQWWCA0RP9FVK | 2026-11-11 14:00 | Career Crossroads: Employment vs. Entrepreneurship | Maria A. Shchuka
+01M51EX8BE4WNFQRJC3CDDJQKA | 2026-11-11 17:00 | Building Interview Skills for Younger Adults | Deer Park
+01M51EX8FYAFM7SM78AR1DEVAG | 2026-12-02 14:00 | Your Reputation Is Currency | North York Central Library
+01M51EX8CQKGS0AD5GZ894SFWD | 2026-11-16 17:00 | The Career Confidence & Wellness Series: Rebounding from Rejection | 
+01M38GBASKE0CR2S15B6DVYSQF | 2026-10-21 13:00 | Compact Objects | CITA Bridge
+01M51EX8C5PKM5SDRWPCAQRK1D | 2026-11-12 17:00 | Turning Red Flags into Strengths: How to Answer Tough Interview Questions | 
+01M4VXN82AB3Q8FDD2GYYK202X | 2026-10-21 20:00 | Queer of Halloween | The Cabaret
+01M51EX841S8X7BXNKE2Q5G2CF | 2026-11-04 13:00 | Understanding the Canadian Job Market | Woodside Square
+01M21WCHBPN1ATT0M075W46SJQ | 2026-10-20 09:00 | Scintillometry | MP 15th Floor Conference Room
+01M51EX80M5XWGCJ265Y58BQV1 | 2026-11-03 18:00 | Resume Development & Modern Job Search Techniques | Malvern
+01M51EX8FCB3A94N9ZX7C8XSRH | 2026-11-24 18:00 | Interview Preparation & Mock Interview Practice | Malvern
+01M51EX8ABZYBA1B19EA07TYD2 | 2026-11-11 15:00 | 1-on-1 Career Consultations with ACCES Employment Session 3 | Albert Campbell
+01M513RJCHS0NPF0VFZ4VR06RX | 2026-10-22 12:00 | Microsoft Certifications Explained! | Microsoft Reactor Toronto
+01M51EX7VBHAG7W11BA6MQX39C | 2026-10-26 13:00 | From Contacts to Connections : The Art of Building a Genuine Network | 
+01M51EX835FT1CZR9XSGFVKDJ9 | 2026-11-03 18:00 | IKIGAI: Aligning Your Personality, Purpose, and Career | Fairview
+01M51EX7T0K5KR0DE01JHGST8S | 2026-10-24 11:00 | Future Proof Your Career with AI | Taylor Memorial
+01M3X3AHXYJ40KAMEVK7EVSKEA | 2026-10-21 20:30 | The Matt Newton Quintet: A Tribute to Miles Davis & Herbie Hancock | Jazz Bistro
+01M515E275GNB5EGF68E5JK4NP | 2026-10-21 18:00 | The Toronto ML Systems Group: Transformer Accounting | https://luma.com/event/evt-6vkRYXiToCpy8B8
+01M4W0F2E4ZSVF4DJ8GS27CEHC | 2026-10-21 19:00 | TWC Book Club: End Times Fascism - by Tech Workers Coalition Canada | Bahen Centre for Information Technology
+01M51EX87FC5MFF4G5XMEH3H01 | 2026-11-11 13:00 | 1-on-1 Career Consultations with ACCES Employment Session 1 | Albert Campbell
+01M3DMWM2G9ZMY6GPNWQ0H5CMS | 2026-10-22 | Icon For Hire, Elijah, Lauren Babic | Lee's Palace
+01M51EX7Q0J9MY33Y2ARTAE3BQ | 2026-10-22 18:30 | Using AI in Job Searching and Career Exploration | Brentwood
+01M51EX7YTHP1AX896W1ZJMXKW | 2026-11-02 12:00 | Identifying Your Transferrable Skills | 
+01M4PT6TWSVYFFFCY8MNHSYXPQ | 2026-10-21 20:00 | Hump Day | Yuk Yuk's Comedy Club
+01M0KEM407WA5BE6EGP5D98420 | 2026-10-19 00:00 | Bluffer’s Park and Beach - Fall Colours | Members only
+01M51EX8HCMQZ3N2R9XRNPKG8V | 2026-12-04 13:00 | Resume Development and Modern Job Search Techniques | Woodside Square
+01M51EX8ESHMRD5FAT7JV79T6X | 2026-11-24 14:00 | Create an Impactful Resume with ACCES Employment | North York Central Library
+01M51EX7XDY8JVM4P48GJJVZNV | 2026-10-28 14:00 | Finding a Job in Canada with ACCES Employment | North York Central Library
+01M51EX88YH5AFVTT6SNMZ464V | 2026-11-11 14:00 | 1-on-1 Career Consultations with ACCES Employment Session 2 | Albert Campbell
+01KY69A1B8246109G69JY59Y6D | 2026-10-19 19:30 | Scintillometry | MP 15th Floor Conference Room
+01M06MZWTY02RVKCN2ZHABCC75 | 2026-10-20 00:00 | Gilla Band w/ Piss | Lee's Palace
+01M4VYZ4DJ1EHPYY5SZ0WE2APV | 2026-10-20 09:00 | Control de versiones de soluciones de Power Platform con Azure Repos | Microsoft Reactor Toronto
+01M51EX8HY1QAH1R8SX30F0NP0 | 2026-12-10 13:00 | Interview Preparation and Mock Interview Practice | Woodside Square
+01M51EX8GXFAK0R881KYJVV0HP | 2026-12-03 17:00 | Lead Where You Are: Building Leadership Skills for the Workplace | 
+01M51EX7R58GV2DKPR15G5JAQJ | 2026-10-23 14:00 | Job Search Tools | Toronto Reference Library
+01M51EX8EA38WNB05WB2SDBKDM | 2026-11-20 17:00 | Building Interview Skills for Younger Adults | Albert Campbell
+01M51EX85JQTSPA5DABNM78W9G | 2026-11-05 04:00 | Youth Hub: How to Win Scholarships | Agincourt
+01M47B32F89ZPTPZ0W4125ZZ9F | 2026-10-20 16:00 | TD Music Spotlights Artists from Indigenous Communities | West Wing
+01M51EX86XEBEGGF074X642B70 | 2026-11-10 13:00 | 1-on-1 Career Consultations with ACCES Employment | North York Central Library
+01M06MZWTPZF2AZGBW0NC7KJPD | 2026-10-19 00:00 | Dana And Alden w/ Alex Amen | Lee's Palace
+01M51EX7W9NESH3F8K09SRAF3Y | 2026-10-27 19:00 | Seagoing Women: Author Sara Donnelly & Panel Talk with Water Women At Work | 
+01M51EX7S4EWY9134C6HCDAXXR | 2026-10-23 14:00 | You're More Qualified Than You Think | 
+01M51EX84S1ZYVJW1YJA4C0P9N | 2026-11-04 17:00 | The Career Confidence & Wellness Series: Career Stress & Anxiety | 
+01M51EX7ZEBVWYXMJHWP78BKCP | 2026-11-02 17:00 | The Career Confidence & Wellness Series: Exploring Your Career Values | 
+01M51EX8DTFFXHEJQMY549KR49 | 2026-11-20 14:00 | Make Your Experience Make Sense | 
+01M51EX8D8HWGAFT1Y9GXT8C0R | 2026-11-19 17:00 | The Career Confidence & Wellness Series : Overcoming Imposter Syndrome | 
+01M51EX86CF1VRSEMEXYDGYVX3 | 2026-11-05 13:00 | Applying Your Transferrable Skills | 
+
+TASK
+Pick the 5 to 8 events from the whole list most likely to help this person meet people or learn things useful for finding work. Skip events that do not fit; a short list is better than a padded one. For each, give a one-line reason that names the concrete connection to her situation.
+You may add at most 2 "new" lines for a real, public place, programme or resource in Toronto that would help her, but ONLY if you are certain it exists and you can give its exact https address. If you are not certain, add none.
+
+OUTPUT FORMAT
+Reply with ONE code block containing JSON lines (one JSON object per line) and nothing outside the code block.
+{"t":"pick","id":"<id from the list>","score":<whole number 1 to 5>,"reason":"<5 to 160 characters>"}
+{"t":"new","title":"<name>","url":"https://...","why":"<one line>"}
+Last line: {"t":"check","ran_code":<true or false>,"errors_fixed":<number>}
+
+CHECK BEFORE YOU ANSWER
+Write your draft reply to a variable called reply. If you can run Python, run this on it and fix any errors it reports, then answer. If you cannot run code, check each line against the same rules by hand. Set ran_code to true only if you actually ran it.
+
+import json
+ids = ["01M51EX8881DYFQWWCA0RP9FVK", "01M51EX8BE4WNFQRJC3CDDJQKA", "01M51EX8FYAFM7SM78AR1DEVAG", "01M51EX8CQKGS0AD5GZ894SFWD", "01M38GBASKE0CR2S15B6DVYSQF", "01M51EX8C5PKM5SDRWPCAQRK1D", "01M4VXN82AB3Q8FDD2GYYK202X", "01M51EX841S8X7BXNKE2Q5G2CF", "01M21WCHBPN1ATT0M075W46SJQ", "01M51EX80M5XWGCJ265Y58BQV1", "01M51EX8FCB3A94N9ZX7C8XSRH", "01M51EX8ABZYBA1B19EA07TYD2", "01M513RJCHS0NPF0VFZ4VR06RX", "01M51EX7VBHAG7W11BA6MQX39C", "01M51EX835FT1CZR9XSGFVKDJ9", "01M51EX7T0K5KR0DE01JHGST8S", "01M3X3AHXYJ40KAMEVK7EVSKEA", "01M515E275GNB5EGF68E5JK4NP", "01M4W0F2E4ZSVF4DJ8GS27CEHC", "01M51EX87FC5MFF4G5XMEH3H01", "01M3DMWM2G9ZMY6GPNWQ0H5CMS", "01M51EX7Q0J9MY33Y2ARTAE3BQ", "01M51EX7YTHP1AX896W1ZJMXKW", "01M4PT6TWSVYFFFCY8MNHSYXPQ", "01M0KEM407WA5BE6EGP5D98420", "01M51EX8HCMQZ3N2R9XRNPKG8V", "01M51EX8ESHMRD5FAT7JV79T6X", "01M51EX7XDY8JVM4P48GJJVZNV", "01M51EX88YH5AFVTT6SNMZ464V", "01KY69A1B8246109G69JY59Y6D", "01M06MZWTY02RVKCN2ZHABCC75", "01M4VYZ4DJ1EHPYY5SZ0WE2APV", "01M51EX8HY1QAH1R8SX30F0NP0", "01M51EX8GXFAK0R881KYJVV0HP", "01M51EX7R58GV2DKPR15G5JAQJ", "01M51EX8EA38WNB05WB2SDBKDM", "01M51EX85JQTSPA5DABNM78W9G", "01M47B32F89ZPTPZ0W4125ZZ9F", "01M51EX86XEBEGGF074X642B70", "01M06MZWTPZF2AZGBW0NC7KJPD", "01M51EX7W9NESH3F8K09SRAF3Y", "01M51EX7S4EWY9134C6HCDAXXR", "01M51EX84S1ZYVJW1YJA4C0P9N", "01M51EX7ZEBVWYXMJHWP78BKCP", "01M51EX8DTFFXHEJQMY549KR49", "01M51EX8D8HWGAFT1Y9GXT8C0R", "01M51EX86CF1VRSEMEXYDGYVX3"]
+import json
+def check(text, ids):
+    n, bad = 0, []
+    for i, line in enumerate(text.strip().splitlines(), 1):
+        line = line.strip()
+        if not line:
+            continue
+        n += 1
+        try:
+            o = json.loads(line)
+        except Exception:
+            bad.append((i, "not JSON")); continue
+        t = o.get("t") if isinstance(o, dict) else None
+        if t == "pick":
+            if o.get("id") not in ids: bad.append((i, "id is not in the event list"))
+            elif not (type(o.get("score")) is int and 1 <= o["score"] <= 5): bad.append((i, "score must be a whole number 1 to 5"))
+            elif not (isinstance(o.get("reason"), str) and 5 <= len(o["reason"]) <= 160): bad.append((i, "reason must be 5 to 160 characters"))
+        elif t == "new":
+            if not str(o.get("url", "")).startswith("https://"): bad.append((i, "url must start with https://"))
+            elif not o.get("title") or not o.get("why"): bad.append((i, "needs title and why"))
+        elif t == "check":
+            pass
+        else:
+            bad.append((i, 't must be "pick", "new" or "check"'))
+    return n, bad
+
+print(check(reply, set(ids)))

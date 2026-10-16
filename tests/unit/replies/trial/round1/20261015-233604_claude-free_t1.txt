@@ -1,0 +1,11 @@
+Shortlisting low-pressure events that fit her schedule.
+
+Shortlisting low-pressure events that fit her schedule.
+
+{“t”:”pick”,”id”:”01M5158GZ9WV53ZP6GPCZXN19Q”,”score”:3,”reason”:”Casual meetup for people between jobs; low-pressure place to practise talking to others, but it’s Monday 11am, so only if she can go.”}
+{“t”:”pick”,”id”:”01KT4VDJ2TVKSXABP5XSN1NQBR”,”score”:3,”reason”:”Business expo run with a women’s networking group; owners needing bookkeeping help attend, but it starts at 9am on a Tuesday.”}
+{“t”:”pick”,”id”:”01M4VX5MFR80E4CKZ21SV9W7A6",”score”:3,”reason”:”Evening dinner with a set topic gives easy conversation starters, so she can meet locals without formal networking pressure.”}
+{“t”:”pick”,”id”:”01M4W0F29XJCDQG7BM9DMK2AYV”,”score”:2,”reason”:”Evening workshop on Lawrence Ave E in Scarborough; small hands-on group to meet neighbours, though not job-specific.”}
+{“t”:”pick”,”id”:”01M4VZGYDWPF08S8VWQ98AJQGB”,”score”:2,”reason”:”Free evening screening plus pub hangout; the film gives a built-in topic, but there is little direct job value.”}
+{“t”:”new”,”title”:”Toronto Public Library”,”url”:”https://www.torontopubliclibrary.ca/","why":"Free branches across Scarborough with computers, job-search help and free workshops, at no cost.”}
+{“t”:”check”,”ran_code”:false,”errors_fixed”:0}

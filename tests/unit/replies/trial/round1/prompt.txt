@@ -1,0 +1,74 @@
+You are helping a job seeker decide which local events are worth an evening.
+
+PERSON
+Amira (made-up person). Moved to Toronto 14 months ago. Six years as an accounts-payable clerk in her home country. Looking for office administration or bookkeeping work in Toronto. Lives in Scarborough, travels by TTC, free on evenings and weekends, very little spare money, English is good but she is nervous speaking to strangers. Knows no one in the field here yet.
+
+EVENTS (id | start | name | place). These are the only events you may pick:
+01M38GBASKE0CR2S15B6DVYSQF | 2026-10-21 13:00 | Compact Objects | CITA Bridge
+01M510W3TB2S36FYQB15QG9SJ7 | 2026-10-21 19:00 | Toronto Raptors Season Home Opener Watch Party! 🏀 Raptors vs. Chicago Bulls | The Pheasant: A Firkin Pub
+01M3N8VKWKJSX5MFTB3MYVYFVW | 2026-10-20 18:00 | The Borders of AI Safety | https://luma.com/event/evt-OwsROdZGpzLt83u
+01M4VX5MFR80E4CKZ21SV9W7A6 | 2026-10-21 19:00 | Community Dinner #1: "On Learning" | 1RG
+01M5158H3BDT5SBDAYDAHWX806 | 2026-10-19 19:00 | Fall Tenant Workshops: Your Basic Tenant Rights - by Federation of Metro Tenants' Associat | Online
+01M4YJVS80APTE2NQ3J52QT3FN | 2026-10-22 06:00 | UTSU Students Vote for Academic Boycott - by Occupy U of T | UTSU Student Commons (or virtual)
+01KY69A1B8246109G69JY59Y6D | 2026-10-19 19:30 | Scintillometry | MP 15th Floor Conference Room
+01M4M7T4097SMAMJ2YP2NY9GPS | 2026-10-20 20:00 | Yuk Yuk's Legendary Amateur Night | Yuk Yuk's Comedy Club
+01M513RJBWZB9P5FJW57F2DMCP | 2026-10-21 14:00 | GitHub Learn at GitHub Universe 2026 Preview | Microsoft Reactor Toronto
+01M4W0F2AYAEC7WZ13CH723E3Q | 2026-10-20 18:00 | Naloxone training with Toronto Street Medics - by Showing Up for Racial Justice Toronto | 720 Spadina, Room 223
+01M24EH4HMDZRACVPAJK1DPZW6 | 2026-10-22 00:00 | Skyzoo & Spark Houston | Dance Cave
+01M0KEM407WA5BE6EGP5D98420 | 2026-10-19 00:00 | Bluffer’s Park and Beach - Fall Colours | Members only
+01M514E5KVX6KCN9887HZKKNC8 | 2026-10-19 | Family Connections: Workshops for Social & Family SupportFeatured Event. Family Connection | FairviewEvent location: Fairview
+01M06MZWTPZF2AZGBW0NC7KJPD | 2026-10-19 00:00 | Dana And Alden w/ Alex Amen | Lee's Palace
+01KYBE3FEQRH166R2THKRYFDW0 | 2026-10-21 15:30 | Astro Coffee | Wednesday (Astro Lounge), Thursday (IdeaLab), Frid
+01M4YHBV9S0THZGFRHDEDZYXVD | 2026-10-20 12:00 | Capacidades avanzadas de MCP: Apps, Tasks y WebMCP | Microsoft Reactor Toronto
+01KYGJWXBAJQMHRDGGEERJQMV4 | 2026-10-22 11:00 | UofT - York Galaxy Journal Club | AB 88
+01M2715ZAJGRW0G19B9G37C9SX | 2026-10-21 11:30 | Astro Coffee | Wednesday (AB Lounge)
+01M4VZGYDWPF08S8VWQ98AJQGB | 2026-10-19 18:15 | 🎬 FREE DOCUMENTARY SCREENING: THE LIBRARIANS + PUB HANGOUT! 🍿🍻 | Toronto Movies &amp; Social Group - Celebrating 14
+01M5158GZ9WV53ZP6GPCZXN19Q | 2026-10-19 11:00 | Unemployed Cafe Hang & Co-work Sesh - by Queer South Asians | Good Earth Coffeehouse
+01M4W0F29XJCDQG7BM9DMK2AYV | 2026-10-20 18:00 | Bike Maintenance Workshop - by Scarborough Cycles | 3939 Lawrence Ave E
+01KT4VDJ2TVKSXABP5XSN1NQBR | 2026-10-20 09:00 | GTApreneurs BizX 2026 Business Expo and Conference | Toronto Women in Business Networking Group (TWIB)
+01M06JV4YAYMWX870VMK1221N4 | 2026-10-20 19:30 | TIFA Presents Emily St. John Mandel in conversation with Mattea Roach | Hot Docs Ted Rogers Cinema
+01M5158H4JF4SXSTVQSZY1A0D5 | 2026-10-20 17:00 | Palestine Mapathon - by Hearing Palestine | U of T
+01M3B2S8N82B2YE1JW898N7M6D | 2026-10-21 10:00 | Embodied Garden: 8-Week Art Therapy Workshop | Toronto Botanical Garden
+
+TASK
+Pick the 5 to 8 events most likely to help this person meet people or learn things useful for finding work. Skip events that do not fit; a short list is better than a padded one. For each, give a one-line reason that names the concrete connection to her situation.
+You may add at most 2 "new" lines for a real, public place, programme or resource in Toronto that would help her, but ONLY if you are certain it exists and you can give its exact https address. If you are not certain, add none.
+
+OUTPUT FORMAT
+Reply with ONE code block containing JSON lines (one JSON object per line) and nothing outside the code block.
+{"t":"pick","id":"<id from the list>","score":<whole number 1 to 5>,"reason":"<5 to 160 characters>"}
+{"t":"new","title":"<name>","url":"https://...","why":"<one line>"}
+Last line: {"t":"check","ran_code":<true or false>,"errors_fixed":<number>}
+
+CHECK BEFORE YOU ANSWER
+Write your draft reply to a variable called reply. If you can run Python, run this on it and fix any errors it reports, then answer. If you cannot run code, check each line against the same rules by hand. Set ran_code to true only if you actually ran it.
+
+import json
+ids = ["01M38GBASKE0CR2S15B6DVYSQF", "01M510W3TB2S36FYQB15QG9SJ7", "01M3N8VKWKJSX5MFTB3MYVYFVW", "01M4VX5MFR80E4CKZ21SV9W7A6", "01M5158H3BDT5SBDAYDAHWX806", "01M4YJVS80APTE2NQ3J52QT3FN", "01KY69A1B8246109G69JY59Y6D", "01M4M7T4097SMAMJ2YP2NY9GPS", "01M513RJBWZB9P5FJW57F2DMCP", "01M4W0F2AYAEC7WZ13CH723E3Q", "01M24EH4HMDZRACVPAJK1DPZW6", "01M0KEM407WA5BE6EGP5D98420", "01M514E5KVX6KCN9887HZKKNC8", "01M06MZWTPZF2AZGBW0NC7KJPD", "01KYBE3FEQRH166R2THKRYFDW0", "01M4YHBV9S0THZGFRHDEDZYXVD", "01KYGJWXBAJQMHRDGGEERJQMV4", "01M2715ZAJGRW0G19B9G37C9SX", "01M4VZGYDWPF08S8VWQ98AJQGB", "01M5158GZ9WV53ZP6GPCZXN19Q", "01M4W0F29XJCDQG7BM9DMK2AYV", "01KT4VDJ2TVKSXABP5XSN1NQBR", "01M06JV4YAYMWX870VMK1221N4", "01M5158H4JF4SXSTVQSZY1A0D5", "01M3B2S8N82B2YE1JW898N7M6D"]
+import json
+def check(text, ids):
+    n, bad = 0, []
+    for i, line in enumerate(text.strip().splitlines(), 1):
+        line = line.strip()
+        if not line:
+            continue
+        n += 1
+        try:
+            o = json.loads(line)
+        except Exception:
+            bad.append((i, "not JSON")); continue
+        t = o.get("t") if isinstance(o, dict) else None
+        if t == "pick":
+            if o.get("id") not in ids: bad.append((i, "id is not in the event list"))
+            elif not (type(o.get("score")) is int and 1 <= o["score"] <= 5): bad.append((i, "score must be a whole number 1 to 5"))
+            elif not (isinstance(o.get("reason"), str) and 5 <= len(o["reason"]) <= 160): bad.append((i, "reason must be 5 to 160 characters"))
+        elif t == "new":
+            if not str(o.get("url", "")).startswith("https://"): bad.append((i, "url must start with https://"))
+            elif not o.get("title") or not o.get("why"): bad.append((i, "needs title and why"))
+        elif t == "check":
+            pass
+        else:
+            bad.append((i, 't must be "pick", "new" or "check"'))
+    return n, bad
+
+print(check(reply, set(ids)))

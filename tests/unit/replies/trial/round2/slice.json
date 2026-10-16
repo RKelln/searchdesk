@@ -1,0 +1,367 @@
+{
+ "events": [
+  {
+   "id": "01M51EX8881DYFQWWCA0RP9FVK",
+   "name": "Career Crossroads: Employment vs. Entrepreneurship",
+   "date": "2026-11-11 14:00",
+   "venue": "Maria A. Shchuka",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX8BE4WNFQRJC3CDDJQKA",
+   "name": "Building Interview Skills for Younger Adults",
+   "date": "2026-11-11 17:00",
+   "venue": "Deer Park",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX8FYAFM7SM78AR1DEVAG",
+   "name": "Your Reputation Is Currency",
+   "date": "2026-12-02 14:00",
+   "venue": "North York Central Library",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX8CQKGS0AD5GZ894SFWD",
+   "name": "The Career Confidence & Wellness Series: Rebounding from Rejection",
+   "date": "2026-11-16 17:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M38GBASKE0CR2S15B6DVYSQF",
+   "name": "Compact Objects",
+   "date": "2026-10-21 13:00",
+   "venue": "CITA Bridge",
+   "tier": "B"
+  },
+  {
+   "id": "01M51EX8C5PKM5SDRWPCAQRK1D",
+   "name": "Turning Red Flags into Strengths: How to Answer Tough Interview Questions",
+   "date": "2026-11-12 17:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M4VXN82AB3Q8FDD2GYYK202X",
+   "name": "Queer of Halloween",
+   "date": "2026-10-21 20:00",
+   "venue": "The Cabaret",
+   "tier": "B"
+  },
+  {
+   "id": "01M51EX841S8X7BXNKE2Q5G2CF",
+   "name": "Understanding the Canadian Job Market",
+   "date": "2026-11-04 13:00",
+   "venue": "Woodside Square",
+   "tier": "A"
+  },
+  {
+   "id": "01M21WCHBPN1ATT0M075W46SJQ",
+   "name": "Scintillometry",
+   "date": "2026-10-20 09:00",
+   "venue": "MP 15th Floor Conference Room",
+   "tier": "B"
+  },
+  {
+   "id": "01M51EX80M5XWGCJ265Y58BQV1",
+   "name": "Resume Development & Modern Job Search Techniques",
+   "date": "2026-11-03 18:00",
+   "venue": "Malvern",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX8FCB3A94N9ZX7C8XSRH",
+   "name": "Interview Preparation & Mock Interview Practice",
+   "date": "2026-11-24 18:00",
+   "venue": "Malvern",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX8ABZYBA1B19EA07TYD2",
+   "name": "1-on-1 Career Consultations with ACCES Employment Session 3",
+   "date": "2026-11-11 15:00",
+   "venue": "Albert Campbell",
+   "tier": "A"
+  },
+  {
+   "id": "01M513RJCHS0NPF0VFZ4VR06RX",
+   "name": "Microsoft Certifications Explained!",
+   "date": "2026-10-22 12:00",
+   "venue": "Microsoft Reactor Toronto",
+   "tier": "B"
+  },
+  {
+   "id": "01M51EX7VBHAG7W11BA6MQX39C",
+   "name": "From Contacts to Connections : The Art of Building a Genuine Network",
+   "date": "2026-10-26 13:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX835FT1CZR9XSGFVKDJ9",
+   "name": "IKIGAI: Aligning Your Personality, Purpose, and Career",
+   "date": "2026-11-03 18:00",
+   "venue": "Fairview",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX7T0K5KR0DE01JHGST8S",
+   "name": "Future Proof Your Career with AI",
+   "date": "2026-10-24 11:00",
+   "venue": "Taylor Memorial",
+   "tier": "A"
+  },
+  {
+   "id": "01M3X3AHXYJ40KAMEVK7EVSKEA",
+   "name": "The Matt Newton Quintet: A Tribute to Miles Davis & Herbie Hancock",
+   "date": "2026-10-21 20:30",
+   "venue": "Jazz Bistro",
+   "tier": "B"
+  },
+  {
+   "id": "01M515E275GNB5EGF68E5JK4NP",
+   "name": "The Toronto ML Systems Group: Transformer Accounting",
+   "date": "2026-10-21 18:00",
+   "venue": "https://luma.com/event/evt-6vkRYXiToCpy8B8",
+   "tier": "B"
+  },
+  {
+   "id": "01M4W0F2E4ZSVF4DJ8GS27CEHC",
+   "name": "TWC Book Club: End Times Fascism - by Tech Workers Coalition Canada",
+   "date": "2026-10-21 19:00",
+   "venue": "Bahen Centre for Information Technology",
+   "tier": "B"
+  },
+  {
+   "id": "01M51EX87FC5MFF4G5XMEH3H01",
+   "name": "1-on-1 Career Consultations with ACCES Employment Session 1",
+   "date": "2026-11-11 13:00",
+   "venue": "Albert Campbell",
+   "tier": "A"
+  },
+  {
+   "id": "01M3DMWM2G9ZMY6GPNWQ0H5CMS",
+   "name": "Icon For Hire, Elijah, Lauren Babic",
+   "date": "2026-10-22",
+   "venue": "Lee's Palace",
+   "tier": "B"
+  },
+  {
+   "id": "01M51EX7Q0J9MY33Y2ARTAE3BQ",
+   "name": "Using AI in Job Searching and Career Exploration",
+   "date": "2026-10-22 18:30",
+   "venue": "Brentwood",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX7YTHP1AX896W1ZJMXKW",
+   "name": "Identifying Your Transferrable Skills",
+   "date": "2026-11-02 12:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M4PT6TWSVYFFFCY8MNHSYXPQ",
+   "name": "Hump Day",
+   "date": "2026-10-21 20:00",
+   "venue": "Yuk Yuk's Comedy Club",
+   "tier": "B"
+  },
+  {
+   "id": "01M0KEM407WA5BE6EGP5D98420",
+   "name": "Bluffer\u2019s Park and Beach - Fall Colours",
+   "date": "2026-10-19 00:00",
+   "venue": "Members only",
+   "tier": "B"
+  },
+  {
+   "id": "01M51EX8HCMQZ3N2R9XRNPKG8V",
+   "name": "Resume Development and Modern Job Search Techniques",
+   "date": "2026-12-04 13:00",
+   "venue": "Woodside Square",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX8ESHMRD5FAT7JV79T6X",
+   "name": "Create an Impactful Resume with ACCES Employment",
+   "date": "2026-11-24 14:00",
+   "venue": "North York Central Library",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX7XDY8JVM4P48GJJVZNV",
+   "name": "Finding a Job in Canada with ACCES Employment",
+   "date": "2026-10-28 14:00",
+   "venue": "North York Central Library",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX88YH5AFVTT6SNMZ464V",
+   "name": "1-on-1 Career Consultations with ACCES Employment Session 2",
+   "date": "2026-11-11 14:00",
+   "venue": "Albert Campbell",
+   "tier": "A"
+  },
+  {
+   "id": "01KY69A1B8246109G69JY59Y6D",
+   "name": "Scintillometry",
+   "date": "2026-10-19 19:30",
+   "venue": "MP 15th Floor Conference Room",
+   "tier": "B"
+  },
+  {
+   "id": "01M06MZWTY02RVKCN2ZHABCC75",
+   "name": "Gilla Band w/ Piss",
+   "date": "2026-10-20 00:00",
+   "venue": "Lee's Palace",
+   "tier": "B"
+  },
+  {
+   "id": "01M4VYZ4DJ1EHPYY5SZ0WE2APV",
+   "name": "Control de versiones de soluciones de Power Platform con Azure Repos",
+   "date": "2026-10-20 09:00",
+   "venue": "Microsoft Reactor Toronto",
+   "tier": "B"
+  },
+  {
+   "id": "01M51EX8HY1QAH1R8SX30F0NP0",
+   "name": "Interview Preparation and Mock Interview Practice",
+   "date": "2026-12-10 13:00",
+   "venue": "Woodside Square",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX8GXFAK0R881KYJVV0HP",
+   "name": "Lead Where You Are: Building Leadership Skills for the Workplace",
+   "date": "2026-12-03 17:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX7R58GV2DKPR15G5JAQJ",
+   "name": "Job Search Tools",
+   "date": "2026-10-23 14:00",
+   "venue": "Toronto Reference Library",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX8EA38WNB05WB2SDBKDM",
+   "name": "Building Interview Skills for Younger Adults",
+   "date": "2026-11-20 17:00",
+   "venue": "Albert Campbell",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX85JQTSPA5DABNM78W9G",
+   "name": "Youth Hub: How to Win Scholarships",
+   "date": "2026-11-05 04:00",
+   "venue": "Agincourt",
+   "tier": "A"
+  },
+  {
+   "id": "01M47B32F89ZPTPZ0W4125ZZ9F",
+   "name": "TD Music Spotlights Artists from Indigenous Communities",
+   "date": "2026-10-20 16:00",
+   "venue": "West Wing",
+   "tier": "B"
+  },
+  {
+   "id": "01M51EX86XEBEGGF074X642B70",
+   "name": "1-on-1 Career Consultations with ACCES Employment",
+   "date": "2026-11-10 13:00",
+   "venue": "North York Central Library",
+   "tier": "A"
+  },
+  {
+   "id": "01M06MZWTPZF2AZGBW0NC7KJPD",
+   "name": "Dana And Alden w/ Alex Amen",
+   "date": "2026-10-19 00:00",
+   "venue": "Lee's Palace",
+   "tier": "B"
+  },
+  {
+   "id": "01M51EX7W9NESH3F8K09SRAF3Y",
+   "name": "Seagoing Women: Author Sara Donnelly & Panel Talk with Water Women At Work",
+   "date": "2026-10-27 19:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX7S4EWY9134C6HCDAXXR",
+   "name": "You're More Qualified Than You Think",
+   "date": "2026-10-23 14:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX84S1ZYVJW1YJA4C0P9N",
+   "name": "The Career Confidence & Wellness Series: Career Stress & Anxiety",
+   "date": "2026-11-04 17:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX7ZEBVWYXMJHWP78BKCP",
+   "name": "The Career Confidence & Wellness Series: Exploring Your Career Values",
+   "date": "2026-11-02 17:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX8DTFFXHEJQMY549KR49",
+   "name": "Make Your Experience Make Sense",
+   "date": "2026-11-20 14:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX8D8HWGAFT1Y9GXT8C0R",
+   "name": "The Career Confidence & Wellness Series : Overcoming Imposter Syndrome",
+   "date": "2026-11-19 17:00",
+   "venue": "",
+   "tier": "A"
+  },
+  {
+   "id": "01M51EX86CF1VRSEMEXYDGYVX3",
+   "name": "Applying Your Transferrable Skills",
+   "date": "2026-11-05 13:00",
+   "venue": "",
+   "tier": "A"
+  }
+ ],
+ "relevant": [
+  "01M51EX7Q0J9MY33Y2ARTAE3BQ",
+  "01M51EX7R58GV2DKPR15G5JAQJ",
+  "01M51EX7S4EWY9134C6HCDAXXR",
+  "01M51EX7T0K5KR0DE01JHGST8S",
+  "01M51EX7VBHAG7W11BA6MQX39C",
+  "01M51EX7W9NESH3F8K09SRAF3Y",
+  "01M51EX7XDY8JVM4P48GJJVZNV",
+  "01M51EX7YTHP1AX896W1ZJMXKW",
+  "01M51EX7ZEBVWYXMJHWP78BKCP",
+  "01M51EX80M5XWGCJ265Y58BQV1",
+  "01M51EX835FT1CZR9XSGFVKDJ9",
+  "01M51EX841S8X7BXNKE2Q5G2CF",
+  "01M51EX84S1ZYVJW1YJA4C0P9N",
+  "01M51EX85JQTSPA5DABNM78W9G",
+  "01M51EX86CF1VRSEMEXYDGYVX3",
+  "01M51EX86XEBEGGF074X642B70",
+  "01M51EX87FC5MFF4G5XMEH3H01",
+  "01M51EX8881DYFQWWCA0RP9FVK",
+  "01M51EX88YH5AFVTT6SNMZ464V",
+  "01M51EX8ABZYBA1B19EA07TYD2",
+  "01M51EX8BE4WNFQRJC3CDDJQKA",
+  "01M51EX8C5PKM5SDRWPCAQRK1D",
+  "01M51EX8CQKGS0AD5GZ894SFWD",
+  "01M51EX8D8HWGAFT1Y9GXT8C0R",
+  "01M51EX8DTFFXHEJQMY549KR49",
+  "01M51EX8EA38WNB05WB2SDBKDM",
+  "01M51EX8ESHMRD5FAT7JV79T6X",
+  "01M51EX8FCB3A94N9ZX7C8XSRH",
+  "01M51EX8FYAFM7SM78AR1DEVAG",
+  "01M51EX8GXFAK0R881KYJVV0HP",
+  "01M51EX8HCMQZ3N2R9XRNPKG8V",
+  "01M51EX8HY1QAH1R8SX30F0NP0"
+ ]
+}

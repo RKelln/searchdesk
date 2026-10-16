@@ -1,0 +1,8 @@
+{"t":"pick","id":"01KT4VDJ2TVKSXABP5XSN1NQBR","score":3,"reason":"Small business owners at this expo often need bookkeeping help; a Tuesday 9am daytime event, so check the ticket price first."}
+{"t":"pick","id":"01M4VX5MFR80E4CKZ21SV9W7A6","score":3,"reason":"A seated dinner with a set theme gives easy talking points, good for meeting people when you are nervous with strangers."}
+{"t":"pick","id":"01M4W0F29XJCDQG7BM9DMK2AYV","score":3,"reason":"Held in Scarborough on Lawrence Ave E, so a short TTC trip; a hands-on workshop makes chatting with neighbours easy."}
+{"t":"pick","id":"01M4VZGYDWPF08S8VWQ98AJQGB","score":2,"reason":"Free film, then optional pub chat; you can leave early to save money while practising small talk with locals."}
+{"t":"pick","id":"01M5158GZ9WV53ZP6GPCZXN19Q","score":2,"reason":"A co-work hangout for people between jobs, so job-search chat is natural; Monday 11am, and check that the group welcomes you."}
+{"t":"pick","id":"01M5158H3BDT5SBDAYDAHWX806","score":2,"reason":"Free online session, no TTC fare or crowd; practical newcomer knowledge on renting, though not job-related."}
+{"t":"new","title":"Toronto Public Library","url":"https://www.torontopubliclibrary.ca/","why":"Free branches in Scarborough with computers, job-search help and free programs for newcomers."}
+{"t":"check","ran_code":true,"errors_fixed":0}

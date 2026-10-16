@@ -1,0 +1,8 @@
+{"t":"pick","id":"01M51EX80M5XWGCJ265Y58BQV1","score":5,"reason":"Evening resume session at Malvern, in Scarborough: rework her six years of AP experience into a Canadian-format resume, free and local."}
+{"t":"pick","id":"01M51EX8FCB3A94N9ZX7C8XSRH","score":5,"reason":"Mock interview practice at Malvern in the evening: a low-pressure way for a nervous speaker to rehearse, in her own area."}
+{"t":"pick","id":"01M51EX8C5PKM5SDRWPCAQRK1D","score":4,"reason":"Thursday evening session on answering tough interview questions, e.g. explaining a gap or foreign experience; a structured room to practise with others."}
+{"t":"pick","id":"01M51EX8ABZYBA1B19EA07TYD2","score":3,"reason":"One-on-one with ACCES Employment (newcomer job help) at Albert Campbell, Scarborough; a quiet way to meet an advisor, but a weekday afternoon."}
+{"t":"pick","id":"01M51EX7Q0J9MY33Y2ARTAE3BQ","score":3,"reason":"Thursday evening on using AI in a job search; practical for tailoring bookkeeping and admin applications, though Brentwood is a longer TTC ride."}
+{"t":"pick","id":"01M51EX7T0K5KR0DE01JHGST8S","score":3,"reason":"Saturday morning AI-and-career talk at Taylor Memorial in Scarborough; fits her weekend time and gives a chance to chat with locals."}
+{"t":"pick","id":"01M51EX8D8HWGAFT1Y9GXT8C0R","score":3,"reason":"Evening session on imposter syndrome; speaks to her nervousness with strangers and may help her feel ready for networking."}
+{"t":"check","ran_code":false,"errors_fixed":0}

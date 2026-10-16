@@ -1,0 +1,6 @@
+{"t":"pick","id":"01M4VX5MFR80E4CKZ21SV9W7A6","score":3,"reason":"Evening sit-down dinner with a set topic gives easy conversation starters for a nervous newcomer to meet local people. Check cost first."}
+{"t":"pick","id":"01M5158GZ9WV53ZP6GPCZXN19Q","score":2,"reason":"Job-seeker co-working hang, the closest fit to her goal, but Monday 11:00 clashes with her free time and the host group is specific."}
+{"t":"pick","id":"01M4VZGYDWPF08S8VWQ98AJQGB","score":2,"reason":"Free evening film gives a shared topic to talk about with strangers; pub afterwards is optional so she can skip spending."}
+{"t":"pick","id":"01M4W0F29XJCDQG7BM9DMK2AYV","score":2,"reason":"In Scarborough on Lawrence Ave E, so a short TTC trip; meets neighbours in a hands-on setting where talking is easy."}
+{"t":"pick","id":"01M4W0F2AYAEC7WZ13CH723E3Q","score":2,"reason":"Free short training adds a community skill and a volunteer-style line for her resume; small room helps with meeting people."}
+{"t":"check","ran_code":true,"errors_fixed":0}
