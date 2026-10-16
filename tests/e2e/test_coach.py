@@ -46,8 +46,10 @@ def seed(page):
     )
 
 
-def open_app(page, app, hash="#home"):
+def open_app(page, app, hash="#home", workshop=True):
     page.add_init_script(INIT)
+    if workshop:
+        page.add_init_script("window.DESK_WORKSHOP = { banner: 'Practice computer.' }")
     page.goto(app.url + hash)
     wait_for_desk(page, started=True)
 
@@ -148,4 +150,22 @@ def test_coach_copy_that_fails_shows_the_instructions_to_press_and_hold(page, ap
     box = page.locator('[data-test="ai-part-fallback"]')
     box.wait_for()
     assert box.input_value() == GOLDEN
+    assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_coach_normal_copy_defaults_to_five_questions_without_the_workshop_line(page, app):
+    open_app(page, app, "#ai/coach", workshop=False)
+    page.wait_for_selector('[data-test="ai-copy-instructions"]:not([disabled])')
+    assert page.locator('[data-test="ai-opt-questions"]').input_value() == "5"
+    page.click('[data-test="ai-copy-instructions"]')
+    page.wait_for_function("() => window.__copied.length === 1")
+    normal = copied(page)[-1]
+    assert "Ask 5 main questions" in normal and "After 5 questions" in normal
+    assert "Workshops" not in normal and "fictional person" not in normal and len(normal) <= 1500
+    # the person can still pick 3: then it is v4 without the workshop sentence
+    page.select_option('[data-test="ai-opt-questions"]', "3")
+    page.wait_for_function("() => document.querySelector('[data-test=\"ai-opt-questions\"]').value === '3'")
+    page.click('[data-test="ai-copy-instructions"]')
+    page.wait_for_function("() => window.__copied.length === 2")
+    assert copied(page)[-1] == GOLDEN.replace(" Workshops: fictional person only, never my own details.", "")
     assert_no_errors(page, allow=ALLOW_MISSING)

@@ -11,10 +11,11 @@ HERE = Path(__file__).resolve().parent
 EXPORT = HERE / "export-prompt.js"
 
 
-def release_prompt(options=()):
-    """The coach instructions exactly as Search Desk copies them (export-prompt.js; needs node)."""
+def release_prompt(options=(), workshop=True):
+    """The coach instructions exactly as Search Desk copies them (export-prompt.js; needs node).
+    Workshop text by default: that is the version v4 was tested as. workshop=False gives the normal copy's text."""
     try:
-        result = subprocess.run(["node", str(EXPORT), *(["--options", *options] if options else [])],
+        result = subprocess.run(["node", str(EXPORT), *(["--workshop"] if workshop else []), *(["--options", *options] if options else [])],
                                 capture_output=True, text=True, timeout=30)
     except FileNotFoundError as exc:
         raise ValueError("node is needed to export the release prompt; or pass --prompt FILE "
@@ -132,7 +133,9 @@ def main():
     init.add_argument("run", type=Path)
     init.add_argument("--scenario", type=Path, default=HERE / "scenario.json")
     init.add_argument("--prompt", type=Path,
-                      help="interviewer instructions file; default: the release text from export-prompt.js")
+                      help="interviewer instructions file; default: the workshop release text from export-prompt.js")
+    init.add_argument("--normal", action="store_true",
+                      help="with no --prompt: use the normal (non-workshop) release text instead of the workshop text")
     init.add_argument("--max-turns", type=int, default=14)
     next_cmd = sub.add_parser("next", help="Print the next isolated role request")
     next_cmd.add_argument("run", type=Path)
@@ -152,7 +155,7 @@ def main():
             parser.error("--max-turns must be positive")
         if run.exists():
             parser.error("Run directory exists; choose a new one to preserve past runs")
-        prompt = args.prompt.read_text() if args.prompt else release_prompt()
+        prompt = args.prompt.read_text() if args.prompt else release_prompt(workshop=not args.normal)
         if len(prompt) > 1500:
             parser.error(f"Interviewer prompt exceeds budget: {len(prompt)} > 1500")
         scenario = json.loads(args.scenario.read_text())

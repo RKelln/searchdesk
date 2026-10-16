@@ -405,3 +405,8 @@ can follow a day later if it must).
   date rule: up to 31 days back stays this year, otherwise it rolls to next year only within 183 days, else it is unknown.
   A code from another recipe gives `codeStatus: 'other'`; `process` cannot reach this today, so there is no
   `aiOtherTask` string yet. `rejected` is capped at 50, with `rejectedMore`.
+- 2026-10-16, T3.6 follow-up (maintainer decision): the workshop sentence appears only on a workshop copy
+  (`window.DESK_WORKSHOP` truthy; the recipe ctx has `workshop()`, and an option `default` may be a function of
+  the recipe ctx). A workshop copy keeps v4 exactly: 3 questions, 1,481 characters. A normal copy defaults to 5 questions (1,425
+  characters; its longest mix is 1,443) and is not yet harness-tested. `export-prompt.js --workshop`; the harness defaults to the workshop text.
+  The harness's Amira (rich volunteering history) and the app's example Amira are two separate made-up people.

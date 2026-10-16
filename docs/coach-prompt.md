@@ -8,6 +8,10 @@
 > [`tools/interview-harness/`](../tools/interview-harness/README.md). Older versions (v1 to v3) and the research
 > comparison stay in the workshop repository (`events/W04-ai-job-search/` there). The rest of this note is the original,
 > with its links changed. Where it says "the workshop's Claude seat" or "Ryan's usage", it was written for that workshop.
+> **Modes.** The wording below is the **workshop** text. On a workshop copy the app's defaults are exactly this (3 questions
+> and the sentence "Workshops: fictional person only, never my own details."). On a normal copy the app leaves that
+> sentence out and defaults to **5 questions**; that 5-question default has **not** been tested with the harness (only 3
+> has), and neither has any other option mix. The 1,500 cap holds for every option mix in both modes.
 > Search Desk's options (number of questions, kind, research on or off, language) replace words inside these sentences
 > so that every combination stays at 1,500 characters or fewer; only the default (3 questions) has been trialled.
 

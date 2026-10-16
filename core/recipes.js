@@ -8,6 +8,7 @@
 //   data(ctx, opts)           -> the values for the placeholders: {profile, items: {header, kinds: {L: rows}}, ...}
 //                             rows are {id, cols}; opts = {options: {<optionId>: value}, args: [route parts after the id]}
 //   options                   [{id, label, choices: [{value, label}], default}] shown as selects, passed in opts.options
+//                             (`default` may be a function of the ctx below, e.g. one value in workshop mode)
 //   answer, example, quota, required, synonyms, types   as for Desk.reply.parse (answer null = no answer is read back)
 //   copies, tips              (T3.6) extra buttons beside "Just copy" and a list of short tips under the preview.
 //                             copies = [{id, label, done, text(ctx, opts)}]: copies text(ctx, opts) alone; `done` is the
@@ -19,7 +20,8 @@
 //                             `records` are other records to save (they need their own ids); `text` replaces the
 //                             result line; `render(el)` adds something to the result (for example a choose step).
 //   where                     plain words for "added to <where>" in the result line (optional)
-//   ctx is read-only: {store: {all, get}, profile(), profileLines(), prompt, locale, now(), fmt, t, route}.
+//   ctx is read-only: {store: {all, get}, profile(), profileLines(), prompt, locale, now(), workshop() (true on a workshop copy), fmt, t, route}.
+//   options[].default may be a function of that ctx.
 // Core fills the suggestion records: type, id `s_<code>_<alias>` (or `s_<code>_<hash of title and url>`), recipe,
 // code (the bare code, like the prompt record), status 'new', source 'ai'. An id that exists is never written again.
 window.Desk = window.Desk || {};
@@ -213,6 +215,7 @@ window.Desk = window.Desk || {};
       prompt: Desk.prompt,
       get locale() { return window.DESK_LOCALE || {}; },
       now: function () { return Desk.now(); },
+      workshop: function () { return !!window.DESK_WORKSHOP; },
       fmt: Object.freeze({
         date: function (v, o) { return Desk.fmtDate(v, o); }, time: function (v) { return Desk.fmtTime(v); },
         dateTime: function (v, o) { return Desk.fmtDateTime(v, o); },
@@ -357,9 +360,11 @@ window.Desk = window.Desk || {};
     return s.account === 'none' ? T('aiAccountNone') : s.account === 'needed' ? T('aiAccountNeeded') : s.account === 'optional' ? T('aiAccountOptional') : '';
   }
 
+  // An option's default may be a function of the recipe ctx (for example, different in workshop mode).
+  function optDefault(o) { return typeof o.default === 'function' ? o.default(recipeCtx()) : o.default; }
   function optsFor(def) {
     var vals = optionValues[def.id] || {}, out = {};
-    (def.options || []).forEach(function (o) { out[o.id] = vals[o.id] !== undefined ? vals[o.id] : o.default; });
+    (def.options || []).forEach(function (o) { out[o.id] = vals[o.id] !== undefined ? vals[o.id] : optDefault(o); });
     return { options: out, args: Desk.route().args.slice(1) };
   }
   // The question shown under "What will be sent" is the one that gets copied (same code), until it is used.
@@ -429,7 +434,7 @@ window.Desk = window.Desk || {};
       var cur = (optionValues[def.id] || {})[o.id];
       (o.choices || []).forEach(function (c) {
         var op = H('option', { value: String(c.value) }, c.label);
-        if (String(cur !== undefined ? cur : o.default) === String(c.value)) op.selected = true;
+        if (String(cur !== undefined ? cur : optDefault(o)) === String(c.value)) op.selected = true;
         sel.appendChild(op);
       });
       box.appendChild(H('div', { class: 'ai-option' }, H('label', { for: id }, o.label), sel));

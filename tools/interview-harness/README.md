@@ -2,10 +2,12 @@
 
 > Brought into Search Desk from the W04 workshop repository (2026-10-16). The coach instructions under test now live in
 > `features/recipe-coach.js`; `export-prompt.js` prints them exactly as the app copies them, and every trial should
-> use that output. The validation note is [docs/coach-prompt.md](../../docs/coach-prompt.md). Model names in
+> use that output. `harness.py init` and `cases/prepare.py` use the **workshop** text (`--workshop`: 3 questions and the
+> workshop sentence, i.e. v4 byte for byte, which is what was tested); `--normal` (or `export-prompt.js` without
+> `--workshop`) gives what a normal copy of the app copies (5 questions, no workshop sentence; not harness-tested). The validation note is [docs/coach-prompt.md](../../docs/coach-prompt.md). Model names in
 > [models.json](models.json) and the remarks about "this session" describe the environment the harness was built in
 > (a Codex-style coding harness with Luna and Sol models); use equivalent models in yours and record what you used.
-> Fixtures are synthetic and are not Search Desk's example person (see "Fixtures" in [SKILL.md](SKILL.md)).
+> The harness's Amira (rich volunteering history, `fixtures/amira-v3.md`) and the app's example Amira (`docs/inputs/example-person.md`, the accounts-payable clerk) are two separate made-up people (see "Fixtures" in [SKILL.md](SKILL.md)).
 
 **Fresh session:** read [SKILL.md](SKILL.md) first. It is the portable runbook for models, paths, isolation, trial selection, stopping rules and evidence. The files below are its supporting procedures.
 
@@ -25,7 +27,7 @@ From the project root. First export the release text of the instructions (needs 
 questions=5` and so on to try other option sets):
 
 ```bash
-node tools/interview-harness/export-prompt.js > tools/interview-harness/runs/prompt.txt
+node tools/interview-harness/export-prompt.js --workshop > tools/interview-harness/runs/prompt.txt
 python3 tools/interview-harness/harness.py init tools/interview-harness/runs/first --prompt tools/interview-harness/runs/prompt.txt
 python3 tools/interview-harness/harness.py run tools/interview-harness/runs/first --backend codex --turns 2
 ```
@@ -63,7 +65,7 @@ The v3 fixture has concrete coat-help, teamwork, escalation, mistake and priorit
 
 For prompt comparisons, prefer **`scenario-answer-bank.json`**, now an answer guide. It gives the candidate stable background, example answers and limits on what is known. The candidate adapts wording and detail to the actual question while keeping its history consistent; no exact-match responses or answer-ID routing. The interviewer never sees the guide. Compare factual content and answer depth between runs, allowing natural wording differences. Keep the same guide version for prompt variants. Use separate scenarios for early-stop/skip tests rather than mixing control signals into ordinary answers.
 
-`scenario.json` is a tiny, explicitly fictional smoke-test fixture, not a replacement for Search Desk's example person (`docs/inputs/example-person.md`, the accounts-payable clerk). Copy it to define another scenario and pass `init --scenario FILE`. To test the release text with the example person, write a scenario whose `context` is the exact `Candidate profile:` and `Job posting:` text the app produces for her. Put candidate behaviour such as “answer vaguely, then skip” in `candidate_instructions`; it stays hidden from the interviewer. Run normal and early-stop cases separately.
+`scenario.json` is a tiny, explicitly fictional smoke-test fixture, a harness person, separate from the app's example Amira (`docs/inputs/example-person.md`, the accounts-payable clerk). Copy it to define another scenario and pass `init --scenario FILE`. Put candidate behaviour such as “answer vaguely, then skip” in `candidate_instructions`; it stays hidden from the interviewer. Run normal and early-stop cases separately.
 
 Runs snapshot the interviewer prompt and scenario, exact per-turn requests/replies, CLI output/errors, commands, timestamps, and a readable transcript. They are ignored by Git (`runs/.gitignore`); copy a small assessment into `evidence/` if it should be kept. Attach a short human assessment using [the validation rubric](../../docs/coach-prompt.md). Inspect candidate grounding separately: a simulator's invented experience is not automatically an interviewer failure. No model judge or automatic pass score in this first version. Repeated same-model simulations can share blind spots; they prepare us for, rather than replace, one human rehearsal.
 

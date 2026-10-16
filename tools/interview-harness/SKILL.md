@@ -9,7 +9,7 @@ This is the portable entry point. Instructions are harness-neutral; adapt agent 
 
 ## Read only what the task needs
 
-1. The prompt under test is the **release output** of the app's coach recipe, never a copy. Export it with `node tools/interview-harness/export-prompt.js [--options key=value ...] > <new-output-dir>/../prompt.txt` (for example into `runs/`, which is Git-ignored) and pass that file as the `prompt` path. Count the exact text including its final newline; reject over 1,500 characters (the exporter and the scripts already do). The canonical wording lives in `features/recipe-coach.js`; `tests/unit/golden/coach-v4.txt` is v4. To test other option sets, export each one separately and record the options in the run notes.
+1. The prompt under test is the **release output** of the app's coach recipe, never a copy. Export it with `node tools/interview-harness/export-prompt.js --workshop [--options key=value ...] > <new-output-dir>/../prompt.txt` (for example into `runs/`, which is Git-ignored) and pass that file as the `prompt` path. Count the exact text including its final newline; reject over 1,500 characters (the exporter and the scripts already do). The canonical wording lives in `features/recipe-coach.js`; `tests/unit/golden/coach-v4.txt` is v4. `--workshop` is the text v4 was tested as (3 questions plus the workshop sentence); without it you get a normal copy's text (5 questions, no workshop sentence), which has not been harness-tested. `harness.py init` and `cases/prepare.py` default to the workshop text (`--normal` switches). To test other option sets, export each one separately and record the options in the run notes.
 2. `models.json`: user-approved role model defaults in this repository. Do not guess model aliases across providers. If a harness does not offer those IDs, ask for an equivalent selection rather than silently changing models.
 3. Choose **full conversation** or **focused continuations**, below. Default to the mode requested. If asked simply to retest the current prompt, run focused cases relevant to the change and one ordinary full round, within any usage limit the user specifies.
 
@@ -42,7 +42,7 @@ No package install, external API key, CLI login, or service setup is needed for 
 
 ## Fixtures
 
-`fixtures/amira-v3.md` and the `scenario*.json` files describe a different fictional Amira from the one in Search Desk's example data (`docs/inputs/example-person.md`): a beginner volunteer from a community clothing swap, not an experienced accounts-payable clerk. Keep it for prompt comparisons, since earlier results used it. Do not describe results as testing the example person. Build a new fixture and scenario to do that; do not edit these.
+`fixtures/amira-v3.md` and the `scenario*.json` files describe a made-up Amira with a rich volunteering history (a beginner from a community clothing swap). She is a different person from the app's example Amira in `docs/inputs/example-person.md` (the experienced accounts-payable clerk, loaded by `data/example.js`). Both are fine as test people. Keep these for prompt comparisons, since earlier results used them, and say which Amira a result used.
 
 ## Discovery in other harnesses
 

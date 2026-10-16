@@ -11,8 +11,8 @@ sys.path.insert(0, str(HERE.parent))
 from harness import release_prompt  # noqa: E402
 
 
-def prepare(output, prompt_path, suite_path, only=None):
-    prompt = prompt_path.read_text() if prompt_path else release_prompt()
+def prepare(output, prompt_path, suite_path, only=None, normal=False):
+    prompt = prompt_path.read_text() if prompt_path else release_prompt(workshop=not normal)
     if len(prompt) > 1500:
         raise ValueError(f"Prompt exceeds 1500 characters: {len(prompt)}")
     suite = json.loads(suite_path.read_text())
@@ -47,8 +47,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("output", type=Path)
     parser.add_argument("--prompt", type=Path,
-                        help="interviewer instructions file; default: the release text from export-prompt.js")
+                        help="interviewer instructions file; default: the workshop release text from export-prompt.js")
+    parser.add_argument("--normal", action="store_true",
+                        help="with no --prompt: use the normal (non-workshop) release text")
     parser.add_argument("--suite", type=Path, default=HERE / "focused.json")
     parser.add_argument("--only", nargs="+", help="Select case IDs for a focused regression run")
     args = parser.parse_args()
-    prepare(args.output, args.prompt, args.suite, args.only)
+    prepare(args.output, args.prompt, args.suite, args.only, args.normal)
