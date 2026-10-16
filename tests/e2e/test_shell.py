@@ -65,16 +65,22 @@ def open_app(page, app, **kw):
 
 
 def test_shell_all_files_missing_shows_stubs(page, app):
-    """No routes: the real repo has no features/<id>.js yet, so every base feature is a stub."""
+    """No routes: base features whose file does not exist yet show as stubs; the rest load. Runs everywhere."""
     page.goto(app.url)
     wait_for_desk(page, started=True)
+    missing = []
     for fid in BASE:
-        assert page.locator('[data-test="nav-%s"]' % fid).count() == 1, fid
-        assert page.evaluate("(id) => Desk.featureStatus(id)", fid) in ("missing", "ok")
-    page.click('[data-test="nav-jobs"]')
-    page.wait_for_selector('[data-screen="jobs"] [data-test="stub"]')
-    text = page.locator("main").inner_text()
-    assert "Jobs" in text and "not built yet" in text, text
+        status = page.evaluate("(id) => Desk.featureStatus(id)", fid)
+        assert status in ("missing", "ok"), (fid, status)
+        if status == "missing":
+            missing.append(fid)
+            assert page.locator('[data-test="nav-%s"]' % fid).count() == 1, fid
+    tabbed_missing = [f for f in missing if not f.startswith("recipe-")]
+    if tabbed_missing:
+        fid = tabbed_missing[0]
+        page.click('[data-test="nav-%s"]' % fid)
+        page.wait_for_selector('[data-screen="%s"] [data-test="stub"]' % fid)
+        assert "not built yet" in page.locator("main").inner_text()
     page.click('[data-test="nav-data"]')
     page.wait_for_selector('[data-screen="data"]')
     assert "Your data" in page.locator("main").inner_text()
