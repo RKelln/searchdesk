@@ -348,3 +348,21 @@ can follow a day later if it must).
   (`7Q3K`); the parser returns `DESK-7Q3K`. Recipes must list `NEW` in `answer` for NEW lines, and pass
   `required:{L:['why']}` if a reason is required. Rejection sentences are inline with stable codes; move them to
   the string table. Suggestion ids are T3.3's job.
+- 2026-10-16, T3.2 review (to fix next, before T3.4): trial lines and performance are fine (100 KB parses in under
+  50 ms), and so is URL host safety. Defects, most serious first:
+  (1) emoji/arrow/check bullets and `>` blockquotes make answer lines vanish;
+  (2) letterless numbers in prose (`9:30 am`, `11-02`, `2 - great`) are read as aliases; accept only `|`, tab or two
+      spaces after a bare number, and ignore (not reject) unknown bare numbers;
+  (3) a title mentioned anywhere in prose is imported, even "I would skip <title>"; only match a title at the start
+      of a line or after a separator;
+  (4) a title column is glued into the reason (tables, tabs, `L1 (Title) | why`);
+  (5) dates: `Mon, Nov 2` and `Nov 2, 2026 at 5pm` give unknown; `2026-11-02 to 2026-11-30` silently keeps the first
+      date; "Sep 1" rolls 11 months forward (prefer unknown or this year);
+  (6) a found code from another recipe is not refused;
+  (7) URL paths accept `<`, `"`, bidi characters and bad ports;
+  (8) a trailing prose line is glued into the last reason;
+  (9) `L1-2` and `L1 & L3` give garbage reasons;
+  (10) lowercase "desk 2026" counts as a code;
+  (11) without `ctx.example`, the pasted-back example line is accepted;
+  (12) smaller gaps: `#1 L3`, `Top pick: L1`, a second answer block, uncapped `rejected`.
+  Add a fixture for each. The full review: the T3.2 reviewer's report from the session of 2026-10-16.
