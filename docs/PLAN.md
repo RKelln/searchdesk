@@ -186,7 +186,7 @@ can follow a day later if it must).
   paste a fixture answer, see N suggestions; paste it again and see "Already added"; paste a broken answer, copy
   the fix-it message, and check it lists the bad lines and the code; reload between copy and paste and the pending
   question is still there.
-- [ ] **T3.4 `recipe-events`** (P0, DESIGN 9.6). `needs`: the profile has `roles` or `field`. Builds L and C rows;
+- [x] **T3.4 `recipe-events`** (P0, DESIGN 9.6). `needs`: the profile has `roles` or `field`. Builds L and C rows;
   `apply` makes event and lead suggestions; taking an event suggestion stars it.
   *Done when:* check: `build` on the example data gives at most 20 L and 20 C rows with starred and dismissed left
   out; e2e: the full round trip with a fixture answer puts suggestions in the Events lane.
@@ -410,3 +410,10 @@ can follow a day later if it must).
   the recipe ctx). A workshop copy keeps v4 exactly: 3 questions, 1,481 characters. A normal copy defaults to 5 questions (1,425
   characters; its longest mix is 1,443) and is not yet harness-tested. `export-prompt.js --workshop`; the harness defaults to the workshop text.
   The harness's Amira (rich volunteering history) and the app's example Amira are two separate made-up people.
+- 2026-10-16, T3.4: rows come from the next 21 days, leaving out starred, dismissed and finished events. Each tier
+  keeps its 20 best by how well the event's words fit the profile's roles and field, then shows them in date order.
+  A row is `alias | date | title | venue`. The answer quota is L4 C4 NEW2. Event suggestions have `target` set to
+  the event ULID; "Star it" in Events takes them, and the e2e test covers the whole round trip. Open: nothing yet shows
+  `lead` suggestions (DESIGN 9.6: a link list on the AI screen, or `sites`), though the result line counts them as
+  "added to Events". The recipe ctx has no `events`, so the feature reads them from its mount ctx. Core numbers
+  aliases continuously (L1–L5, then C6..), not C21–C40 as DESIGN 9.6 says.
