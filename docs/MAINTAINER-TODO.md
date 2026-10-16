@@ -15,7 +15,10 @@ Things only you can do, in rough order of urgency for the Mon Oct 19, 2pm tag. T
 - [ ] **Check the posting rules** against the text of O. Reg. 476/24 (V10): pay range, AI screening, open-now, and
   `replyDays: 45`.
 - [ ] **Review the coach instructions** once the integration lands (`features/recipe-coach.js`, `docs/coach-prompt.md`).
-  The talk marks them as a review item until you accept v4 and its options.
+  The talk marks them as a review item until you accept v4 and its options. Two decisions:
+  - v4's line "Workshops: fictional person only, never my own details." goes to real users too. Should it stay,
+    or appear only in workshop mode?
+  - the default is 3 questions (the tested v4 number), with 2, 4 and 5 offered but not tested. DESIGN said 5.
 - [ ] **Accept or change the made-up person's data** in `data/example.js` after T2.6 (from `docs/inputs/example-person.md`).
 - [ ] **Mac test, V1–V4** (the workshop Macs: managed macOS 14, Chrome, no Python, Node or git):
   - V1: open from `file://`, then check loading, saving across reloads, clipboard, download, file import and the
