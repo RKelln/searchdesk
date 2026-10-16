@@ -381,3 +381,15 @@ test('putQuiet saves and announces but is not an undo step', () => {
   s.put({ type: 'job', title: 'b' });
   assert.strictEqual(s.undoLabel(), 'Save');
 });
+
+test('purgeQuiet removes records without taking the undo step', () => {
+  const Desk = load(['core/store.js']);
+  Desk.store.init({ device: 'dev1' });
+  Desk.store.batch('Add', () => { Desk.store.put({ type: 'job', title: 'a' }); });
+  const tmp = Desk.store.put({ type: 'prompt', code: 'ABCD' });
+  Desk.store.batch('Add two', () => { Desk.store.put({ type: 'job', title: 'b' }); });
+  assert.strictEqual(Desk.store.undoLabel(), 'Add two');
+  assert.strictEqual(Desk.store.purgeQuiet([tmp.id]), 1);
+  assert.strictEqual(Desk.store.get(tmp.id), undefined);
+  assert.strictEqual(Desk.store.undoLabel(), 'Add two');
+});

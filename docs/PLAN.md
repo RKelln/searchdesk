@@ -146,7 +146,7 @@ can follow a day later if it must).
 
 ## Phase 3: the chat route
 
-- [ ] **T3.1 `prompt.js`** (P0, DESIGN 9.2, 9.3). Code generation (4 characters of Crockford base32 with no
+- [x] **T3.1 `prompt.js`** (P0, DESIGN 9.2, 9.3). Code generation (4 characters of Crockford base32 with no
   ambiguous characters), alias assignment by kind letter with numbers unique across letters, template filling
   (`{name}` substitution only; `{items}` placed or appended), the items table with its column header, the
   "HOW TO ANSWER" block built from `answer` and `example`, `profileLines`, the size budget with truncation rules, and
@@ -339,3 +339,7 @@ can follow a day later if it must).
 - 2026-10-16, T2.3: `ctx.backupNudge()` added. A pending AI question is guessed as "the newest prompt in 7 days
   that no suggestion carries"; T3.x should add `answeredAt` to `prompt` records and Home should use it. T2.5 must
   write `event-mark.copy.start` as local `YYYY-MM-DD[THH:MM]` or ISO. "This week" on Home is today..today+6.
+- 2026-10-16, T3.1: codes use 30 characters (Crockford without 0 and 1); prompt records are `p_<code>`, so pass
+  `Desk.prompt.usedCodes()` as `taken` to `code()`. `missingPlaceholders` = unknown names; `absentPlaceholders` =
+  allowed names the template dropped (T3.7's warning). The title cut needs the column named `title`. Worst-case 40
+  rows with long titles and venues go over 6,000 and drop rows. Pruning to 30 uses the new `store.purgeQuiet`.

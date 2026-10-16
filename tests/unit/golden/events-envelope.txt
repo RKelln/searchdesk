@@ -1,0 +1,28 @@
+[A question from Search Desk, a job-search page. Code: DESK-7Q3K]
+
+Pick the events most likely to help this person meet people in their line of work,
+or learn something useful for finding work.
+About the person:
+What work: Office administration
+Field: Finance
+Area: Scarborough, TTC
+Languages: English, Tamil
+Reply language: English
+Up to 4 from the library list and up to 4 from the city list. A short list is better than a padded one.
+For each, say the concrete connection to their situation.
+alias | date | title | venue
+L1 | 2026-10-21 18:30 | Resume clinic | Agincourt Library
+L2 | 2026-10-23 14:00 | Intro to bookkeeping software / free | Albion Library
+L3 | 2026-10-27 11:00 | Job search basics | Malvern Library
+C4 | 2026-10-22 19:00 | Finance and admin professionals mixer | Metro Hall
+C5 | 2026-10-28 18:00 | Newcomer career fair | Scarborough Civic Centre
+
+HOW TO ANSWER
+Put your whole answer inside one code block.
+First line: DESK-7Q3K
+Then one line for each pick, like this:
+L1 | why this one fits, in one sentence
+You may also use:
+C<n> | why
+NEW | title | url | why
+Write the reasons in English.

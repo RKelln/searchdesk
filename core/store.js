@@ -237,6 +237,12 @@ window.Desk = window.Desk || {};
     quiet = true;
     try { return put(record, null); } finally { quiet = was; }
   }
+  // Like purge, but not an undo step: for pruning old bookkeeping records (prompt history).
+  function purgeQuiet(ids) {
+    var was = quiet;
+    quiet = true;
+    try { return purge(ids); } finally { quiet = was; }
+  }
 
   // ---- public ----------------------------------------------------------
   var store = {
@@ -254,7 +260,7 @@ window.Desk = window.Desk || {};
     remove: function (id) { return remove(id, null); },
     ext: function (id, patch, featureId) { return ext(id, patch, featureId, null); },
     batch: batch, undo: undo,
-    applyRecords: applyRecords, purge: purge, putQuiet: putQuiet, // core only
+    applyRecords: applyRecords, purge: purge, purgeQuiet: purgeQuiet, putQuiet: putQuiet, // core only
     // A number naming the step undo() would undo now, or null. A new batch gives a new number.
     undoToken: function () { return undoStack.length ? undoStack[undoStack.length - 1].tok : null; },
     canUndo: function () { return undoStack.length > 0; },
