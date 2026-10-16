@@ -1,0 +1,37 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L3",
+   "id": "ev_c",
+   "fields": {
+    "why": "gentle start."
+   },
+   "marks": [
+    "name"
+   ],
+   "unknown": null,
+   "line": "Networking for Introverts - gentle start."
+  },
+  {
+   "kind": "L",
+   "alias": "L4",
+   "id": "ev_d",
+   "fields": {
+    "why": "she needs it."
+   },
+   "marks": [
+    "name"
+   ],
+   "unknown": null,
+   "line": "Pick: Excel Basics for Bookkeeping | she needs it."
+  }
+ ],
+ "rejected": [],
+ "ignored": 3,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

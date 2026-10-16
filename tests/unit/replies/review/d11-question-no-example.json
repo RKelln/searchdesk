@@ -1,0 +1,52 @@
+{
+ "recipe": "events",
+ "prompts": [
+  {
+   "code": "7Q3K",
+   "recipe": "events",
+   "aliases": {
+    "L1": "ev_a",
+    "L2": "ev_b",
+    "L3": "ev_c",
+    "L4": "ev_d",
+    "L5": "ev_e",
+    "C6": "ev_f",
+    "C7": "ev_g",
+    "C8": "ev_h",
+    "C9": "ev_i",
+    "C10": "ev_j"
+   }
+  }
+ ],
+ "titles": {
+  "ev_a": "Resume Help for Newcomers",
+  "ev_b": "Mock Interview Practice Night",
+  "ev_c": "Networking for Introverts",
+  "ev_d": "Excel Basics for Bookkeeping",
+  "ev_e": "Canadian Workplace Culture Talk",
+  "ev_f": "City Job Fair at Metro Hall",
+  "ev_g": "Free Tax Clinic Open House",
+  "ev_h": "Scarborough Newcomer Meetup",
+  "ev_i": "Community Dinner",
+  "ev_j": "Skills Trades Showcase"
+ },
+ "answer": {
+  "L": [
+   "why"
+  ],
+  "C": [
+   "why"
+  ],
+  "NEW": [
+   "title",
+   "url",
+   "why"
+  ]
+ },
+ "quota": {
+  "L": 20,
+  "C": 20,
+  "NEW": 2
+ },
+ "now": "2026-10-16"
+}

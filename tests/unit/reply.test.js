@@ -78,6 +78,33 @@ test('reply trial share', () => {
   assert.strictEqual(accepted, intended);
 });
 
+// ---- dates, one by one (the fixtures hold one date line each; these are the many forms) -------------------------------------
+test('reply: date forms (weekday, trailing time, ranges, yearless past)', () => {
+  const d = (t, now) => { const r = Desk.reply.parseDate(t, now === undefined ? '2026-10-16' : now); return r.value || (r.unknown ? 'unknown' : 'empty'); };
+  assert.strictEqual(d('Mon, Nov 2'), '2026-11-02');
+  assert.strictEqual(d('Tue Nov 3'), '2026-11-03');
+  assert.strictEqual(d('sat nov 7'), '2026-11-07');
+  assert.strictEqual(d('Thursday, November 5, 2026'), '2026-11-05');
+  assert.strictEqual(d('Nov 2, 2026 at 5pm'), '2026-11-02');
+  assert.strictEqual(d('Nov 2 17:30'), '2026-11-02');
+  assert.strictEqual(d('Nov 2, 2026 @ 5:00 PM EST'), '2026-11-02');
+  assert.strictEqual(d('2026-11-02T17:00:00Z'), '2026-11-02');
+  assert.strictEqual(d('2026-11-02 17:00'), '2026-11-02');
+  assert.strictEqual(d('2026-11-02'), '2026-11-02');
+  assert.strictEqual(d('2026-11-02 to 2026-11-30'), 'unknown');
+  assert.strictEqual(d('2026-11-02 - 2026-11-30'), 'unknown');
+  // yearless: up to 31 days back stays this year; further back is next year only if within 183 days, else unknown
+  assert.strictEqual(d('Oct 10'), '2026-10-10');
+  assert.strictEqual(d('Sep 15'), '2026-09-15');
+  assert.strictEqual(d('Sep 14'), 'unknown');
+  assert.strictEqual(d('Sep 1'), 'unknown');
+  assert.strictEqual(d('Jul 4'), 'unknown');
+  assert.strictEqual(d('Jan 5'), '2027-01-05');
+  assert.strictEqual(d('Mar 31'), '2027-03-31');
+  assert.strictEqual(d('Apr 20'), 'unknown');
+  assert.strictEqual(d('Nov 2', ''), 'unknown');
+});
+
 // ---- purity ---------------------------------------------------------------------------------------------------------------------
 test('reply.js touches no clock, randomness or page', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', '..', 'core', 'reply.js'), 'utf8').replace(/\/\/.*$/gm, '');

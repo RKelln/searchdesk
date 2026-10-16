@@ -1,0 +1,44 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Free resume review for newcomers and it is near her home"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | Free resume review for newcomers / and it is near her home"
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "Mock interviews help indented more"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L2 | Mock interviews help / indented more"
+  },
+  {
+   "kind": "L",
+   "alias": "L3",
+   "id": "ev_c",
+   "fields": {
+    "why": "Chat basics , with a comma start"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L3 | Chat basics / , with a comma start"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

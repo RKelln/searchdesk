@@ -1,0 +1,17 @@
+{
+ "code": "DESK-P4RT",
+ "codeStatus": "other",
+ "promptCode": "DESK-P4RT",
+ "accepted": [],
+ "rejected": [
+  {
+   "line": "",
+   "reason": "This answer belongs to a different AI task.",
+   "code": "other-task"
+  }
+ ],
+ "ignored": 0,
+ "dropped": 0,
+ "looksLikeQuestion": false,
+ "promptRecipe": "posting"
+}

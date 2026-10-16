@@ -1,0 +1,7 @@
+DESK-7Q3K
+NEW | A | https://example.org/a<b | x
+NEW | B | https://example.org/a"b | y
+NEW | C | https://example.org:99999/a | z
+NEW | D | https://example.org:0/a | z
+NEW | E | https://example.org/a‮b | z
+NEW | G | https://example.org:8443/ok?x=1 | fine

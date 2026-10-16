@@ -16,17 +16,23 @@
 //   synonyms  {CLOSES:['DEADLINE']}   extra keyword synonyms (a built-in table covers the posting fields)
 //   types     {CLOSES:'date', url:'url'}   field types by kind name or field name; 'date' and 'url' are checked
 //   example   'L1 | why ...'   the example line from the question, so a pasted-back question is not read as an answer
-//   now       'YYYY-MM-DD'   today, only to give a year to dates like "Nov 2" (without it they become unknown)
+//   now       'YYYY-MM-DD'   today, only to give a year to dates like "Nov 2" (without it they become unknown).
+//             A yearless date at most 31 days in the past is this year; further in the past it is next year only if
+//             that is within 183 days ahead (a closing date), else unknown (marked 'date-unknown').
 //
 // result:
 //   code            the code found in the text ('DESK-7Q3K'), or null
 //   codeStatus      'found' (the newest prompt), 'older' (an older stored prompt), 'missing' (no code; the
-//                   newest matching prompt was used), 'unknown' (a code this page does not have; nothing parsed)
+//                   newest matching prompt was used), 'unknown' (a code this page does not have; nothing parsed),
+//                   'other' (the code belongs to a prompt of a different recipe than context.recipe; nothing is
+//                   imported and one rejected entry, code 'other-task', says so)
 //   promptCode      the stored prompt's code that was used, or null
+//   promptRecipe    only with codeStatus 'other': the recipe of the prompt the code belongs to
 //   accepted[]      {kind, alias, id, fields, marks[], line}; alias kinds carry `fields.why`, `score` for old JSON.
 //                   marks: 'name' (matched by title), 'http' (link is not https), 'date-unknown' (text kept in
 //                   `unknown`). For answer 'text': one {kind:'TEXT', text, summary}.
-//   rejected[]      {line, reason, code}   reason is a plain sentence; code is a stable key for the string table
+//   rejected[]      {line, reason, code}   reason is a plain sentence; code is a stable key for the string table.
+//                   At most 50 are kept; `rejectedMore` (present only when above 0) counts the rest.
 //   ignored         count of prose lines that were not answer lines
 //   dropped         count of lines dropped silently (duplicates, over quota)
 //   looksLikeQuestion  true when the question itself was pasted back
@@ -35,6 +41,7 @@ window.Desk = window.Desk || {};
   'use strict';
   var R = Desk.reply = Desk.reply || {};
   var MAX_FIELD = 300;
+  var MAX_REJECTED = 50;
 
   var BUILTIN_SYNONYMS = {
     TITLE: ['JOB TITLE', 'ROLE', 'POSITION'],
@@ -64,14 +71,24 @@ window.Desk = window.Desk || {};
   function words(s) { return String(s).toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim(); }
   function bareCode(c) { return String(c || '').toUpperCase().replace(/^\s*DESK[\s-]*/, '').replace(/\s+/g, ''); }
 
+  // Leading decoration of an answer line: blockquote marks, bullets, emoji, arrows, check marks, keycap digits.
+  var PICT = '\\p{Extended_Pictographic}\\uFE0F\\u200D\\u20E3\\u2190-\\u21FF\\u2300-\\u23FF\\u25A0-\\u25FF\\u2600-\\u27BF\\u2B00-\\u2BFF';
+  var LEAD_RE = new RegExp('^(?:\\s+|>|[-*\\u2022\\u2023\\u25AA\\u25E6](?=\\s)|[0-9#*]\\uFE0F?\\u20E3|[' + PICT + '])+', 'u');
+  var PICT_AFTER_RE = new RegExp('^[ \\t]*(?:[0-9#*]\\uFE0F?\\u20E3|[' + PICT + '])+[ \\t]*', 'u');
+
   // ---- codes -------------------------------------------------------------------------------------------------------
   // Candidates: every "DESK-XXXX" in the text. Returns [{raw, bare, idx, lineIdx?}] in text order.
   function findCodes(text) {
-    var re = /(DESK)[\s_\-\u2013\u2014]*([0-9A-Za-z]{4})(?![0-9A-Za-z])/gi, m, out = [];
+    var re = /(DESK)([\s_\-\u2013\u2014]*)([0-9A-Za-z]{4})(?![0-9A-Za-z])/gi, m, out = [];
     while ((m = re.exec(text))) {
-      var bare = m[2].toUpperCase();
-      // "desk-work" in prose is not a code: it needs an upper-case DESK or a digit
-      if (m[1] !== 'DESK' && !/[0-9]/.test(bare)) continue;
+      var bare = m[3].toUpperCase();
+      if (/^(?:19|20)\d\d$/.test(bare)) continue; // a year is never a code
+      // "desk-work" or "desk 2026" in prose is not a code: without an upper-case DESK it needs a digit, and either
+      // the dash form or a token with both a letter and a digit
+      if (m[1] !== 'DESK') {
+        if (!/[0-9]/.test(bare)) continue;
+        if (!/-/.test(m[2]) && /^[0-9]+$/.test(bare)) continue;
+      }
       out.push({ bare: bare, idx: m.index });
     }
     return out;
@@ -105,24 +122,36 @@ window.Desk = window.Desk || {};
     var t = new Date(Date.UTC(y, m - 1, d));
     return t.getUTCFullYear() === y && t.getUTCMonth() === m - 1 && t.getUTCDate() === d;
   }
+  var WEEKDAY = /^(?:mon|tue|tues|wed|thu|thur|thurs|fri|sat|sun)[a-z]*\.?,?\s+/i;
+  var TIME_TAIL = /(?:\s*(?:,|\bat\b|@)\s*|\s+)(?:\d{1,2}:\d{2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?|\d{1,2}\s*[ap]\.?m\.?)(?:\s*(?:[A-Z]{2,4}|[+-]\d{2}:?\d{2}))?$/i;
   // -> {value:'YYYY-MM-DD'} | {empty:true} | {unknown:true}
   function parseDate(text, now) {
     var t = String(text).trim().replace(/[.,;]+$/, ''), m;
     if (!t || /^(unknown|not stated|not given|n\/a|na|none|tbd|tba|-|\u2013|\u2014|ongoing|rolling|open)$/i.test(t)) return { empty: true };
     var ny = null, nm = null, nd = null;
     if (now && (m = /^(\d{4})-(\d{2})-(\d{2})/.exec(now))) { ny = +m[1]; nm = +m[2]; nd = +m[3]; }
+    function dayNo(y2, mo, d) { return Math.round(Date.UTC(y2, mo - 1, d) / 86400000); }
     function withYear(mo, d, y) {
       if (!y) {
         if (ny === null) return { unknown: true };
         y = ny;
-        if (mo < nm || (mo === nm && d < nd)) y = ny + 1;
+        if (mo < nm || (mo === nm && d < nd)) {
+          // already past this year: up to 31 days back it stays this year; else next year only when that is soon
+          if (!validYMD(ny, mo, d)) return { unknown: true };
+          var back = dayNo(ny, nm, nd) - dayNo(ny, mo, d);
+          if (back <= 31) y = ny;
+          else if (validYMD(ny + 1, mo, d) && dayNo(ny + 1, mo, d) - dayNo(ny, nm, nd) <= 183) y = ny + 1;
+          else return { unknown: true };
+        }
       } else if (y < 100) y += 2000;
       return validYMD(y, mo, d) ? { value: y + '-' + pad(mo) + '-' + pad(d) } : { unknown: true };
     }
-    if ((m = /^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})(?:[T ].*)?$/.exec(t))) return withYear(+m[2], +m[3], +m[1]);
-    if ((m = /^(?:[A-Za-z]+day,?\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?([A-Za-z]{3,9})\.?,?\s*(\d{4})?$/.exec(t)) && monthOf(m[2]))
+    if ((m = /^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})(?:[T ]\d{1,2}:\d{2}.*)?$/.exec(t))) return withYear(+m[2], +m[3], +m[1]);
+    // a trailing time ("Nov 2, 2026 at 5pm", "Nov 2 17:30") is dropped; so is a leading weekday ("Mon, Nov 2")
+    t = t.replace(TIME_TAIL, '').replace(/[.,;]+$/, '').replace(WEEKDAY, '');
+    if ((m = /^(\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?([A-Za-z]{3,9})\.?,?\s*(\d{4})?$/.exec(t)) && monthOf(m[2]))
       return withYear(monthOf(m[2]), +m[1], m[3] ? +m[3] : 0);
-    if ((m = /^(?:[A-Za-z]+day,?\s+)?([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s*(\d{4}))?$/.exec(t)) && monthOf(m[1]))
+    if ((m = /^([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s*(\d{4}))?$/.exec(t)) && monthOf(m[1]))
       return withYear(monthOf(m[1]), +m[2], m[3] ? +m[3] : 0);
     if ((m = /^(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?$/.exec(t))) {
       var a = +m[1], b = +m[2], y = m[3] ? +m[3] : 0;
@@ -142,6 +171,10 @@ window.Desk = window.Desk || {};
     if (!(m = /^(https?):\/\/([^\/?#]*)([\/?#]\S*)?$/i.exec(t))) return { bad: true };
     var auth = m[2];
     if (/@/.test(auth) || /\s/.test(t)) return { bad: true };
+    // hygiene: only printable ASCII, none of the characters that are never safe in a link
+    if (/[^\x21-\x7E]/.test(t) || /["<>\\^`{|}]/.test(t)) return { bad: true, why: 'chars' };
+    var pm = /:(\d*)$/.exec(auth);
+    if (pm && !(pm[1] && +pm[1] >= 1 && +pm[1] <= 65535)) return { bad: true, why: 'port' };
     var host = auth.replace(/:\d+$/, '');
     if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i.test(host)) return { bad: true };
     if (/^\d+$/.test(host.split('.').pop())) return { bad: true }; // an IP address
@@ -203,10 +236,13 @@ window.Desk = window.Desk || {};
   // ---- cleaning one line ---------------------------------------------------------------------------------------------
   function isTableSeparator(s) { return /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(s); }
   function clean(line) {
-    var s = line.trim();
-    s = s.replace(/^(?:[-*\u2022\u2023\u25AA\u25E6]\s+)+/, '');
+    var s = line.replace(LEAD_RE, '');
     s = s.replace(/\*+|`+|__/g, '');
-    s = s.trim().replace(/^\|\s*/, '').replace(/\s*\|$/, '').trim();
+    s = s.trim().replace(/^\|\s*/, '');
+    if (s.charAt(s.length - 1) === '|') s = s.slice(0, -1); // (not /\s*\|$/: quadratic on long runs of spaces)
+    s = s.replace(LEAD_RE, '').trim();
+    s = s.replace(/^\[([A-Za-z]?[ \t-]*\d{1,3})\]\([^)\s]*\)/, '$1');          // [L1](http://x.y) | why
+    s = s.replace(/^#\d{1,3}\s+(?=[A-Za-z][ \t-]*\d)/, '');                      // "#1 L3 | why"; a list number
     var q = /^"(.*)"[,]?$/.exec(s); if (q && q[1].indexOf('"') < 0) s = q[1];
     return s;
   }
@@ -215,15 +251,29 @@ window.Desk = window.Desk || {};
   var SEP = /^(?:[ \t]*[|:\-\u2013\u2014][ \t]*|[ \t]*\t[ \t]*| {2,})/;
   function stripLead(s) { return s.replace(/^[\s|:\-\u2013\u2014]+/, ''); }
 
-  // alias token at the start: returns {letter, num, rest} or null
-  function aliasToken(S, s, depth) {
+  // alias token at the start: returns {letter, num, rest} or null.
+  // A bare number (no letter) counts only with "|", a tab or two or more spaces after it. `loose` (a JSON id) also
+  // takes a bare number alone.
+  function aliasToken(S, s, depth, loose) {
     var m = /^[(\[#<]*[ \t]*(?:([A-Za-z])[ \t-]*)?0*(\d{1,3})(?![0-9A-Za-z])[)\]>]*\.?/.exec(s);
     if (!m) return null;
-    var letter = m[1] ? m[1].toUpperCase() : '', num = parseInt(m[2], 10), rest = s.slice(m[0].length), sm = SEP.exec(rest);
+    var letter = m[1] ? m[1].toUpperCase() : '', num = parseInt(m[2], 10), rest = s.slice(m[0].length), sm;
+    var pm = PICT_AFTER_RE.exec(rest);            // "L1 \u2705 | why": a symbol right after the alias
+    if (pm) rest = ' ' + rest.slice(pm[0].length);
+    sm = SEP.exec(rest);
     if (!sm && letter && S.letters[letter] && /^[ \t]+\S/.test(rest)) sm = [rest.match(/^[ \t]+/)[0]];
-    if (!sm && /^\s*$/.test(rest)) sm = [rest];
+    if (!sm && /^\s*$/.test(rest)) { if (!letter && !loose) return null; sm = [rest]; }
     if (!sm) return null;
-    rest = rest.slice(sm[0].length);
+    var sep = sm[0];
+    if (!letter && !loose && sep.indexOf('|') < 0 && sep.indexOf('\t') < 0 && !/^ {2,}$/.test(sep)) return null;
+    var after = rest.slice(sep.length);
+    if (letter) {
+      // "L1-2 | both", "L1:30", "L1 & L3 | x": not one clear alias
+      if (/^[:\-\u2013\u2014]$/.test(sep) && /^\d/.test(after)) return null;
+      if (sep === ' ' && /^[&,+\/\d]/.test(after)) return null;
+      if (/^[&+,\/]\s*[A-Za-z]?-?\d/.test(after)) return null;
+    }
+    rest = after;
     if (!letter && !(depth > 0)) { // a list number in front of a real alias ("1 | L3 | why")
       var inner = aliasToken(S, rest, 1);
       if (inner && inner.letter) return inner;
@@ -231,15 +281,59 @@ window.Desk = window.Desk || {};
     return { letter: letter, num: num, rest: stripLead(rest) };
   }
 
-  function lineTitleMatch(S, s) {
-    var n = ' ' + words(s) + ' ', hits = [];
+  // An exact title counts only when it starts the text (after bullets, numbers, quotes, bold) or follows a short
+  // label or separator ("Pick: <title> - why"). A title in the middle of prose is not a pick: "I would skip <title>".
+  function titleAtStart(S, s) {
+    var body = s.replace(/^[^\p{L}\p{N}]+/u, '');
+    var n = ' ' + words(body) + ' ', hits = [];
     S.titles.forEach(function (t) {
-      for (var i = 0; i < t.variants.length; i++) if (n.indexOf(' ' + t.variants[i] + ' ') >= 0) { hits.push({ t: t, v: t.variants[i] }); return; }
+      for (var i = 0; i < t.variants.length; i++) if (n.indexOf(' ' + t.variants[i] + ' ') === 0) { hits.push({ t: t, v: t.variants[i] }); return; }
     });
     if (hits.length !== 1) return null;
-    var re = new RegExp(hits[0].v.split(' ').map(esc).join('[^\\p{L}\\p{N}]+'), 'iu');
-    var why = stripLead(s.replace(re, ' ').replace(/\s+/g, ' ').replace(/^[\s"',.()\[\]]+|[\s"',(\[]+$/g, ''));
+    var re = new RegExp('^' + hits[0].v.split(' ').map(esc).join('[^\\p{L}\\p{N}]+'), 'iu');
+    var why = stripLead(body.replace(re, ' ').replace(/\s+/g, ' ').replace(/^[\s"',.()\[\]]+|[\s"',(\[]+$/g, ''));
     return { item: hits[0].t.item, why: why };
+  }
+  function lineTitleMatch(S, s) {
+    var r = titleAtStart(S, s);
+    if (r) return r;
+    var m = /^[^|:\u2013\u2014]{1,25}?(?:[:|\u2013\u2014]|\s-\s)\s*/.exec(s);
+    return m ? titleAtStart(S, s.slice(m[0].length)) : null;
+  }
+
+  // The reason after the item's own title: "Resume Help for Newcomers | Great" -> "Great"; also "(Title) | Great".
+  function stripOwnTitle(S, item, rest) {
+    var t = S.ctx.titles && S.ctx.titles[item.id], w = t ? words(t) : '';
+    if (!w) return rest;
+    var re = new RegExp('^[(\\[\\s"\']*' + w.split(' ').map(esc).join('[^\\p{L}\\p{N}]+') +
+      '[)\\]"\'\\s]*?(?:[ \\t]*\\t[ \\t]*|[ \\t]*[|:\\u2013\\u2014-][ \\t]*| {2,}|[ \\t]*$)', 'iu');
+    var m = re.exec(rest);
+    return m ? stripLead(rest.slice(m[0].length)) : rest;
+  }
+  // The reason for a known item: from the column a header row named, else after the item's own title.
+  function whyFor(S, item, rest) {
+    if (S.hdr && S.hdr.why > 0) {
+      var cells = rest.split('|'), at = S.hdr.why - 1;
+      if (S.hdr.last) return cells.slice(at).join('|').trim();
+      return (cells[at] || '').trim();
+    }
+    return stripOwnTitle(S, item, rest);
+  }
+  var HEAD_ALIAS = /^(?:alias|id|ref|code|no|number|pick|item)$/;
+  var HEAD_WHY = /^(?:why|reason|reasons|because|note|notes|comment|comments|fit|rationale)$/;
+  var HEAD_OTHER = /^(?:event|events|title|name|date|venue|where|when|org|organisation|organization|type|link|url|tier|score)$/;
+  // "Alias | Event | Why": a header row that names its columns -> {why: column index, last: it is the last column}
+  function tableHeader(cleaned) {
+    var cells = cleaned.split('|').map(function (c) { return c.trim().toLowerCase().replace(/[^a-z# ]/g, '').replace(/^#$/, 'no'); });
+    if (cells.length < 2 || cells.length > 8) return null;
+    var why = -1, i;
+    for (i = 0; i < cells.length; i++) {
+      var c = cells[i];
+      if (HEAD_WHY.test(c)) { if (why < 0) why = i; }
+      else if (!HEAD_OTHER.test(c) && !HEAD_ALIAS.test(c)) return null;
+    }
+    if (why < 0 || !HEAD_ALIAS.test(cells[0])) return null;
+    return { why: why, last: why === cells.length - 1 };
   }
 
   // -> null (not a record) | {bad:true, reason, code} | {rec, short}
@@ -255,22 +349,31 @@ window.Desk = window.Desk || {};
       return keywordRecord(S, S.kw[i].kind, stripLead(rest.slice(sm[0].length)), s);
     }
     // alias kinds
+    var hasLetters = Object.keys(S.letters).length;
     var tok = aliasToken(S, s, 0);
     if (!tok && /^\d{1,3}[.)]\s+/.test(s)) tok = aliasToken(S, s.replace(/^\d{1,3}[.)]\s+/, ''), 0);
-    if (tok && Object.keys(S.letters).length) {
+    if (!tok && hasLetters) { // a short label in front: "Top pick: L1 | why", "Pick L1 | why"
+      m = /^(?:(?:top\s+|my\s+|best\s+)?(?:pick|choice)s?\s+|[^|:]{1,25}:\s+)(?=\S)/i.exec(s);
+      if (m) {
+        var t2 = aliasToken(S, s.slice(m[0].length), 0);
+        if (t2 && t2.letter && S.letters[t2.letter]) tok = t2;
+      }
+    }
+    if (tok && hasLetters) {
       var item = S.byNum[tok.num];
       if (!S.prompt) return { bad: true, reason: 'This page has no question to match this answer to.', code: 'no-question' };
       if (!item) {
         var tm = lineTitleMatch(S, tok.rest);
         if (tm) return aliasRecord(S, tm.item, tm.why, ['name']);
+        if (!tok.letter) return null; // a bare number that is not an item: prose
         return { bad: true, reason: (tok.letter || '') + tok.num + ' is not one of the items in the question.', code: 'unknown-alias' };
       }
-      return aliasRecord(S, item, tok.rest, []);
+      return aliasRecord(S, item, whyFor(S, item, tok.rest), []);
     }
-    // no alias: an exact title
-    if (Object.keys(S.letters).length) {
-      var t2 = lineTitleMatch(S, s.replace(/^\d{1,3}[.)]\s+/, ''));
-      if (t2) return aliasRecord(S, t2.item, t2.why, ['name']);
+    // no alias: an exact title at the start of the line
+    if (hasLetters) {
+      var t3 = lineTitleMatch(S, s.replace(/^\d{1,3}[.)]\s+/, ''));
+      if (t3) return aliasRecord(S, t3.item, t3.why, ['name']);
     }
     return null;
   }
@@ -324,7 +427,10 @@ window.Desk = window.Desk || {};
         else { unknown = unknown || {}; unknown[f] = val; val = ''; marks.push('date-unknown'); }
       } else if (ty === 'url' && val) {
         var u = parseUrl(val);
-        if (u.bad) { bad = bad || { bad: true, reason: 'The web address has no usable host.', code: 'bad-url' }; }
+        if (u.bad) {
+          bad = bad || { bad: true, code: 'bad-url', reason: u.why === 'chars' ? 'The web address has characters that cannot be in a link.'
+            : u.why === 'port' ? 'The web address has a port number that is not valid.' : 'The web address has no usable host.' };
+        }
         else { val = u.url; if (u.http) marks.push('http'); }
       } else {
         val = cap(val, MAX_FIELD);
@@ -342,13 +448,23 @@ window.Desk = window.Desk || {};
   }
 
   // ---- parsing a scope of lines (pipe lines) -------------------------------------------------------------------------
+  // A line after a record is the rest of its reason only if it is indented, or starts with a lower-case letter or
+  // continuation punctuation; anything else is prose around the answer.
+  function continues(raw) {
+    if (/^\s/.test(raw)) return true;
+    if (/^[A-Za-z]-?\d{1,3}(?![0-9A-Za-z])/.test(raw)) return false; // looks like another alias
+    if (/^[-\u2013\u2014]\s/.test(raw)) return false;            // a bullet
+    return /^[a-z,;:\u2013\u2014(-]/.test(raw);
+  }
   function parsePipeLines(S, lines) {
     var units = [], ignored = 0, afterBlank = true;
     lines.forEach(function (raw) {
       if (!raw.trim()) { afterBlank = true; return; }
-      if (isTableSeparator(raw)) return;
+      if (isTableSeparator(raw.trim())) return;
       var cleaned = clean(raw);
       if (!cleaned) return;
+      var hdr = tableHeader(cleaned);
+      if (hdr) { S.hdr = hdr; ignored++; afterBlank = false; return; }
       var r = parseRecord(S, cleaned);
       if (r) { units.push({ raw: raw.trim(), cleaned: cleaned, res: r }); afterBlank = false; return; }
       var prev = units[units.length - 1];
@@ -360,7 +476,7 @@ window.Desk = window.Desk || {};
             r2 = parseRecord(S, cand);
             if (r2 && !r2.bad && !r2.short) { prev.cleaned = cand; prev.raw += ' / ' + raw.trim(); prev.res = r2; return; }
           }
-        } else if (!/[.!?)"']$/.test(prev.cleaned) || /^\s/.test(raw)) {
+        } else if (continues(raw) && (!/[.!?)"']$/.test(prev.cleaned) || /^\s/.test(raw))) {
           cand = prev.cleaned + ' ' + cleaned;
           r2 = parseRecord(S, cand);
           if (r2 && !r2.bad) { prev.cleaned = cand; prev.raw += ' / ' + raw.trim(); prev.res = r2; return; }
@@ -416,7 +532,7 @@ window.Desk = window.Desk || {};
     var s = String(ref).trim(), up = s.toUpperCase();
     if (S.byId[up]) return S.byId[up];
     if (S.byAlias[up]) return S.byAlias[up];
-    var tok = aliasToken(S, s, 0);
+    var tok = aliasToken(S, s, 0, true);
     if (tok && !tok.rest && S.byNum[tok.num]) return S.byNum[tok.num];
     return null;
   }
@@ -451,23 +567,34 @@ window.Desk = window.Desk || {};
 
   // ---- one scope -> accepted/rejected --------------------------------------------------------------------------------------
   function parseScope(S, lines) {
+    S.hdr = null;
     var joined = lines.join('\n'), result, ignored = 0;
     var spans = jsonSpans(joined).filter(function (sp) { return /"\s*(t|type|id|alias)\s*"\s*:/.test(sp.text) || sp.open; });
     var units;
     if (spans.length) {
-      units = parseJsonSpans(S, joined, spans).units;
-      var rest = joined, k;
-      for (k = spans.length - 1; k >= 0; k--) rest = rest.slice(0, spans[k].start) + '\n' + rest.slice(spans[k].end);
-      rest.split('\n').forEach(function (l) { if (l.trim() && !/^[\s\[\],]*$/.test(l)) ignored++; });
+      // JSON spans and the pipe lines around them are both read, in text order
+      var json = parseJsonSpans(S, joined, spans).units, pos = 0;
+      units = [];
+      var around = function (from, to) {
+        var seg = joined.slice(from, to).split('\n').filter(function (l) { return !/^[\s\[\],]*$/.test(l); });
+        if (!seg.length) return;
+        var pr = parsePipeLines(S, seg);
+        units = units.concat(pr.units); ignored += pr.ignored;
+      };
+      spans.forEach(function (sp, k) { around(pos, sp.start); units.push(json[k]); pos = sp.end; });
+      around(pos, joined.length);
     } else {
       result = parsePipeLines(S, lines);
       units = result.units; ignored = result.ignored;
     }
-    var accepted = [], rejected = [], dropped = 0, seen = {}, counts = {};
+    var accepted = [], rejected = [], rejectedMore = 0, dropped = 0, seen = {}, counts = {};
     units.forEach(function (u) {
       if (u.skip) { ignored++; return; }
       var r = u.res;
-      if (r.bad) { rejected.push({ line: cap(u.raw, 200), reason: r.reason, code: r.code }); return; }
+      if (r.bad) {
+        if (rejected.length < MAX_REJECTED) rejected.push({ line: cap(u.raw, 200), reason: r.reason, code: r.code }); else rejectedMore++;
+        return;
+      }
       var rec = r.rec, key = rec.alias ? rec.alias : 'N:' + (rec.fields.title || '') .toLowerCase() + '|' + (rec.fields.url || '') ;
       if (!rec.alias && !rec.fields.title) key = 'K:' + rec.kind;
       if (seen[key]) { dropped++; return; }
@@ -478,7 +605,7 @@ window.Desk = window.Desk || {};
       rec.line = cap(u.raw, 200);
       accepted.push(rec);
     });
-    return { accepted: accepted, rejected: rejected, ignored: ignored, dropped: dropped };
+    return { accepted: accepted, rejected: rejected, rejectedMore: rejectedMore, ignored: ignored, dropped: dropped };
   }
 
   // ---- fences ----------------------------------------------------------------------------------------------------------
@@ -583,6 +710,12 @@ window.Desk = window.Desk || {};
     }
     if (result.codeStatus !== 'unknown') result.codeStatus = status;
     result.promptCode = chosen ? 'DESK-' + bareCode(chosen.code) : null;
+    if (chosen && result.code && c.recipe && chosen.recipe && chosen.recipe !== c.recipe) {
+      // a real code, but for another kind of task: importing it under this recipe would mislead
+      result.codeStatus = 'other'; result.promptRecipe = chosen.recipe;
+      result.rejected.push({ line: '', reason: 'This answer belongs to a different AI task.', code: 'other-task' });
+      return result;
+    }
 
     var hasHeader = /HOW TO ANSWER/i.test(norm);
     if (isText) {
@@ -596,19 +729,30 @@ window.Desk = window.Desk || {};
     // 2. the question pasted back: read only what comes after the header, without the example line
     var lines = norm.split('\n');
     if (hasHeader) {
-      for (i = 0; i < lines.length; i++) if (/HOW TO ANSWER/i.test(lines[i])) { lines = lines.slice(i + 1); break; }
+      for (i = 0; i < lines.length; i++) if (/HOW TO ANSWER/i.test(lines[i])) {
+        // drop the whole format block (header, "First line", the example, "You may also use:" lines): it runs to the
+        // first blank line, code fence, or a line holding only the code
+        var j = i + 1;
+        while (j < lines.length && lines[j].trim() && !/^\s*(`{3,}|~{3,})/.test(lines[j]) &&
+          !/^[\s`'"*>]*DESK[\s_\-\u2013\u2014]*[0-9A-Za-z]{4}[\s`'"*]*$/i.test(lines[j])) j++;
+        lines = lines.slice(j); break;
+      }
       if (c.example) {
         var ex = clean(normalise(c.example)).toLowerCase();
         lines = lines.filter(function (l) { return clean(l).toLowerCase() !== ex; });
       }
+      lines = lines.filter(function (l) { return !/^[^A-Za-z]*[A-Za-z]+<n>\s*\|/.test(l); });
     }
     var S = setup(c, chosen);
     var blocks = findBlocks(lines), candidates = [], all;
-    var codeRe = /DESK[\s_\-\u2013\u2014]*[0-9A-Za-z]{4}/i;
-    blocks.forEach(function (b) { b.hasCode = b.lines.some(function (l) { return codeRe.test(l); }); });
+    blocks.forEach(function (b) { b.hasCode = findCodes(b.lines.join('\n')).length > 0; });
     var withCode = blocks.filter(function (b) { return b.hasCode; });
-    if (withCode.length) candidates.push(withCode[0].lines);
-    blocks.forEach(function (b) { if (withCode.indexOf(b) < 0 || withCode[0] !== b) candidates.push(b.lines); });
+    if (withCode.length) { // every block that holds the code is read, as one scope (repeats are dropped as duplicates)
+      var merged = [];
+      withCode.forEach(function (b, k) { if (k) merged.push(''); merged = merged.concat(b.lines); });
+      candidates.push(merged);
+    }
+    blocks.forEach(function (b) { if (!b.hasCode) candidates.push(b.lines); });
     all = lines.filter(function (l) { return !/^\s*(`{3,}|~{3,})/.test(l); });
     // other blocks are tried best-first
     var firstFixed = withCode.length ? 1 : 0;
@@ -622,6 +766,7 @@ window.Desk = window.Desk || {};
       if (top) best = top.r;
     }
     if (!best) best = parseScope(S, all);
+    if (best.rejectedMore) result.rejectedMore = best.rejectedMore;
     result.accepted = best.accepted; result.rejected = best.rejected; result.ignored = best.ignored; result.dropped = best.dropped;
     if (hasHeader && !best.accepted.length && !best.rejected.length) result.looksLikeQuestion = true;
     if (result.codeStatus === 'unknown') { // unknown code with the question pasted back: nothing is imported

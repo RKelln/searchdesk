@@ -1,0 +1,44 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "great"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "Top pick: L1 | great"
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "good"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "Pick L2 | good"
+  },
+  {
+   "kind": "C",
+   "alias": "C6",
+   "id": "ev_f",
+   "fields": {
+    "why": "fine"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "My choice: C6 - fine"
+  }
+ ],
+ "rejected": [],
+ "ignored": 2,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

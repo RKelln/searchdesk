@@ -1,0 +1,6 @@
+DESK-7Q3K
+L1-2 | both
+L1 & L3 | x
+L1/L2 | y
+L4 + L5 | z
+L1 | fine

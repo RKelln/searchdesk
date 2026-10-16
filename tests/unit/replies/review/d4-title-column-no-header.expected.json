@@ -1,0 +1,66 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Great"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "| L1 | Resume Help for Newcomers | Great |"
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "good"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L2\tMock Interview Practice Night\tgood"
+  },
+  {
+   "kind": "L",
+   "alias": "L3",
+   "id": "ev_c",
+   "fields": {
+    "why": "Gentle"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L3 (Networking for Introverts) | Gentle"
+  },
+  {
+   "kind": "L",
+   "alias": "L4",
+   "id": "ev_d",
+   "fields": {
+    "why": "useful"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L4 Excel Basics for Bookkeeping - useful"
+  },
+  {
+   "kind": "L",
+   "alias": "L5",
+   "id": "ev_e",
+   "fields": {
+    "why": "Canadian Workplace Culture Talk is useful"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L5 | Canadian Workplace Culture Talk is useful"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

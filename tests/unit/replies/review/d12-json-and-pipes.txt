@@ -1,0 +1,5 @@
+DESK-7Q3K
+{"t":"pick","id":"L1","reason":"json one"}
+L2 | pipe two
+{"t":"new","title":"X Y","url":"https://x.org/a","why":"w"}
+C6 | pipe three

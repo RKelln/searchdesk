@@ -1,0 +1,121 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "a"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "✅ L1 | a"
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "b"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "🔹 L2 | b"
+  },
+  {
+   "kind": "L",
+   "alias": "L3",
+   "id": "ev_c",
+   "fields": {
+    "why": "c"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "👉 L3 | c"
+  },
+  {
+   "kind": "L",
+   "alias": "L4",
+   "id": "ev_d",
+   "fields": {
+    "why": "d"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "▶ L4 | d"
+  },
+  {
+   "kind": "L",
+   "alias": "L5",
+   "id": "ev_e",
+   "fields": {
+    "why": "e"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "→ L5 | e"
+  },
+  {
+   "kind": "C",
+   "alias": "C6",
+   "id": "ev_f",
+   "fields": {
+    "why": "f"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "1️⃣ C6 | f"
+  },
+  {
+   "kind": "C",
+   "alias": "C7",
+   "id": "ev_g",
+   "fields": {
+    "why": "g"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "🥇 C7 | g"
+  },
+  {
+   "kind": "C",
+   "alias": "C8",
+   "id": "ev_h",
+   "fields": {
+    "why": "h"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "✔ C8 | h"
+  },
+  {
+   "kind": "C",
+   "alias": "C9",
+   "id": "ev_i",
+   "fields": {
+    "why": "i"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "> C9 | i"
+  },
+  {
+   "kind": "C",
+   "alias": "C10",
+   "id": "ev_j",
+   "fields": {
+    "why": "j"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "> ✅ **C10** | j"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

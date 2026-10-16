@@ -19,10 +19,14 @@
    "alias": null,
    "id": null,
    "fields": {
-    "value": "2027-09-01"
+    "value": ""
    },
-   "marks": [],
-   "unknown": null,
+   "marks": [
+    "date-unknown"
+   ],
+   "unknown": {
+    "value": "Sep 1"
+   },
    "line": "CLOSES | Sep 1"
   }
  ],

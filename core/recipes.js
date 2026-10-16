@@ -290,9 +290,7 @@ window.Desk = window.Desk || {};
     prompts.forEach(function (p) { if (!used && 'DESK-' + bare(p.code) === parsed.promptCode) used = p; });
     used = used || pr;
     res.recipe = def.id; res.code = bare(used.code);
-    // The parser reads the "You may also use: NEW | title | url | why" format line of a pasted-back question as a bad
-    // line, so a header with nothing accepted also counts as the question pasted back.
-    if (parsed.looksLikeQuestion || (/HOW TO ANSWER/i.test(text) && !parsed.accepted.length)) return stop('question', 'aiThatIsQuestion');
+    if (parsed.looksLikeQuestion) return stop('question', 'aiThatIsQuestion');
     if (parsed.codeStatus === 'missing') res.notes.push(T('aiNoCode'));
     if (!parsed.accepted.length && !parsed.rejected.length) { res.notes = []; return stop('nothing', 'aiNothingFound'); }
     res.rejected = parsed.rejected.slice();

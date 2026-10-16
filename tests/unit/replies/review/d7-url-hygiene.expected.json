@@ -1,0 +1,50 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "G",
+    "url": "https://example.org:8443/ok?x=1",
+    "why": "fine"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "NEW | G | https://example.org:8443/ok?x=1 | fine"
+  }
+ ],
+ "rejected": [
+  {
+   "line": "NEW | A | https://example.org/a<b | x",
+   "reason": "The web address has characters that cannot be in a link.",
+   "code": "bad-url"
+  },
+  {
+   "line": "NEW | B | https://example.org/a\"b | y",
+   "reason": "The web address has characters that cannot be in a link.",
+   "code": "bad-url"
+  },
+  {
+   "line": "NEW | C | https://example.org:99999/a | z",
+   "reason": "The web address has a port number that is not valid.",
+   "code": "bad-url"
+  },
+  {
+   "line": "NEW | D | https://example.org:0/a | z",
+   "reason": "The web address has a port number that is not valid.",
+   "code": "bad-url"
+  },
+  {
+   "line": "NEW | E | https://example.org/a‮b | z",
+   "reason": "The web address has characters that cannot be in a link.",
+   "code": "bad-url"
+  }
+ ],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

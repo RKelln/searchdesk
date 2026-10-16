@@ -1,0 +1,13 @@
+HOW TO ANSWER
+Put your whole answer inside one code block.
+First line: DESK-7Q3K
+Then one line for each pick, like this:
+L1 | why this one fits, in one sentence
+You may also use:
+NEW | title | url | why
+C<n> | why
+
+```
+DESK-7Q3K
+L2 | Mock interviews build confidence.
+```

@@ -1,0 +1,57 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "json one"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "{\"t\":\"pick\",\"id\":\"L1\",\"reason\":\"json one\"}"
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "pipe two"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L2 | pipe two"
+  },
+  {
+   "kind": "NEW",
+   "alias": null,
+   "id": null,
+   "fields": {
+    "title": "X Y",
+    "url": "https://x.org/a",
+    "why": "w"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "{\"t\":\"new\",\"title\":\"X Y\",\"url\":\"https://x.org/a\",\"why\":\"w\"}"
+  },
+  {
+   "kind": "C",
+   "alias": "C6",
+   "id": "ev_f",
+   "fields": {
+    "why": "pipe three"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "C6 | pipe three"
+  }
+ ],
+ "rejected": [],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

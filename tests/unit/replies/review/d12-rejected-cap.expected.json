@@ -1,0 +1,274 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "good"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | good"
+  }
+ ],
+ "rejected": [
+  {
+   "line": "L900 | bad",
+   "reason": "L900 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L901 | bad",
+   "reason": "L901 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L902 | bad",
+   "reason": "L902 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L903 | bad",
+   "reason": "L903 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L904 | bad",
+   "reason": "L904 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L905 | bad",
+   "reason": "L905 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L906 | bad",
+   "reason": "L906 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L907 | bad",
+   "reason": "L907 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L908 | bad",
+   "reason": "L908 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L909 | bad",
+   "reason": "L909 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L910 | bad",
+   "reason": "L910 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L911 | bad",
+   "reason": "L911 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L912 | bad",
+   "reason": "L912 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L913 | bad",
+   "reason": "L913 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L914 | bad",
+   "reason": "L914 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L915 | bad",
+   "reason": "L915 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L916 | bad",
+   "reason": "L916 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L917 | bad",
+   "reason": "L917 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L918 | bad",
+   "reason": "L918 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L919 | bad",
+   "reason": "L919 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L920 | bad",
+   "reason": "L920 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L921 | bad",
+   "reason": "L921 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L922 | bad",
+   "reason": "L922 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L923 | bad",
+   "reason": "L923 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L924 | bad",
+   "reason": "L924 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L925 | bad",
+   "reason": "L925 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L926 | bad",
+   "reason": "L926 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L927 | bad",
+   "reason": "L927 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L928 | bad",
+   "reason": "L928 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L929 | bad",
+   "reason": "L929 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L930 | bad",
+   "reason": "L930 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L931 | bad",
+   "reason": "L931 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L932 | bad",
+   "reason": "L932 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L933 | bad",
+   "reason": "L933 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L934 | bad",
+   "reason": "L934 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L935 | bad",
+   "reason": "L935 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L936 | bad",
+   "reason": "L936 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L937 | bad",
+   "reason": "L937 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L938 | bad",
+   "reason": "L938 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L939 | bad",
+   "reason": "L939 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L940 | bad",
+   "reason": "L940 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L941 | bad",
+   "reason": "L941 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L942 | bad",
+   "reason": "L942 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L943 | bad",
+   "reason": "L943 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L944 | bad",
+   "reason": "L944 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L945 | bad",
+   "reason": "L945 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L946 | bad",
+   "reason": "L946 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L947 | bad",
+   "reason": "L947 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L948 | bad",
+   "reason": "L948 is not one of the items in the question.",
+   "code": "unknown-alias"
+  },
+  {
+   "line": "L949 | bad",
+   "reason": "L949 is not one of the items in the question.",
+   "code": "unknown-alias"
+  }
+ ],
+ "ignored": 1,
+ "dropped": 0,
+ "looksLikeQuestion": false,
+ "rejectedMore": 10
+}

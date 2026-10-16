@@ -398,3 +398,10 @@ can follow a day later if it must).
   latest" (T5.1). The T4.1 CSP `connect-src` is `https://staging.toronto.togather.foundation`. The Python and JS
   normalisers are separate copies; a test keeps the tiers and endpoint in step, but not the normalise logic. Staging
   data is mixed (venues like "Members only"), so the T3.4 row caps matter.
+- 2026-10-16, T3.2 fixes: all 12 review defects are fixed, each with a fixture in `tests/unit/replies/review/`.
+  Trial lines still pass 53/53, and a 100 KB paste parses in about 43 ms. Two quadratic regexes the probe found are
+  also fixed. The `process` workaround is gone: a pasted-back question now gives `looksLikeQuestion`. Three expected
+  files changed: "Sep 1" with today Oct 16 is now unknown; two question layouts count fewer ignored lines. The yearless
+  date rule: up to 31 days back stays this year, otherwise it rolls to next year only within 183 days, else it is unknown.
+  A code from another recipe gives `codeStatus: 'other'`; `process` cannot reach this today, so there is no
+  `aiOtherTask` string yet. `rejected` is capped at 50, with `rejectedMore`.

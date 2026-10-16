@@ -1,0 +1,33 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "one"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | one"
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "two"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L2 | two"
+  }
+ ],
+ "rejected": [],
+ "ignored": 2,
+ "dropped": 1,
+ "looksLikeQuestion": false
+}

@@ -1,0 +1,22 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Great"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "| L1 | Resume Help for Newcomers | Great |"
+  }
+ ],
+ "rejected": [],
+ "ignored": 2,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}

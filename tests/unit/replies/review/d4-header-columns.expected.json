@@ -1,0 +1,33 @@
+{
+ "code": "DESK-7Q3K",
+ "codeStatus": "found",
+ "promptCode": "DESK-7Q3K",
+ "accepted": [
+  {
+   "kind": "L",
+   "alias": "L1",
+   "id": "ev_a",
+   "fields": {
+    "why": "Fits her"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L1 | Whatever the model wrote here | Fits her"
+  },
+  {
+   "kind": "L",
+   "alias": "L2",
+   "id": "ev_b",
+   "fields": {
+    "why": "Practice | helps"
+   },
+   "marks": [],
+   "unknown": null,
+   "line": "L2 | Mock | Practice | helps"
+  }
+ ],
+ "rejected": [],
+ "ignored": 2,
+ "dropped": 0,
+ "looksLikeQuestion": false
+}
