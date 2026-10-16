@@ -42,4 +42,4 @@ Things only you can do, in rough order of urgency for the Mon Oct 19, 2pm tag. T
 - 2026-10-16: `tel:` links are allowed (digits only).
 - 2026-10-16: coach: the line "Workshops: fictional person only" appears only in workshop mode. Workshop mode keeps v4
   exactly (3 questions); everyone else gets 5 questions by default (not yet harness-tested).
-- 2026-10-16: two separate made-up people is fine: the harness's Amira (rich background) and the app's example Amira.
+- 2026-10-16: two separate made-up people with different names: Rosa (the interview harness, rich background) and Amira (the app's example).

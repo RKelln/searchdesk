@@ -2,7 +2,7 @@
 
 Use two layers; neither is a code-coverage percentage.
 
-- **Whole conversations:** same rich Amira fixture, different candidate delivery styles (ordinary, vague-first, uncertain, early-stop). Tests natural flow, counting, follow-up relevance and candidate consistency.
+- **Whole conversations:** same rich Rosa fixture, different candidate delivery styles (ordinary, vague-first, uncertain, early-stop). Tests natural flow, counting, follow-up relevance and candidate consistency.
 - **Focused continuations:** prefilled transcripts in `focused.json`; a fresh Sol interviewer generates only the next message. Tests a precise transition without paying for the entire interview or depending on a candidate to trigger it.
 
 The twelve focused cases cover past-example selection, known outcomes in feedback, a vague answer, follow-up exhaustion, unknown information, early stopping, partial and skipped interviews, a strong partial answer, and retry selection/feedback including an unchanged retry. Expected checks describe meaning, not exact output strings. A continuation is a replayed transcript in a user request, not injected native assistant history; successful continuations must still be checked in full conversations.

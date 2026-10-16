@@ -29,8 +29,8 @@ V3 fixed the partial-interview cases but the retry continuation still called a s
 - Measured v4 payload: **1,481 characters**, including the final newline; **19 characters spare**. ASCII text, so UTF-8 bytes and character count match. Profile/posting remain separate.
 - The fictional profile and posting are **separate chat context**. They do not go into the limited instruction field. The complete assembled chat message will therefore be longer than 1,500 characters.
 - Preferred room route: paste the instructions and labelled profile/posting into a fresh chat, or let the desk assemble them. No saved assistant or custom-instructions setup is required. If instructions are saved for take-home, keep them scoped to interview practice so they do not affect unrelated chats.
-- Supply `Candidate profile:` and `Job posting:` below the instruction block. Use the workshop's exact seeded Amira profile and sample posting, rather than inventing another version. No credentials or personal resume needed.
-- Start with the prepared inputs; answer as Amira. Use `skip` or `interview over` at any point. The maximum is three main questions plus three follow-ups; the participant can end earlier to fit ten minutes.
+- Supply `Candidate profile:` and `Job posting:` below the instruction block. Use the workshop's exact seeded Rosa profile and sample posting, rather than inventing another version. No credentials or personal resume needed.
+- Start with the prepared inputs; answer as Rosa. Use `skip` or `interview over` at any point. The maximum is three main questions plus three follow-ups; the participant can end earlier to fit ten minutes.
 - A hypothetical sample employer cannot be researched as though it exists. The research instruction applies only to a real employer. If the selected sample job has no real employer, separately test research using a public posting; do not imply that the sample exercise exercised search.
 
 ## Why this version
@@ -51,7 +51,7 @@ Then run the same scripted inputs in fresh chats. Start on the actual workshop C
 
 | Case | Input or action | Observable requirement |
 |---|---|---|
-| Supplied context | Exact seeded Amira profile and posting | No redundant intake or personal resume request; first interview turn has one question. |
+| Supplied context | Exact seeded Rosa profile and posting | No redundant intake or personal resume request; first interview turn has one question. |
 | Missing context | Omit the posting, then provide it | Asks only for missing context and waits; does not invent a vacancy. |
 | Vague answer | “We helped customers and it went well.” | One focused follow-up about an example or personal contribution; no answer supplied. |
 | Unknown result | “The profile doesn't say what happened.” | No invented metric, outcome or experience; move on after the allowed follow-up. |

@@ -42,7 +42,7 @@ No package install, external API key, CLI login, or service setup is needed for 
 
 ## Fixtures
 
-`fixtures/amira-v3.md` and the `scenario*.json` files describe a made-up Amira with a rich volunteering history (a beginner from a community clothing swap). She is a different person from the app's example Amira in `docs/inputs/example-person.md` (the experienced accounts-payable clerk, loaded by `data/example.js`). Both are fine as test people. Keep these for prompt comparisons, since earlier results used them, and say which Amira a result used.
+`fixtures/rosa-v3.md` and the `scenario*.json` files describe a made-up Rosa with a rich volunteering history (a beginner from a community clothing swap). Rosa is a different person from the app's example Amira in `docs/inputs/example-person.md` (the experienced accounts-payable clerk, loaded by `data/example.js`). Both are fine as test people. Keep these for prompt comparisons, since earlier results used them, and say which person a result used. Runs before 2026-10-16 call the harness person Amira; she is now Rosa.
 
 ## Discovery in other harnesses
 

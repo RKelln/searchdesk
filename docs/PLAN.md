@@ -409,7 +409,7 @@ can follow a day later if it must).
   (`window.DESK_WORKSHOP` truthy; the recipe ctx has `workshop()`, and an option `default` may be a function of
   the recipe ctx). A workshop copy keeps v4 exactly: 3 questions, 1,481 characters. A normal copy defaults to 5 questions (1,425
   characters; its longest mix is 1,443) and is not yet harness-tested. `export-prompt.js --workshop`; the harness defaults to the workshop text.
-  The harness's Amira (rich volunteering history) and the app's example Amira are two separate made-up people.
+  The harness person is now Rosa (rich volunteering history, `fixtures/rosa-v3.md`); the app's example person is Amira.
 - 2026-10-16, T3.4: rows come from the next 21 days, leaving out starred, dismissed and finished events. Each tier
   keeps its 20 best by how well the event's words fit the profile's roles and field, then shows them in date order.
   A row is `alias | date | title | venue`. The answer quota is L4 C4 NEW2. Event suggestions have `target` set to

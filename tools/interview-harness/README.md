@@ -7,7 +7,7 @@
 > `--workshop`) gives what a normal copy of the app copies (5 questions, no workshop sentence; not harness-tested). The validation note is [docs/coach-prompt.md](../../docs/coach-prompt.md). Model names in
 > [models.json](models.json) and the remarks about "this session" describe the environment the harness was built in
 > (a Codex-style coding harness with Luna and Sol models); use equivalent models in yours and record what you used.
-> The harness's Amira (rich volunteering history, `fixtures/amira-v3.md`) and the app's example Amira (`docs/inputs/example-person.md`, the accounts-payable clerk) are two separate made-up people (see "Fixtures" in [SKILL.md](SKILL.md)).
+> Rosa (the harness person, `fixtures/rosa-v3.md`) and Amira (the app's example person, `docs/inputs/example-person.md`, the accounts-payable clerk) are different made-up people (see "Fixtures" in [SKILL.md](SKILL.md)).
 
 **Fresh session:** read [SKILL.md](SKILL.md) first. It is the portable runbook for models, paths, isolation, trial selection, stopping rules and evidence. The files below are its supporting procedures.
 
@@ -59,13 +59,13 @@ This is also the protocol for an orchestration skill: request, isolated role inv
 
 ## Scenarios and evidence
 
-Default full-round fixture: **`scenario-rich.json`**, with detailed candidate-only history in [fixtures/amira-v3.md](fixtures/amira-v3.md). The coordinator copies the file without reading it, gives only its path to the candidate, and keeps the interviewer on the short public introduction/posting. The candidate may read/search that file as needed. Substantive assessment happens afterward, when the parent evaluator reads the snapshot and transcript. This mode is currently supported by the subagent procedure, not the optional CLI relay.
+Default full-round fixture: **`scenario-rich.json`**, with detailed candidate-only history in [fixtures/rosa-v3.md](fixtures/rosa-v3.md). The coordinator copies the file without reading it, gives only its path to the candidate, and keeps the interviewer on the short public introduction/posting. The candidate may read/search that file as needed. Substantive assessment happens afterward, when the parent evaluator reads the snapshot and transcript. This mode is currently supported by the subagent procedure, not the optional CLI relay.
 
 The v3 fixture has concrete coat-help, teamwork, escalation, mistake and prioritisation examples, plus explicit unknowns and retry guidance. It is synthetic harness material, not Search Desk's canonical persona. Keep the thin v2 guide for missing-detail tests; comparisons across those fixture versions are not prompt-only comparisons.
 
 For prompt comparisons, prefer **`scenario-answer-bank.json`**, now an answer guide. It gives the candidate stable background, example answers and limits on what is known. The candidate adapts wording and detail to the actual question while keeping its history consistent; no exact-match responses or answer-ID routing. The interviewer never sees the guide. Compare factual content and answer depth between runs, allowing natural wording differences. Keep the same guide version for prompt variants. Use separate scenarios for early-stop/skip tests rather than mixing control signals into ordinary answers.
 
-`scenario.json` is a tiny, explicitly fictional smoke-test fixture, a harness person, separate from the app's example Amira (`docs/inputs/example-person.md`, the accounts-payable clerk). Copy it to define another scenario and pass `init --scenario FILE`. Put candidate behaviour such as “answer vaguely, then skip” in `candidate_instructions`; it stays hidden from the interviewer. Run normal and early-stop cases separately.
+`scenario.json` is a tiny, explicitly fictional smoke-test fixture with its own harness person, separate from the app's example person Amira (`docs/inputs/example-person.md`, the accounts-payable clerk). Copy it to define another scenario and pass `init --scenario FILE`. Put candidate behaviour such as “answer vaguely, then skip” in `candidate_instructions`; it stays hidden from the interviewer. Run normal and early-stop cases separately.
 
 Runs snapshot the interviewer prompt and scenario, exact per-turn requests/replies, CLI output/errors, commands, timestamps, and a readable transcript. They are ignored by Git (`runs/.gitignore`); copy a small assessment into `evidence/` if it should be kept. Attach a short human assessment using [the validation rubric](../../docs/coach-prompt.md). Inspect candidate grounding separately: a simulator's invented experience is not automatically an interviewer failure. No model judge or automatic pass score in this first version. Repeated same-model simulations can share blind spots; they prepare us for, rather than replace, one human rehearsal.
 
@@ -78,3 +78,5 @@ Web research is explicitly unavailable in this initial harness. Test search late
 including the retry-feedback failure v4 fixed) and `rich-trial-01` (prompt v1, the one full round with the rich fixture).
 They were produced in the workshop repository with the models in `models.json`; they are history, not current coverage.
 A v4 full round, repeated trials, real-chat and human trials are still untested.
+
+Runs before 2026-10-16 call the harness person Amira; she is now Rosa.
