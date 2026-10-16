@@ -215,6 +215,11 @@ window.Desk = window.Desk || {};
     daysFrom: function (v, now) { return Desk.daysFrom(v, now); }
   });
 
+  var EVENTS = Object.freeze({
+    current: function () { return Desk.net ? Desk.net.current() : { events: [], source: 'snapshot', generated: '', note: '' }; },
+    refresh: function (o) { return Desk.net ? Desk.net.events(o) : Promise.resolve(EVENTS.current()); }
+  });
+
   function makeCtx(def) {
     var id = def.id;
     return Object.freeze({
@@ -232,6 +237,9 @@ window.Desk = window.Desk || {};
       profile: function () { return Desk.store.get('profile') || {}; },
       profileLines: function (p) { return Desk.prompt.profileLines(p === undefined ? (Desk.store.get('profile') || {}) : p); },
       backupNudge: function () { return Desk.io && Desk.io.backupNudge ? Desk.io.backupNudge() : { show: false, text: '', days: null }; },
+      // ctx.events: the events to show. current() is instant (the cache, else the snapshot) and refresh() asks
+      // core/net.js to fetch when live events are on (it never fetches otherwise). Both give {events, source, generated, note}.
+      events: EVENTS,
       recipe: function (r) { addRecipe(r, id); }
     });
   }

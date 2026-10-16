@@ -35,6 +35,10 @@ Do not change a name once used. Do not select by visible text, since text lives 
 | `[data-test="ai-pending"]` (with `data-code`), `ai-pending-clear` | AI helper: the waiting-for-an-answer card and its button. The paste box there is `paste-box` (with `paste-button`) |
 | `[data-test="ai-result"]`, `ai-result-text`, `ai-note`, `ai-undo`, `ai-problem`, `ai-rejected`, `ai-fixit`, `ai-fixit-status`, `ai-fixit-fallback` | AI helper: the result block, its line, notes, Undo, the unreadable-lines sentence and list, "Copy a fix-it message" and its status |
 | `[data-test="ai-better"]`, `ai-better-text`, `ai-better-save`, `ai-better-done` | AI helper: "Could be better", its optional sentence, Save, the thanks line |
+| `[data-test="ai-copy-<partId>"]`, `ai-part-copied`, `ai-part-fallback`, `ai-tips`, `action-coach` | AI helper: a recipe's extra copy button (`copies`, e.g. `ai-copy-instructions`), its status line and press-and-hold box, the tips list; the job button "Practise an interview for this job" |
+| `[data-test="event-row"]` (with `data-event-id`), `event-star`, `event-dismiss`, `event-restore`, `events-link` | Events: one row per event, its Star / Unstar and Hide buttons (Unstar sits in the Starred list), Show again (hidden list), the "See the listing" link |
+| `[data-test="events-week-this"]`, `events-week-next`, `events-week-all`, `events-tier-<id>` (`library`, `city`), `events-starred`, `events-suggested`, `events-source`, `events-more-<tier>`, `events-hidden-toggle`, `events-hidden` | Events: the week buttons (`aria-pressed`), the tier sections, the Starred and Suggested for you sections, the "list saved on" line, Show more, the hidden-events toggle and list |
+| `[data-test="suggestion-row"]` (with `data-event-id`), `suggestion-take`, `suggestion-dismiss`, `events-ai-mark` | Events, "Suggested for you": a row, "Star it", "Not for me", the "From AI" mark |
 | `[data-test="nav-<id>"]` | nav link for feature `<id>` |
 | `[data-test="<feature>-<thing>"]` | anything else, prefixed with the feature id, e.g. `jobs-add`, `jobs-row` |
 
@@ -45,3 +49,10 @@ before the shell boots (works on file:// in WebKit too, unlike `page.route`). Th
 write in `window.__copied` and every `window.open` in `window.__opened` (and returns null), makes `readText` return
 `window.__clip`, and `window.__failCopy = true` makes both copy routes fail. Read what was copied from `__copied`
 instead of the real clipboard, since WebKit does not grant clipboard permissions.
+
+## Events tests (`test_events.py`)
+
+The data comes from `data/events-snapshot.js`. Cases serve a small made-up snapshot through `page.route` and fix the
+date by adding `Desk.setNow(...)` to the end of that script, so they skip WebKit on `file://` like the shell cases.
+One case reads the real committed snapshot (it fixes the date inside the snapshot's window, 2026-10-20). Live events
+are tested by faking the Togather host with `page.route` after setting `settings.liveEvents`.

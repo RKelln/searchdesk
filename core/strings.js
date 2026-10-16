@@ -141,6 +141,9 @@ window.Desk = window.Desk || {};
     aiBetterSave: 'Save this note',
     aiBetterDone: 'Thanks. Saved a note for this task.',
     selftestHeading: 'Self-test',
+    // net (T2.5)
+    netNoteCache: 'Could not get the latest events. Showing the ones saved earlier.',
+    netNoteSnapshot: 'Could not get the latest events. Showing the list that came with this app.',
     // selftest
     selftestIntro: 'This runs the checks for every part of the app. Green is good. Red needs a fix.',
     selftestRun: 'Run again',

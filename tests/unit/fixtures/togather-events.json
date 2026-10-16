@@ -1,0 +1,305 @@
+{
+ "note": "Trimmed real responses from staging.toronto.togather.foundation (2026-10-16) plus 4 made-up bad items (ids start 01TEST). Library and city share events.",
+ "library": {
+  "items": [
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01M51EX7KPA0WQRCE1HNA1J6D0",
+    "name": "Finding a Job with ACCES Employment",
+    "description": "Interview Preparation & Personal Branding This workshop prepares participants for interviews with a focus on answering behavioral questions, articulating their strengths, and building a strong personal brand. Practical tips and examples will be shared, along with time for Q&A. Participants are encouraged (but not required) to bring a copy of their resume (digital or printed) for feedback. Drop-In. Space is limited. Room: Program Room, Basement Level No registration required.",
+    "keywords": [
+     "adults (18+)",
+     "career & job search"
+    ],
+    "startDate": "2026-10-16T18:00:00-04:00",
+    "endDate": "2026-10-16T19:30:00-04:00",
+    "location": {
+     "@type": "Place",
+     "@id": "https://staging.toronto.togather.foundation/places/01M51EX7KP7TZ558ZEVZVZTH1S",
+     "name": "Weston",
+     "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "2 King Street",
+      "addressLocality": "Toronto",
+      "addressRegion": "ON",
+      "postalCode": "M9N 1K9",
+      "addressCountry": "CA"
+     },
+     "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 43.7017009,
+      "longitude": -79.5206752
+     }
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01M51EX7Q0J9MY33Y2ARTAE3BQ",
+    "name": "Using AI in Job Searching and Career Exploration",
+    "description": "Curious about how to use AI in pursuing career goals? Whether you're exploring career paths, writing a resume or preparing for interviews, this practical, interactive workshop will demonstrate how to use AI tools to support these activities. Room: Community Room, Ground Floor Registration required (27 spots remaining).",
+    "keywords": [
+     "adults (18+)",
+     "artificial intelligence",
+     "career & job search"
+    ],
+    "startDate": "2026-10-22T18:30:00-04:00",
+    "endDate": "2026-10-22T20:00:00-04:00",
+    "location": {
+     "@type": "Place",
+     "@id": "https://staging.toronto.togather.foundation/places/01M51EX7Q19RJJPGASMGK96CJ6",
+     "name": "Brentwood",
+     "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "36 Brentwood Road North",
+      "addressLocality": "Toronto",
+      "addressRegion": "ON",
+      "postalCode": "M8X 2B5",
+      "addressCountry": "CA"
+     },
+     "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 43.6473973,
+      "longitude": -79.5142792
+     }
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01M51EX7R58GV2DKPR15G5JAQJ",
+    "name": "Job Search Tools",
+    "description": "Learn about the latest tools and strategies to help you land your dream job, and the tools you can access with your library card. Room: Learning Centre 1 Registration required (7 spots remaining).",
+    "keywords": [
+     "adults (18+)",
+     "career & job search"
+    ],
+    "startDate": "2026-10-23T14:00:00-04:00",
+    "endDate": "2026-10-23T15:30:00-04:00",
+    "location": {
+     "@type": "Place",
+     "@id": "https://staging.toronto.togather.foundation/places/01M2EV3SFW95ZN5STDXVKNX1GK",
+     "name": "Toronto Reference Library",
+     "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "789 Yonge St",
+      "addressLocality": "Toronto",
+      "addressRegion": "ON",
+      "postalCode": "M4W 2G8",
+      "addressCountry": "CA"
+     },
+     "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 43.6718771,
+      "longitude": -79.3866663
+     }
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01M51EX7S4EWY9134C6HCDAXXR",
+    "name": "You're More Qualified Than You Think",
+    "description": "Join one of our Career Coaches in Residence, Jermaine L Murray, for this workshop and discover the power of transferable skills. Identify valuable experience from education, retail, volunteering, caregiving and previous work. Practice translating that experience into language employers recognize. Participant takeaway: A skills inventory and three career paths to explore. Need help with Zoom? - Joining and participating in a Zoom webinar - Zoom Privacy Statement This program is part of TPL's Career Coaches in Residence and is generously supported by our lead donor Azrieli Foundation along with supporting donors Fidelity Canada, Friends of Toronto Public Library, South Chapter and William and Nona Heaslip Foundation. For more information, please visit tpl.ca/careercoach Registration required (55 spots remaining).",
+    "keywords": [
+     "career & job search",
+     "career coaches in residence",
+     "younger adults (18-24)"
+    ],
+    "startDate": "2026-10-23T14:00:00-04:00",
+    "endDate": "2026-10-23T15:00:00-04:00",
+    "location": {
+     "@type": "VirtualLocation",
+     "url": "https://tpl.bibliocommons.com/events/6abbe9a0ea50a10050a59bdd"
+    }
+   }
+  ],
+  "next_cursor": "",
+  "timeZone": "America/Toronto"
+ },
+ "city": {
+  "items": [
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01M51EX7KPA0WQRCE1HNA1J6D0",
+    "name": "Finding a Job with ACCES Employment",
+    "description": "Interview Preparation & Personal Branding This workshop prepares participants for interviews with a focus on answering behavioral questions, articulating their strengths, and building a strong personal brand. Practical tips and examples will be shared, along with time for Q&A. Participants are encouraged (but not required) to bring a copy of their resume (digital or printed) for feedback. Drop-In. Space is limited. Room: Program Room, Basement Level No registration required.",
+    "keywords": [
+     "adults (18+)",
+     "career & job search"
+    ],
+    "startDate": "2026-10-16T18:00:00-04:00",
+    "endDate": "2026-10-16T19:30:00-04:00",
+    "location": {
+     "@type": "Place",
+     "@id": "https://staging.toronto.togather.foundation/places/01M51EX7KP7TZ558ZEVZVZTH1S",
+     "name": "Weston",
+     "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "2 King Street",
+      "addressLocality": "Toronto",
+      "addressRegion": "ON",
+      "postalCode": "M9N 1K9",
+      "addressCountry": "CA"
+     },
+     "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 43.7017009,
+      "longitude": -79.5206752
+     }
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01M51EX7Q0J9MY33Y2ARTAE3BQ",
+    "name": "Using AI in Job Searching and Career Exploration",
+    "description": "Curious about how to use AI in pursuing career goals? Whether you're exploring career paths, writing a resume or preparing for interviews, this practical, interactive workshop will demonstrate how to use AI tools to support these activities. Room: Community Room, Ground Floor Registration required (27 spots remaining).",
+    "keywords": [
+     "adults (18+)",
+     "artificial intelligence",
+     "career & job search"
+    ],
+    "startDate": "2026-10-22T18:30:00-04:00",
+    "endDate": "2026-10-22T20:00:00-04:00",
+    "location": {
+     "@type": "Place",
+     "@id": "https://staging.toronto.togather.foundation/places/01M51EX7Q19RJJPGASMGK96CJ6",
+     "name": "Brentwood",
+     "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "36 Brentwood Road North",
+      "addressLocality": "Toronto",
+      "addressRegion": "ON",
+      "postalCode": "M8X 2B5",
+      "addressCountry": "CA"
+     },
+     "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 43.6473973,
+      "longitude": -79.5142792
+     }
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01M4282BXGH07S314E3EXQYRVW",
+    "name": "Witch Please - A Spooky Rave",
+    "startDate": "2026-10-16",
+    "allDay": true,
+    "location": {
+     "@type": "Place",
+     "@id": "https://staging.toronto.togather.foundation/places/01M06MZWCXPP87FANWHMMMR0S6",
+     "name": "Lee's Palace",
+     "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 43.665315,
+      "longitude": -79.409429
+     }
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01M06MZWT64XY88VDK974F0B57",
+    "name": "Lukas & Frank",
+    "startDate": "2026-10-16T00:00:00-04:00",
+    "location": {
+     "@type": "Place",
+     "@id": "https://staging.toronto.togather.foundation/places/01M06MZWCXPP87FANWHMMMR0S6",
+     "name": "Lee's Palace",
+     "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 43.665315,
+      "longitude": -79.409429
+     }
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01M26YJFZP56BT7P6VQMK28QED",
+    "name": "Exploring the New East Don Trail",
+    "description": "Members only",
+    "startDate": "2026-10-16T00:00:00-04:00",
+    "endDate": "2026-10-17T00:00:00-04:00",
+    "location": {
+     "@type": "Place",
+     "@id": "https://staging.toronto.togather.foundation/places/01M06JMH2XWYTHN949GR9Z8KB8",
+     "name": "Members only",
+     "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Members only",
+      "addressCountry": "CA"
+     },
+     "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 44.5555967,
+      "longitude": -79.5622477
+     }
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01KXVZQ53QW6SDJYZ4BY1B15X9",
+    "name": "Pulsar Coffee",
+    "description": "Join Zoom Meetinghttps://utoronto.zoom.us/j/88002112316Meeting ID: 880 0211 2316One tap mobile+16475580588,,88002112316# Canada+17789072071,,88002112316# CanadaDial by your locationMeeting ID: 880 0211 2316Find your local number: https://utoronto.zoom.us/u/k3MpKGV4s",
+    "startDate": "2026-10-16T10:00:00-04:00",
+    "endDate": "2026-10-16T11:00:00-04:00",
+    "location": {
+     "@type": "Place",
+     "@id": "https://staging.toronto.togather.foundation/places/01KV1VT01Z4TV8FZ3JB1EQGWGE",
+     "name": "MP 15th Floor Conference Room",
+     "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "MP 15th Floor Conference Room",
+      "addressLocality": "Toronto",
+      "addressRegion": "ON",
+      "addressCountry": "CA"
+     }
+    },
+    "eventSchedule": {
+     "@type": "Schedule",
+     "repeatFrequency": "P1W",
+     "byDay": [
+      "Friday"
+     ],
+     "startDate": "2023-07-12",
+     "scheduleTimezone": "America/Toronto"
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01TESTHOSTILE000000000001",
+    "name": "  Spaced   out\n title  ",
+    "startDate": "2026-11-03T09:00:00-05:00",
+    "endDate": "2026-11-03T08:00:00-05:00",
+    "keywords": [
+     "Free",
+     "free",
+     " Resume ",
+     ""
+    ],
+    "location": {
+     "@type": "Place",
+     "name": "Hall",
+     "address": {
+      "streetAddress": "1 Main St"
+     }
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01TESTNOTITLE0000000000002",
+    "startDate": "2026-11-03T09:00:00-05:00"
+   },
+   {
+    "@type": "Event",
+    "@id": "https://staging.toronto.togather.foundation/events/01TESTNOSTART0000000000003",
+    "name": "No start"
+   },
+   {
+    "@type": "Event",
+    "@id": "http://staging.toronto.togather.foundation/events/01TESTHTTP000000000000004",
+    "name": "Plain http id",
+    "startDate": "2026-11-04T10:00:00-05:00"
+   }
+  ],
+  "next_cursor": "",
+  "timeZone": "America/Toronto"
+ }
+}

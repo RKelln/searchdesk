@@ -129,7 +129,7 @@ can follow a day later if it must).
   screening and open-now disclosures, `replyDays: 45`, with the O. Reg. 476/24 source link (DESIGN 8.4).
   *Done when:* every URL in the locale is `https`; e2e: the help tab lists the entries; the task report lists all
   the help copy for the maintainer to review.
-- [ ] **T2.5 `events`, `net.js` and `tools/snapshot.py`** (P0 snapshot; live is P1, DESIGN 11). Snapshot tool:
+- [x] **T2.5 `events`, `net.js` and `tools/snapshot.py`** (P0 snapshot; live is P1, DESIGN 11). Snapshot tool:
   fetch both tiers from Togather for today to +8 weeks, normalise, drop descriptions, find the field holding the
   source link, write `data/events-snapshot.js`. Feature: tiers as two sections or a toggle, This week / Next week /
   All, star, dismiss (with undo), the "Suggested for you" lane with reasons and a "from AI" mark, starred events
@@ -384,3 +384,17 @@ can follow a day later if it must).
   fixture; the `story` field names are a guess until `stories` exists; T3.7 must give the edited template to
   "Copy only the instructions"; `test_ai.py` relies on its fixture recipe being registered first. DESIGN 9.8
   still describes 5 questions and paraphrased steps; v4 is the source of truth.
+- 2026-10-16, T2.5: Togather staging, `GET /api/v1/events`, gives `{items, next_cursor, timeZone}` as JSON-LD. Its
+  parameters are `startDate`, `endDate` (inclusive), `keywords` (comma-separated), `limit` (at most 200), `after`
+  (the cursor) and `context=document`. CORS is `*`. The list has no source link; only `GET /api/v1/events/<id>` has
+  `url`. So the snapshot does one detail request per event, and live data uses `@id` (the Togather page) unless the
+  snapshot already knows the link. Live fetching follows the pages; it is not one request per tier (DESIGN 11 needs
+  this fixed). The snapshot has 1,057 events (33 library, 1,024 city), runs Oct 16 to Dec 11 and is 325 KB:
+  regenerate it before release (`uv run tools/snapshot.py`). `locale.events.api` is the full endpoint.
+  `ctx.events.current()/refresh()` is new, with a CONTRACT row. The events feature owns `event-mark` and
+  `suggestion` in its `types`, so it can mark a suggestion taken or dismissed. Revisit this if a second feature
+  needs to take suggestions: a small core `takeSuggestion` would be cleaner. Mark ids are `em_<eventId>`. For T3.4,
+  `suggestion.target` is the event `id` (the ULID). No UI yet turns on `settings.liveEvents` or offers "Get the
+  latest" (T5.1). The T4.1 CSP `connect-src` is `https://staging.toronto.togather.foundation`. The Python and JS
+  normalisers are separate copies; a test keeps the tiers and endpoint in step, but not the normalise logic. Staging
+  data is mixed (venues like "Members only"), so the T3.4 row caps matter.

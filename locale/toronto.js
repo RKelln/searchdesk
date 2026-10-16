@@ -100,10 +100,13 @@ window.DESK_LOCALE = {
   ],
 
   // DESIGN 11. net.js may only GET the host of `api`.
+  // `api` is the full events endpoint (not just a base), so the host is read from one string. It is Togather
+  // STAGING for now (early alpha, no production yet): switch to production by changing this one line.
+  // net.js adds startDate, endDate, limit, context and (per tier) the `query` entries below, and follows
+  // `next_cursor` through `after`. A tier `query` value is plain text; net.js encodes it ("&" is fine).
+  // tools/snapshot.py has the same tiers and endpoint: keep them in step (a unit test checks).
   events: {
-    // TODO(maintainer): no Togather staging base URL is given anywhere in the repo. Put the https base here
-    // (DESIGN 11: "/api/v1/events"). Until then it is null and the events feature uses the snapshot only.
-    api: null,
+    api: 'https://staging.toronto.togather.foundation/api/v1/events',
     tiers: [
       { id: 'library', name: 'At the library', query: { keywords: 'career & job search' } },
       { id: 'city', name: 'Around the city', query: {} },

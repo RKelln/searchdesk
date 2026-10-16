@@ -57,6 +57,7 @@ To add a feature: put the file in `features/`, add its id to the list in `featur
 | `profile()` | the profile record |
 | `profileLines(profile?)` | the profile lines an AI question will contain: only fields whose "send to AI" switch is on (the same function the recipes use) |
 | `backupNudge()` | whether to remind the person to save a copy: `{show, text, days}` (`show` is true when there are changes since the last export and either 7 days have passed or there are 10 or more records; `days` is null if never exported). Used by Home |
+| `events.current()` / `events.refresh(opts?)` | the events to show: `{events, source, generated, note}` where `events` are `{id, title, start, end, venue, address, url, tier, tags}`, `source` is `'cache'` or `'snapshot'`. `current()` is instant. `refresh()` returns a Promise and asks `core/net.js` to fetch the latest only when live events are on (otherwise it just resolves `current()`); the screen is drawn again after a good fetch. `note` is a plain line when a fetch failed. Used by Events |
 | `recipe(def)` | register an AI recipe |
 
 Records are plain objects. Every record has `id`, `type`, `updated`, `source` (`user`, `ai`, `example`, `feed` or
