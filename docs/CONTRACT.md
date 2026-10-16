@@ -42,7 +42,7 @@ To add a feature: put the file in `features/`, add its id to the list in `featur
 | `store.all(type)` / `store.get(id)` | read records; deleted ones are hidden unless you pass `{withDeleted: true}` |
 | `store.put(record)` | create or update a record of a type you own; sets `id` (if missing), `updated`, and `source` (default `user`) |
 | `store.remove(id)` | mark one of your records as deleted |
-| `store.ext(id, patch)` | set this feature's `ext.<id>` on any record |
+| `store.ext(id, patch)` | set this feature's `ext.<id>` on any record. On `'settings'` it works even if that record does not exist yet (core makes it) |
 | `store.batch(label, fn)` | group writes into one undo step |
 | `slot(name, def)` | add UI at a named place (section 3) |
 | `h(tag, attrs, ...children)` | build elements safely (section 4) |
@@ -58,6 +58,7 @@ To add a feature: put the file in `features/`, add its id to the list in `featur
 | `profileLines(profile?)` | the profile lines an AI question will contain: only fields whose "send to AI" switch is on (the same function the recipes use) |
 | `backupNudge()` | whether to remind the person to save a copy: `{show, text, days}` (`show` is true when there are changes since the last export and either 7 days have passed or there are 10 or more records; `days` is null if never exported). Used by Home |
 | `events.current()` / `events.refresh(opts?)` | the events to show: `{events, source, generated, note}` where `events` are `{id, title, start, end, venue, address, url, tier, tags}`, `source` is `'cache'` or `'snapshot'`. `current()` is instant. `refresh()` returns a Promise and asks `core/net.js` to fetch the latest only when live events are on (otherwise it just resolves `current()`); the screen is drawn again after a good fetch. `note` is a plain line when a fetch failed. Used by Events |
+| `download(name, text, type)` | save a text file (for example a calendar `.ics`). `name` uses only letters, digits, `-`, `.`, `_` (up to 80 characters); `type` is `text/calendar`, `text/plain`, `text/csv` or `application/json`. Returns `true`, or `false` if refused |
 | `recipe(def)` | register an AI recipe (the same id again replaces it) |
 | `removeRecipe(id)` | take back a recipe this feature registered (for example a task the person deleted) |
 

@@ -244,6 +244,8 @@ window.Desk = window.Desk || {};
       // ctx.events: the events to show. current() is instant (the cache, else the snapshot) and refresh() asks
       // core/net.js to fetch when live events are on (it never fetches otherwise). Both give {events, source, generated, note}.
       events: EVENTS,
+      // ctx.download(name, text, type): save a text file; true if it was handed to the browser, false if refused.
+      download: function (name, text, type) { return !!(Desk.io && Desk.io.saveText && Desk.io.saveText(name, text, type)); },
       recipe: function (r) { addRecipe(r, id); },
       removeRecipe: function (rid) { removeRecipe(String(rid), id); }
     });

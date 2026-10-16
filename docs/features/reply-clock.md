@@ -29,10 +29,9 @@ ctx calls: `ctx.slot` (three times), `ctx.locale.postingRules`, `ctx.store.get('
 Dates: `interviewAt` is `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM` (no zone). Use only its first ten characters. Add days
 as whole calendar days, with no time zone shifts.
 
-Needs from core: the `settings` record does not always exist, and `ctx.store.ext` refuses a record that is not there.
-Core should create the `settings` record at start, or give features a `ctx.settings` read and write. Until then, if
-`ctx.store.get('settings')` is missing, the settings block still shows the locale's number and says "Change another
-setting first, then try again." It does not throw.
+Settings record: `ctx.store.ext('settings', patch)` always works. If the `settings` record is missing, core makes it
+on that first write (it is not counted as a change to back up). `ctx.store.get('settings')` may be `undefined`, so
+`effectiveDays` must accept that.
 
 Checks to write (in `logic`; `today` is `YYYY-MM-DD`):
 - `effectiveDays(settingsRecord, localeRules)` gives the setting if it is a whole number from 0 to 365, else the

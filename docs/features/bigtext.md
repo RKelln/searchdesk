@@ -24,10 +24,9 @@ when the person changes it. `document` and `classList` are not banned words.
 ctx calls: `ctx.slot('settings', {id, title, render})`, `ctx.store.get('settings')`, `ctx.store.ext('settings', patch)`,
 `ctx.t`, `ctx.h`.
 
-Needs from core: the `settings` record does not always exist (it is created when core first saves a setting), and
-`ctx.store.ext` refuses a record that is not there. Core should create the `settings` record at start, or give features a
-`ctx.settings` read and write. Until then, if `ctx.store.get('settings')` is missing, the block shows a plain line
-("Change a setting on this screen first, or save a copy, then try again.") and does not throw.
+Settings record: `ctx.store.ext('settings', patch)` always works. If the `settings` record is missing, core makes it
+on that first write (it is not counted as a change to back up). Read with `ctx.store.get('settings')`, which may be
+`undefined`, so `readChoice` must accept that.
 
 Checks to write (in `logic`):
 - `readChoice(settings)` returns `{size, contrast}`; for `undefined`, `{}` or odd values it returns `{size: 'normal',

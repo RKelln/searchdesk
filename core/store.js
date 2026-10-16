@@ -180,6 +180,8 @@ window.Desk = window.Desk || {};
     if (scope && featureId && featureId !== scope.id) fail('"' + scope.id + '" may only change its own extra fields.');
     checkId(id);
     var cur = rec(id);
+    // The settings record may not exist yet (nothing has been saved). Make it here, on the first real setting.
+    if (!cur && id === 'settings') cur = { id: 'settings', type: 'settings', source: 'user', created: new Date(nowMs()).toISOString() };
     if (!cur || cur.deleted) fail('There is no such record to add fields to.');
     patch = clone(isObj(patch) ? patch : {});
     var out;

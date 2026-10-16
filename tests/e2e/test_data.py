@@ -206,3 +206,23 @@ def test_data_lists_ideas_you_could_build_with_a_brief_each(page, app):
     for i in ids:
         assert os.path.exists(os.path.join(root, "docs", "features", i + ".md")), i
     assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_data_ctx_download_saves_a_text_file_and_refuses_unsafe_ones(page, app):
+    open_data(page, app)
+    page.evaluate("""() => {
+      Desk.register({ id: 'dltest', name: 'Download test', purpose: 'test', mount(ctx) { window.__dl = ctx.download; } });
+    }""")
+    page.wait_for_function("() => typeof window.__dl === 'function'")
+    with page.expect_download() as info:
+        ok = page.evaluate("() => window.__dl('interview-cook.ics', 'BEGIN:VCALENDAR\\r\\nEND:VCALENDAR\\r\\n', 'text/calendar')")
+    assert ok is True
+    dl = info.value
+    assert dl.suggested_filename == "interview-cook.ics"
+    with open(dl.path(), encoding="utf-8") as f:
+        assert f.read().startswith("BEGIN:VCALENDAR")
+    bad = page.evaluate("""() => [
+      window.__dl('../x.ics', 'x', 'text/calendar'),
+      window.__dl('page.html', 'x', 'text/html'),
+      window.__dl('ok.txt', 'x', 'application/zip')]""")
+    assert bad == [False, False, False]

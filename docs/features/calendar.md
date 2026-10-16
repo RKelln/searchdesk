@@ -18,16 +18,16 @@ Done when:
 Data: none. Reads `job` records (`title`, `org`, `interviewAt`, `where`, `link`) and the event object the slot gives.
 Record types: none.
 Slots: `job.actions`, `event.actions`   Soft uses: none.
-ctx calls: `ctx.slot`, `ctx.ui.toast`, `ctx.now()` (for the file's stamp), `ctx.t`, `ctx.fmt` if you show the date in
+ctx calls: `ctx.slot`, `ctx.download`, `ctx.ui.toast`, `ctx.now()` (for the file's stamp), `ctx.t`, `ctx.fmt` if you show the date in
 the toast.
 Dates: `interviewAt` and event `start`/`end` are `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM`, local wall-clock time with no
 zone. Write them as floating local times (`DTSTART:20261022T183000`, all-day: `DTSTART;VALUE=DATE:20261022`), with no
 `Z` and no zone, so the entry stays at that wall-clock time.
 
-Needs from core: there is no `ctx` call that saves a file (core's own export does it inside `core/io.js`). Until
-there is one, `mount` code may build a `Blob` and a temporary link with `document.createElement` and click it; none of
-those words are banned by the contract scan. Keep that code small and in one function so it can move to a `ctx` call
-later.
+Saving the file: `ctx.download(name, text, type)` saves a text file and returns `true` or `false`. Use
+`ctx.download(fileName(...), icsText, 'text/calendar')`. The name may use only letters, digits, dash, dot and
+underscore (up to 80 characters) and the type must be `text/calendar`, `text/plain`, `text/csv` or `application/json`;
+otherwise it returns `false`, so show a plain toast when it does. Do not build a `Blob` or a link yourself.
 
 Checks to write (in `logic`):
 - `icsFor({uid, title, start, end, where, url, now})` returns the text of a calendar file. It starts with

@@ -250,7 +250,16 @@ window.Desk = window.Desk || {};
     return n;
   }
 
+  // Pure: may a feature save this file? A plain name (letters, digits, dash, dot, underscore; up to 80, not
+  // starting with a dot) and a text type.
+  var DOWNLOAD_TYPES = ['text/calendar', 'text/plain', 'text/csv', 'application/json'];
+  function downloadAllowed(name, text, type) {
+    return typeof name === 'string' && /^[A-Za-z0-9_-][A-Za-z0-9._-]{0,79}$/.test(name) &&
+      typeof text === 'string' && DOWNLOAD_TYPES.indexOf(type) >= 0;
+  }
+
   Desk.io = {
+    downloadAllowed: downloadAllowed,
     MAX_BYTES: MAX_BYTES, filename: filename, exportObject: exportObject, exportText: exportText,
     detectPaste: detectPaste, parseState: parseState, prepareIncoming: prepareIncoming,
     reportCounts: reportCounts, reportSentence: reportSentence, hasChanges: hasChanges, nudge: nudge,
@@ -267,8 +276,8 @@ window.Desk = window.Desk || {};
   function markExported() { try { setSettings({ lastExport: Desk.now().toISOString() }, true); } catch (e) { if (window.console) console.error(e); } }
   function currentText() { return exportText(Desk.store.state(), Desk.version); }
 
-  function download(name, text) {
-    var blob = new Blob([text], { type: 'application/json' });
+  function download(name, text, type) {
+    var blob = new Blob([text], { type: type || 'application/json' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.setAttribute('href', url); // h() would drop a blob: link, so this one is made by hand
@@ -278,6 +287,11 @@ window.Desk = window.Desk || {};
     a.click();
     document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 10000); // one shot
+  }
+  // ctx.download: save a text file the feature made (a calendar entry, say). Safe names and text types only.
+  function saveText(name, text, type) {
+    if (!downloadAllowed(name, text, type)) return false;
+    try { download(name, text, type); return true; } catch (e) { if (window.console) console.error(e); return false; }
   }
   function exportNow() {
     var name = filename(Desk.now());
@@ -325,6 +339,7 @@ window.Desk = window.Desk || {};
   }
   Desk.io.copyText = copyText;
   Desk.io.exportNow = exportNow;
+  Desk.io.saveText = saveText;
 
   // The shared paste box: a labelled textarea that reads what is pasted (on `paste`, and on `input` after
   // 300 ms) and a "Paste" button where the browser lets a page read the clipboard.

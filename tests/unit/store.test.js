@@ -393,3 +393,16 @@ test('purgeQuiet removes records without taking the undo step', () => {
   assert.strictEqual(Desk.store.get(tmp.id), undefined);
   assert.strictEqual(Desk.store.undoLabel(), 'Add two');
 });
+
+test('ext on settings makes the record when it is missing, for the feature that asks', () => {
+  const s = fresh();
+  assert.strictEqual(s.get('settings'), undefined);
+  const sc = s.scoped('bigtext', []);
+  const r = sc.ext('settings', { size: 'big' });
+  assert.strictEqual(r.type, 'settings');
+  assert.strictEqual(r.id, 'settings');
+  same(s.get('settings').ext, { bigtext: { size: 'big' } });
+  sc.ext('settings', { contrast: true });
+  same(s.get('settings').ext, { bigtext: { size: 'big', contrast: true } });
+  assert.throws(() => sc.ext('nope', {}), /no such record/);
+});

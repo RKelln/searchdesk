@@ -474,3 +474,8 @@ can follow a day later if it must).
   web chats may keep only 1,500. It shows in the editor, the improve compare view, the custom task form and a pasted
   shared task (`instructions-long`). Coach counts its filled instructions through the optional recipe hook
   `instructionsLength(text, ctx)`. Home now shows a waiting `job-note` by its job's title, linked to the job.
+- 2026-10-16, core gaps from T4.4: `store.ext('settings', …)` now creates the record when it is missing. Creating it at
+  boot would give it a fresh `updated` that beats an imported backup's settings. New `ctx.download(name, text, type)`:
+  safe names and four text types only, returns true or false (`Desk.io.saveText`, `downloadAllowed`). The bigtext,
+  reply-clock and calendar briefs now use the real API. A flaky test seen once: `test_ai_odd_pastes_say_what_happened`
+  on webkit with file (it passed on rerun).

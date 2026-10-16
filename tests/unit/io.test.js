@@ -259,3 +259,27 @@ test('example data: an example id never overwrites a record of the person\'s own
   assert.strictEqual(D.store.get('j_same').title, 'mine');
   assert.strictEqual(load(['core/strings.js', 'core/store.js', 'core/merge.js', 'core/io.js'], { DESK_EXAMPLE: {} }).io.exampleAvailable(), false);
 });
+
+test('a settings record made by ext does not count as a change, and a newer backup settings record wins', () => {
+  const D = fresh();
+  D.store.scoped('bigtext', []).ext('settings', { size: 'big' });
+  assert.strictEqual(D.io.hasChanges(D.store.state().records, undefined), false);
+  const file = { schema: 'searchdesk/1', app: '', device: 'other', records: {
+    settings: { id: 'settings', type: 'settings', source: 'user', updated: '2099-01-01T00:00:00.000Z', ext: { bigtext: { size: 'bigger' } } } } };
+  D.io.importState(J(file));
+  assert.strictEqual(D.store.get('settings').ext.bigtext.size, 'bigger');
+});
+
+test('downloadAllowed accepts safe names and text types only', () => {
+  const D = fresh();
+  const ok = D.io.downloadAllowed;
+  assert.ok(ok('interview-cook.ics', 'x', 'text/calendar'));
+  assert.ok(ok('a_b-c.1.csv', '', 'text/csv'));
+  assert.ok(!ok('../x.ics', 'x', 'text/calendar'));
+  assert.ok(!ok('a b.ics', 'x', 'text/calendar'));
+  assert.ok(!ok('.hidden', 'x', 'text/plain'));
+  assert.ok(!ok('a'.repeat(81), 'x', 'text/plain'));
+  assert.ok(ok('a'.repeat(80), 'x', 'text/plain'));
+  assert.ok(!ok('a.html', 'x', 'text/html'));
+  assert.ok(!ok('a.txt', 5, 'text/plain'));
+});
