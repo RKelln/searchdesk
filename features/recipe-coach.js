@@ -217,6 +217,8 @@ After {questions} questions and follow-ups, or "interview over", switch to coach
           context: L.contextText({ profile: c.profileLines(), stories, job: rec && rec.type === 'job' ? rec : null }),
         });
       },
+      // (T3.7) The edit screen counts the filled instructions (default options, no context) against the 1,500 warning.
+      instructionsLength: (text, c) => L.instructionsFrom(text, {}, c.workshop()).replace(/\s+$/, '').length,
       answer: null,
       copies: [{ id: 'instructions', label: ctx.t('copyInstructions'), done: ctx.t('copiedInstructions'),
         // c.edited('coach') is the person's changed instructions (T3.7), or null for the original

@@ -230,3 +230,37 @@ def test_coach_copy_only_the_instructions_uses_the_edit(page, app):
     edited = page.evaluate("() => window.__copied[window.__copied.length - 1]")
     assert edited == "Be my kind interviewer.\n\nAsk 3 questions.\n"
     assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_over_1500_characters_warns_but_does_not_block(page, app):
+    open_ai(page, app)
+    open_editor(page)
+    sel = '[data-test="recipe-edit-warnings"] [data-test="instructions-long"]'
+    box = '[data-test="recipe-edit-text"]'
+    page.fill(box, "{profile} {n} {items} " + "x" * (1500 - 22))
+    assert page.locator(sel).count() == 0, "exactly 1,500 characters is fine"
+    page.fill(box, "{profile} {n} {items} " + "x" * (1501 - 22))
+    page.wait_for_selector(sel)
+    text = page.locator(sel).inner_text()
+    assert "1501 characters" in text and "1500" in text
+    assert page.locator('[data-test="recipe-edit-warnings"][role="status"]').count() == 1
+    page.click('[data-test="recipe-edit-save"]')  # a warning does not stop a save
+    page.wait_for_selector('[data-test="recipe-edit-saved"]')
+    assert len(stored(page)["text"]) == 1501
+    assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_coach_edit_counts_the_filled_instructions_without_the_context(page, app):
+    page.add_init_script(INIT)
+    page.goto(app.url + "#ai/coach")
+    page.wait_for_function("() => window.Desk && Desk.started === true")
+    page.click('[data-test="recipe-edit"] summary')
+    sel = '[data-test="recipe-edit-warnings"] [data-test="instructions-long"]'
+    box = '[data-test="recipe-edit-text"]'
+    assert page.locator(sel).count() == 0, "the original is within 1,500"
+    # {language} and {context} fill to nothing here, so the count is the typed words
+    page.fill(box, "a" * 1500 + "{language}\n\n{context}")
+    assert page.locator(sel).count() == 0
+    page.fill(box, "a" * 1501 + "{language}\n\n{context}")
+    page.wait_for_selector(sel)
+    assert_no_errors(page, allow=ALLOW_MISSING)

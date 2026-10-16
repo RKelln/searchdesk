@@ -100,6 +100,7 @@ Desk.register({
   `,
   logic: {
     MAX_NAME: 60,
+    LIMIT: 1500,           // free AI chats keep about this many characters of instructions (a warning only)
     MAX_TEXT: 3000,        // characters in the instructions
     MAX_SHARED: 6000,      // characters in a pasted shared task; more than this is refused unread
     POSTING_MAX: 4000,
@@ -114,6 +115,8 @@ Desk.register({
       return startsFrom === 'job' ? this.WORDS_JOB.slice() : this.WORDS_AI.slice();
     },
     // The {names} in a text, once each, in order.
+    // The length when it is over the limit, else 0.
+    tooLong(text) { const n = String(text == null ? '' : text).replace(/\r\n?/g, '\n').replace(/\s+$/, '').length; return n > this.LIMIT ? n : 0; },
     wordsIn(text) {
       const out = [], re = /\{([A-Za-z][A-Za-z0-9_]*)\}/g;
       let m;
@@ -397,6 +400,8 @@ Desk.register({
         L.outside(text.value, e.startsFrom).forEach((n) => {
           warnBox.append(h('p', { class: 'custom-warn', 'data-test': 'custom-warn' }, ctx.t('outsideWord', { name: '{' + n + '}' })));
         });
+        const long = L.tooLong(text.value);
+        if (long) warnBox.append(h('p', { class: 'custom-warn', 'data-test': 'instructions-long' }, ctx.t('instructionsLong', { n: long, max: L.LIMIT })));
       }
       text.addEventListener('input', () => { e.text = text.value; fillWords(); });
       fillWords();
@@ -468,6 +473,7 @@ Desk.register({
               h('p', {}, ctx.t('sharedAnswer', { what: ctx.t(task.answer === 'job-notes' ? 'answerNotes' : 'answerNone') })),
               h('pre', { class: 'custom-text', tabindex: '0', 'data-test': 'custom-shared-text' }, task.text),
               outside.length ? h('p', { class: 'custom-warn' }, ctx.t('sharedOutside', { names: outside.map((n) => '{' + n + '}').join(', ') })) : null,
+              L.tooLong(task.text) ? h('p', { class: 'custom-warn', role: 'status', 'data-test': 'instructions-long' }, ctx.t('instructionsLong', { n: L.tooLong(task.text), max: L.LIMIT })) : null,
               state.added || have
                 ? h('p', { role: 'status', 'data-test': 'custom-shared-done' }, ctx.t(state.added ? (task.startsFrom === 'job' ? 'sharedDoneJob' : 'sharedDone') : 'sharedAlready'))
                 : h('button', { type: 'button', class: 'primary', 'data-test': 'custom-shared-add', on: { click: () => {

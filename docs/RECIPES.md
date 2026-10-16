@@ -97,6 +97,7 @@ Open a task on the AI screen and choose **Change the instructions**.
 - The box shows the words that are sent to the AI. Change them and press **Save**. The next question uses them.
 - The list under the box shows each `{placeholder}` and whether it is in use. If you remove one, you see a warning
   such as "`{items}` is gone. Without it the AI will not get: the events list." It is a warning. It does not stop you.
+- Free AI chats on the web, such as the free tier of ChatGPT, keep only about 1,500 characters of custom instructions. If your instructions are longer, you see a warning with the count (a trailing `{context}` block is not counted; the coach counts its instructions with the options filled in). It is a warning. It does not stop you. The same warning shows when you improve a recipe, make your own task, or add a shared one.
 - **Back to the original** puts the first words back. The last 5 versions are kept under **Earlier versions**.
 - Your change is saved with everything else, so it goes into your backup file and comes back when you import it.
 

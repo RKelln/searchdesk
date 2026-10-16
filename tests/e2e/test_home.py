@@ -76,3 +76,23 @@ def test_home_backup_nudge(page, app):
     page.click('[data-test="home-nudge-go"]')
     page.wait_for_selector('[data-screen="data"]')
     assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_home_job_note_and_draft_rows_use_plain_words(page, app):
+    open_home(page, app)
+    page.evaluate("""() => { Desk.store.batch('seed', () => {
+      const j = Desk.store.put({type: 'job', title: 'Library Page', stage: 'saved'});
+      Desk.store.put({type: 'suggestion', recipe: 'rc_abcd1234', code: 'DESK-NOTE', kind: 'job-note', status: 'new',
+        target: {job: j.id, text: 'Some notes', task: 'Prep'}, why: ''});
+      Desk.store.put({type: 'suggestion', recipe: 'posting', code: 'DESK-DRAFT', kind: 'job-draft', status: 'new', target: {title: 'T'}, why: ''});
+    }); location.hash = '#jobs'; location.hash = '#home'; }""")
+    page.wait_for_selector(ITEM)
+    texts = page.eval_on_selector_all(ITEM, "els => els.map(e => e.innerText)")
+    joined = " ".join(texts)
+    assert "rc_" not in joined and "posting" not in joined.lower().replace("postings", ""), texts
+    note = page.locator(ITEM + '[data-kind="jobNote"]')
+    assert note.count() == 1 and "Library Page" in note.inner_text(), texts
+    assert any("jobs from postings" in x for x in texts), texts
+    note.locator("button").click()
+    page.wait_for_selector('[data-test="job-detail"]')
+    assert_no_errors(page, allow=ALLOW_MISSING)

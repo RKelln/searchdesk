@@ -75,4 +75,8 @@ Desk.check('recipe-custom', (t, f) => {
   t.eq(L.noteSuggestions(acc, '', 'x'), [], 'no job, no suggestion');
   t.eq(L.noteSuggestions([{ kind: 'TEXT', text: ' ' }], 'j_1', 'x'), [], 'no text, no suggestion');
   t.eq(L.noteSuggestions([{ kind: 'TEXT', text: 'y'.repeat(9000) }], 'j_1', 'x')[0].target.text.length, 4000, 'a long answer is cut at 4,000');
+
+  // ---- the 1,500-character warning (never a block) ----
+  t.eq([L.tooLong('a'.repeat(1500)), L.tooLong('a'.repeat(1501)), L.tooLong('a'.repeat(1500) + '\n  ')], [0, 1501, 0], 'tooLong: 1,500 is fine, 1,501 is long, trailing space is not counted');
+  t.eq(L.clean({ name: 'Long', text: 'a'.repeat(1700), startsFrom: 'ai' }).ok, true, 'a long task still saves');
 });

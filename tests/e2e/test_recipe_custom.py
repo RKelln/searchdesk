@@ -193,3 +193,24 @@ def test_exported_tasks_come_back_after_import(page, app):
     wait_for_desk(page, started=True)
     page.wait_for_selector('[data-test^="ai-task-rc"]')
     assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_custom_task_over_1500_characters_warns_but_still_saves(page, app):
+    open_app(page, app, "#ai")
+    page.click('[data-test="custom-new"]')
+    page.fill('[data-test="custom-name"]', "Long one")
+    sel = '[data-test="custom-warnings"] [data-test="instructions-long"]'
+    page.fill('[data-test="custom-text"]', "x" * 1500)
+    assert page.locator(sel).count() == 0, "exactly 1,500 characters is fine"
+    page.fill('[data-test="custom-text"]', "x" * 1501)
+    page.wait_for_selector(sel)
+    assert "1501 characters" in page.locator(sel).inner_text()
+    assert page.locator('[data-test="custom-warnings"][role="status"]').count() == 1
+    page.click('[data-test="custom-save"]')
+    page.wait_for_selector('[data-test^="ai-task-rc"]')
+    assert len(customs(page)[0]["text"]) == 1501
+    # a pasted shared task that is long shows the warning too
+    shared = "[A task to share, from Search Desk]\nName: Long one\nStarts from: ai\nAnswer: none\n\nInstructions (between the lines):\n-----\n" + "y" * 1600 + "\n-----"
+    paste(page, shared)
+    page.wait_for_selector('[data-test="custom-shared"] [data-test="instructions-long"]')
+    assert_no_errors(page, allow=ALLOW_MISSING)

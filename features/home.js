@@ -9,7 +9,9 @@
 //                                                                 (date may include 'THH:MM')
 //   closes     { kind, jobId, title, org, date, days }            a SAVED job whose closes is today..today+7
 //   event      { kind, markId, eventId, title, date, days }       starred event starting today..today+6
-//   suggestions{ kind, recipe, count, days: null }                one per recipe, status 'new'
+//   jobNote    { kind, jobId, title, count, days: null }          a `job-note` suggestion waiting (from a custom task)
+//                                                                 for a live job; one per job. Never counted below.
+//   suggestions{ kind, recipe, count, days: null }                one per recipe, status 'new' (not job-note)
 //   question   { kind, code, recipe, created, days: null }        the latest question still waiting for an answer
 // Order: overdue follow-ups (most late first); then everything with a day, soonest first (ties: follow-up,
 // interview, closes, event, then the time, then the title); then suggestions; then the question.
@@ -32,6 +34,8 @@ Desk.register({
     rowInterview: 'Interview: {title} — {when}',
     rowCloses: 'Posting closes: {title} — {when}',
     rowEvent: 'Starred event: {title} — {when}',
+    rowNoTitle: 'a job',
+    rowJobNote: 'An answer is waiting for the notes on {title}',
     rowSuggestionsOne: '1 suggestion waiting: {what}',
     rowSuggestionsMany: '{n} suggestions waiting: {what}',
     rowQuestion: 'Waiting for an answer. Paste it in the AI helper.',
@@ -110,8 +114,21 @@ Desk.register({
         return String(a.title).localeCompare(String(b.title));
       });
 
+      // A waiting job-note suggestion: one row per live job. One for a job that is gone is left out.
+      const jobsById = {};
+      live.filter((r) => r.type === 'job').forEach((j) => { jobsById[j.id] = j; });
+      const notes = {}, noteOrder = [];
+      live.filter((r) => r.type === 'suggestion' && r.status === 'new' && r.kind === 'job-note').forEach((s) => {
+        const id = s.target && typeof s.target === 'object' ? s.target.job : '';
+        if (!id || !jobsById[id]) return;
+        if (!notes[id]) { notes[id] = 0; noteOrder.push(id); }
+        notes[id]++;
+      });
+      noteOrder.sort((a, b) => String(jobsById[a].title).localeCompare(String(jobsById[b].title)) || (a < b ? -1 : 1))
+        .forEach((id) => items.push({ kind: 'jobNote', jobId: id, title: jobsById[id].title || '', count: notes[id], days: null }));
+
       const counts = {};
-      live.filter((r) => r.type === 'suggestion' && r.status === 'new').forEach((s) => {
+      live.filter((r) => r.type === 'suggestion' && r.status === 'new' && r.kind !== 'job-note').forEach((s) => {
         const k = s.recipe || '';
         counts[k] = (counts[k] || 0) + 1;
       });
@@ -155,6 +172,7 @@ Desk.register({
         case 'interview': return { text: ctx.t('rowInterview', { title: it.title, when: when(it.date) }), go: 'jobs/' + it.jobId };
         case 'closes': return { text: ctx.t('rowCloses', { title: it.title, when: when(it.date) }), go: 'jobs/' + it.jobId };
         case 'event': return { text: ctx.t('rowEvent', { title: it.title, when: when(it.date) }), go: 'events' };
+        case 'jobNote': return { text: ctx.t('rowJobNote', { title: it.title || ctx.t('rowNoTitle') }), go: 'jobs/' + it.jobId };
         case 'suggestions': {
           const what = ctx.t('what.' + it.recipe) === 'what.' + it.recipe ? it.recipe : ctx.t('what.' + it.recipe);
           return { text: ctx.t(it.count === 1 ? 'rowSuggestionsOne' : 'rowSuggestionsMany', { n: it.count, what: what }),

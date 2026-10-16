@@ -185,3 +185,13 @@ test('an answer with no task on the question says so', () => {
   assert.strictEqual(res.render, null);
   assert.strictEqual(res.text, 'That task is not here any more. Nothing was changed.');
 });
+
+test('instructionsLength: as typed minus a trailing {context}; a recipe hook wins; tooLong is 0 at 1,500', () => {
+  assert.strictEqual(E.instructionsLength('abc\n\n{context}\n', {}), 3);
+  assert.strictEqual(E.instructionsLength('a {context} b', {}), 13);
+  assert.strictEqual(E.tooLong('x'.repeat(1500), {}), 0);
+  assert.strictEqual(E.tooLong('x'.repeat(1501), {}), 1501);
+  assert.strictEqual(E.tooLong('x'.repeat(1500) + '\n\n{context}', {}), 0);
+  assert.strictEqual(E.tooLong('x', { instructionsLength: () => 2000 }), 2000);
+  assert.strictEqual(E.tooLong('x'.repeat(2000), { instructionsLength: () => { throw new Error('x'); } }), 2000);
+});

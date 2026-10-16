@@ -44,6 +44,7 @@ window.Desk = window.Desk || {};
   E.MAX_TEXT = 8000;    // characters in an edit
   E.MAX_NOTES = 10;     // notes sent with one improve question
   E.NOTE_CHARS = 300;   // each note is cut to this when sent
+  E.LIMIT = 1500;       // characters free AI chats keep of custom instructions (a warning, never a block)
   E.MAX_DIFF = 90000;   // lines in A times lines in B above which the diff gets simple
 
   function isObj(x) { return x !== null && typeof x === 'object' && !Array.isArray(x); }
@@ -107,6 +108,17 @@ window.Desk = window.Desk || {};
     var known = names.concat(['profile', 'items']);
     return { absent: P().absentPlaceholders(text, names), unknown: P().missingPlaceholders(text, known) };
   };
+
+  // Characters in the instructions the person controls. A recipe may say how with def.instructionsLength(text, ctx)
+  // (the coach fills its options first); otherwise it is the text as typed, minus a trailing {context} block.
+  E.instructionsLength = function (text, def) {
+    var t = String(text == null ? '' : text);
+    if (def && typeof def.instructionsLength === 'function') {
+      try { var n = def.instructionsLength(t, Desk.recipes.ctx()); if (typeof n === 'number' && isFinite(n)) return n; } catch (e) { if (window.console) console.error(e); }
+    }
+    return t.replace(/\r\n?/g, '\n').replace(/\s*\{context\}\s*$/, '').replace(/\s+$/, '').length;
+  };
+  E.tooLong = function (text, def) { var n = E.instructionsLength(text, def); return n > E.LIMIT ? n : 0; };
 
   // ---- the line diff -------------------------------------------------------------------------------------------------
   // Rows for the side-by-side view: [{a, b, changed}]. a is the line in the old text, b in the new (null when that side
@@ -266,6 +278,8 @@ window.Desk = window.Desk || {};
   function fillWarnings(box, text, def) {
     clear(box);
     warnings(text, def).forEach(function (w) { box.appendChild(H('p', { class: 're-warn', 'data-test': 're-warn' }, w)); });
+    var n = E.tooLong(text, def);
+    if (n) box.appendChild(H('p', { class: 're-warn', 'data-test': 'instructions-long' }, T('instructionsLong', { n: n, max: E.LIMIT })));
   }
 
   function placeholderList(def, text) {

@@ -470,3 +470,7 @@ can follow a day later if it must).
   (4) board cannot move stages, by design.
   The `sites` brief covers showing and taking `lead` suggestions. DESIGN 9.6's fallback "link list on the AI
   screen" is not specified anywhere. This commit also lists `recipe-custom` in `Desk.features`.
+- 2026-10-16, maintainer decision: instructions longer than 1,500 characters get a warning (not a block), because free
+  web chats may keep only 1,500. It shows in the editor, the improve compare view, the custom task form and a pasted
+  shared task (`instructions-long`). Coach counts its filled instructions through the optional recipe hook
+  `instructionsLength(text, ctx)`. Home now shows a waiting `job-note` by its job's title, linked to the job.

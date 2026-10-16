@@ -120,4 +120,10 @@ Desk.check('recipe-coach', (t, f) => {
   t.ok(built.text.indexOf('Invent no facts.\n\n---\n\nCandidate profile:\nWhat work: Clerk') > 0, 'the context follows the instructions below a line');
   t.eq(built.missing, [], 'nothing is left as {name}');
   t.ok(built.text.indexOf('HOW TO ANSWER') < 0, 'there is no answer block');
+
+  // ---- the edit screen's length (1,500 warning) ----
+  const hook = (text) => L.instructionsFrom(text, {}, false).replace(/\s+$/, '').length;
+  t.eq(hook(L.fullTemplate()), L.instructions({}, false).replace(/\s+$/, '').length, 'the full template counts as the filled instructions, without the context');
+  t.ok(hook(L.fullTemplate()) <= L.CAP, 'the original is within 1,500');
+  t.ok(hook(L.fullTemplate() + ' ' + 'x'.repeat(100)) > L.CAP, 'added words push it over');
 });

@@ -69,6 +69,16 @@ Desk.check('home', (t, f) => {
   t.eq(all.filter((i) => i.kind === 'suggestions').map((i) => [i.recipe, i.count]), [['events', 2], ['posting', 1]], 'new suggestions are counted per recipe');
   t.eq(all[all.length - 1].code, 'DESK-AAAA', 'the question item carries its code');
 
+  // job-note suggestions: named by the job, never by the recipe id; skipped when the job is gone
+  const jn = (id, jobId, o) => Object.assign({ type: 'suggestion', id: id, recipe: 'rc_abcd', kind: 'job-note', status: 'new', code: 'DESK-' + id, target: { job: jobId, text: 'x' } }, o);
+  const notes = L.today([job({ id: 'j1', title: 'Clerk' }), job({ id: 'j2', title: 'Deleted', deleted: true }), jn('n1', 'j1'), jn('n2', 'j1'), jn('n3', 'j2'),
+    jn('n4', 'nope'), jn('n5', 'j1', { status: 'taken' })], NOW);
+  t.eq(notes.map((i) => i.kind + ':' + (i.jobId || '') + ':' + (i.count || '')), ['jobNote:j1:2'], 'job-note: one row per live job, taken and orphan ones skipped, no recipe row');
+  t.eq(notes[0].title, 'Clerk', 'job-note: carries the job title');
+  t.eq(L.today([jn('n1', 'j1')], NOW), [], 'job-note: no job, no row');
+  t.eq(L.today([job({ id: 'j1' }), { type: 'suggestion', id: 'd1', recipe: 'posting', kind: 'job-draft', status: 'new', code: 'DESK-D' }], NOW).map((i) => i.recipe), ['posting'],
+    'job-draft is counted under its recipe, which has a plain name');
+
   // pending question
   const pq = (rs) => L.today(rs, NOW).filter((i) => i.kind === 'question').map((i) => i.code);
   const prompt = (code, created) => ({ type: 'prompt', id: 'p_' + code, code: code, recipe: 'events', created: created });

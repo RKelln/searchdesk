@@ -156,6 +156,7 @@ window.Desk = window.Desk || {};
     reAbsent: '{name} is gone. Without it the AI will not get: {what}.',
     reAbsentFallback: 'what the page fills in there',
     reUnknown: '{name} is not a word this task knows. It will show up as {name} in the question.',
+    instructionsLong: 'These instructions are {n} characters. Free AI chats on the web may only keep {max}. Make them shorter if you use a free chat.',
     reWhy: 'What did you change? (You can leave this empty.)',
     reSave: 'Save',
     reSaved: 'Saved. Your next question uses these words.',
