@@ -20,5 +20,9 @@ Do not change a name once used. Do not select by visible text, since text lives 
 |---|---|
 | `[data-test="paste-box"]` | the paste textarea (T1.4 import, T3.3 reply paste) |
 | `[data-test="toast"]` | each toast, one element per message (an Undo button inside uses `[data-test="toast-undo"]`) |
+| `[data-test="export"]`, `share`, `copy-text`, `copy-fallback` | Data screen: save to a file, Web Share (only where supported), copy as text, the press-and-hold box |
+| `[data-test="import-file"]`, `paste-button`, `import-report`, `import-undo` | Data screen: file picker, the Paste button, the result line, its Undo button |
+| `[data-test="example-try"]`, `example-remove` | Data screen: add or remove the made-up person |
+| `[data-test="storage-status"]`, `app-version`, `last-export` | Data screen: saving status, version line, "Last saved a copy" line |
 | `[data-test="nav-<id>"]` | nav link for feature `<id>` |
 | `[data-test="<feature>-<thing>"]` | anything else, prefixed with the feature id, e.g. `jobs-add`, `jobs-row` |

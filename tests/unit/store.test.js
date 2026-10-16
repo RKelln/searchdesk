@@ -317,3 +317,67 @@ test('undoToken names the current undo step and changes with each batch', () => 
   s.undo();
   assert.strictEqual(s.undoToken(), null);
 });
+
+test('applyRecords writes records as given, keeps updated and source, and undoes as one step', () => {
+  const s = fresh();
+  const mine = s.put({ type: 'job', title: 'mine' });
+  const incoming = [
+    { id: 'j_abc', type: 'job', title: 'from file', updated: '2020-01-01T00:00:00.000Z', source: 'import' },
+    { id: mine.id, type: 'job', title: 'changed', updated: '2021-01-01T00:00:00.000Z', source: 'user' },
+    { id: 'x_gone', type: 'job', deleted: true, updated: '2021-01-01T00:00:00.000Z' },
+    { id: 'bad' }, null, { id: 'profile', type: 'job', updated: 'x' }
+  ];
+  let calls = 0;
+  s.subscribe(() => calls++);
+  assert.strictEqual(s.applyRecords(incoming), 3);
+  assert.strictEqual(calls, 1);
+  assert.strictEqual(s.get('j_abc').updated, '2020-01-01T00:00:00.000Z');
+  assert.strictEqual(s.get('j_abc').source, 'import');
+  assert.strictEqual(s.get(mine.id).title, 'changed');
+  assert.strictEqual(s.get('profile'), undefined);
+  assert.strictEqual(s.undo(), 'Apply');
+  assert.strictEqual(s.get('j_abc'), undefined);
+  assert.strictEqual(s.get(mine.id).title, 'mine');
+  assert.strictEqual(s.get(mine.id).updated, mine.updated);
+});
+
+test('applyRecords joins a batch and takes its label; it is not on scoped stores', () => {
+  const s = fresh();
+  s.batch('Import', () => s.applyRecords([{ id: 'j_1', type: 'job', updated: '2020-01-01T00:00:00.000Z' }]));
+  assert.strictEqual(s.undoLabel(), 'Import');
+  const sc = s.scoped('jobs', ['job']);
+  assert.strictEqual(sc.applyRecords, undefined);
+  assert.strictEqual(sc.purge, undefined);
+  assert.strictEqual(sc.putQuiet, undefined);
+  assert.throws(() => s.applyRecords('no'));
+});
+
+test('purge removes records outright (no tombstone) and undoes', () => {
+  const s = fresh();
+  const a = s.put({ type: 'job', title: 'a', source: 'example' });
+  const b = s.put({ type: 'job', title: 'b' });
+  assert.strictEqual(s.purge([a.id, 'nope', '__proto__']), 1);
+  assert.strictEqual(s.get(a.id, { withDeleted: true }), undefined);
+  assert.strictEqual(s.all({ withDeleted: true }).length, 1);
+  assert.strictEqual(s.get(b.id).title, 'b');
+  s.undo();
+  assert.strictEqual(s.get(a.id).title, 'a');
+  assert.strictEqual(s.get(a.id).source, 'example');
+});
+
+test('putQuiet saves and announces but is not an undo step', () => {
+  const s = fresh();
+  const a = s.put({ type: 'job', title: 'a' });
+  const tok = s.undoToken();
+  let calls = 0;
+  s.subscribe(() => calls++);
+  s.putQuiet({ type: 'settings', lastExport: '2026-01-01T00:00:00.000Z' });
+  assert.strictEqual(calls, 1);
+  assert.strictEqual(s.undoToken(), tok);
+  assert.strictEqual(s.get('settings').lastExport, '2026-01-01T00:00:00.000Z');
+  s.undo();
+  assert.strictEqual(s.get(a.id), undefined);
+  assert.ok(s.get('settings'));
+  s.put({ type: 'job', title: 'b' });
+  assert.strictEqual(s.undoLabel(), 'Save');
+});

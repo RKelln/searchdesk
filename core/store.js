@@ -14,7 +14,8 @@ window.Desk = window.Desk || {};
   var subs = [];
   var droppedCount = 0;
   var tokenSeq = 0; // each undo step gets its own number
-  var open = null; // the batch in progress: { label, before: {id: record|null}, ids: {} }
+  var open = null; // the batch in progress: { label, before: {id: record|null}, ids: {}, quiet }
+  var quiet = false; // true while putQuiet runs: the write is saved and announced but is not an undo step
 
   function clone(x) { return x === undefined ? x : JSON.parse(JSON.stringify(x)); }
   function nowMs() { return cfg.now ? cfg.now() : Date.now(); }
@@ -68,7 +69,7 @@ window.Desk = window.Desk || {};
     if (typeof label === 'function') { fn = label; label = ''; }
     ensure();
     if (open) return fn(); // nested: joins the outer step
-    open = { label: label || '', before: {}, ids: {} };
+    open = { label: label || '', before: {}, ids: {}, quiet: quiet };
     var mine = open, result;
     try { result = fn(); }
     catch (e) { // roll back everything this batch did
@@ -79,8 +80,10 @@ window.Desk = window.Desk || {};
     open = null;
     var ids = Object.keys(mine.before);
     if (ids.length) {
-      undoStack.push({ label: mine.label, before: mine.before, after: fingerprint(ids), at: nowMs(), tok: ++tokenSeq });
-      if (undoStack.length > UNDO_DEPTH) undoStack.shift();
+      if (!mine.quiet) {
+        undoStack.push({ label: mine.label, before: mine.before, after: fingerprint(ids), at: nowMs(), tok: ++tokenSeq });
+        if (undoStack.length > UNDO_DEPTH) undoStack.shift();
+      }
       notify(mine.label, ids);
     }
     return result;
@@ -194,6 +197,47 @@ window.Desk = window.Desk || {};
     return out;
   }
 
+  // ---- core-only writes (io.js: import, example data). Never on scoped stores. -------------------
+  // Writes records exactly as given (their own `updated`, `source`, `deleted`), so a merge stays idempotent.
+  // No ownership checks. Joins the batch in progress, or makes one of its own. Returns how many were written.
+  function applyRecords(list) {
+    ensure();
+    if (!Array.isArray(list)) fail('applyRecords needs a list of records.');
+    var n = 0;
+    batch('Apply', function () {
+      list.forEach(function (r) {
+        if (!isObj(r) || !goodId(r.id) || !validRecord(r.id, r)) return;
+        if (SINGLETONS.indexOf(r.id) >= 0 && r.type !== r.id) return;
+        if (SINGLETONS.indexOf(r.type) >= 0 && r.id !== r.type) return;
+        touch(r.id);
+        state.records[r.id] = clone(r);
+        n++;
+      });
+    });
+    return n;
+  }
+  // Hard delete: no tombstone is left. Undoable as part of its batch. Returns how many were removed.
+  function purge(ids) {
+    ensure();
+    if (!Array.isArray(ids)) fail('purge needs a list of ids.');
+    var n = 0;
+    batch('Remove', function () {
+      ids.forEach(function (id) {
+        if (!goodId(id) || !rec(id)) return;
+        touch(id);
+        delete state.records[id];
+        n++;
+      });
+    });
+    return n;
+  }
+  // Like put, but not an undo step: for bookkeeping the person did not ask for (settings.lastExport).
+  function putQuiet(record) {
+    var was = quiet;
+    quiet = true;
+    try { return put(record, null); } finally { quiet = was; }
+  }
+
   // ---- public ----------------------------------------------------------
   var store = {
     SCHEMA: SCHEMA,
@@ -210,6 +254,7 @@ window.Desk = window.Desk || {};
     remove: function (id) { return remove(id, null); },
     ext: function (id, patch, featureId) { return ext(id, patch, featureId, null); },
     batch: batch, undo: undo,
+    applyRecords: applyRecords, purge: purge, putQuiet: putQuiet, // core only
     // A number naming the step undo() would undo now, or null. A new batch gives a new number.
     undoToken: function () { return undoStack.length ? undoStack[undoStack.length - 1].tok : null; },
     canUndo: function () { return undoStack.length > 0; },

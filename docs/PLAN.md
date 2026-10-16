@@ -77,7 +77,7 @@ can follow a day later if it must).
   *Done when:* unit tests: newer wins both ways; tie broken by device; tombstone newer wins; unknown types and
   unknown `ext` kept; `example` records not imported; idempotent (merge twice = once); a wrong `schema` is rejected
   with a sentence.
-- [ ] **T1.4 `io.js` and the Data screen** (P0, DESIGN 6 Export and import). Export (download, plus Web Share when
+- [x] **T1.4 `io.js` and the Data screen** (P0, DESIGN 6 Export and import). Export (download, plus Web Share when
   `navigator.canShare({files})`), copy as text, import by file and by paste (the shared paste box detects state JSON
   versus an AI answer), the import report with Undo, the backup nudge state, "Try with a made-up person" and "Remove
   the made-up person", storage status, app version.
@@ -317,3 +317,10 @@ can follow a day later if it must).
   inline it). The scan strips comments (a comment no longer fails a feature) but not strings, matches whole
   identifiers, and covers every function on the def plus every `logic` function. DESIGN 7.5/7.6 should say so. The
   JXA branch of `checks/run.js` and `check.sh` under `osascript` are untested (V4 on a Mac).
+- 2026-10-16, T1.4: new core-only store methods `applyRecords`, `purge`, `putQuiet` (so recording `lastExport`
+  does not use up the one undo step). `settings.lastExport` and `exampleLoaded` are device-local and stripped on
+  export. `Desk.pasteHandlers` is where T3.3 hooks AI answers; `Desk.io.makePasteBox` is reusable;
+  `Desk.io.backupNudge()` is for Home (T2.3). `DESK_EXAMPLE` shape is documented in `data/example.js` (T2.6).
+  e2e `clear_storage` does not stay cleared (the `pagehide` flush writes state back); fix the helper to load an
+  empty state and flush, as `test_data.py`'s `wipe()` does. A file tombstone for an id never seen here counts as
+  "Removed"; consider counting it separately in merge. DESIGN 6 should mention the device-local settings.
