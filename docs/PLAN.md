@@ -239,7 +239,7 @@ can follow a day later if it must).
 - [ ] **T4.3 README** (P0, DESIGN 14). Three readers in order. For people looking for work: what it is, the link, "your
   data stays on this device: save a copy", the free-help line. For libraries: running a workshop, the locale pack.
   For developers: `AGENTS.md`, `docs/`, tests. Plain words in the first part.
-- [ ] **T4.4 Planned-feature briefs** (P0 for 7: `sites`, `calendar`, `print`, `bigtext`, `pay`,
+- [x] **T4.4 Planned-feature briefs** (P0 for 7: `sites`, `calendar`, `print`, `bigtext`, `pay`,
   `reply-clock`, `recipe-followup`; P1 for the rest). Write `docs/features/<id>.md` from the template in DESIGN 8.3 and the table
   in 8.2, and fill `Desk.planned` in `list.js` with each id, name and plain sentence. `reply-clock` is in the
   P0 set too (setting `replyDays`, 0 = off).
@@ -460,3 +460,13 @@ can follow a day later if it must).
   characters is refused. Smoke is now strict (no missing-feature allowance). Open: Home shows a waiting `job-note` as
   "1 suggestion waiting: rc_xxxx" (the raw id); Home should skip it or name the job. "Copy this recipe" is disabled
   until a job task's needs are met. `ctx.store.subscribe` is used but missing from CONTRACT.
+- 2026-10-16, T4.4: there are 15 briefs in `docs/features/`: the 7 P0 ones, plus checklist, contacts, stories, resumes, board,
+  week, recipe-weekly and recipe-sites. `Desk.planned` is filled. Each brief adds "Record types", "ctx calls" and "Needs
+  from core" lines to the DESIGN 8.3 template. Needs from core:
+  (1) `settings` may not exist, so `ctx.store.ext('settings', …)` throws. This hits bigtext and reply-clock; core
+      should create `settings` at boot.
+  (2) There is no `ctx.download` (calendar's .ics); the brief has a workaround.
+  (3) Nothing takes a `job-next` suggestion (recipe-weekly).
+  (4) board cannot move stages, by design.
+  The `sites` brief covers showing and taking `lead` suggestions. DESIGN 9.6's fallback "link list on the AI
+  screen" is not specified anywhere. This commit also lists `recipe-custom` in `Desk.features`.

@@ -191,3 +191,18 @@ def test_data_storage_status_when_blocked(page, app):
     assert "not saving" in page.locator('[data-test="storage-status"]').inner_text()
     assert page.locator('[data-test="export"]').is_visible()
     assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_data_lists_ideas_you_could_build_with_a_brief_each(page, app):
+    import os
+    open_data(page, app)
+    page.wait_for_selector('[data-test="ideas"]')
+    ids = page.evaluate("() => Desk.planned.map(p => p.id)")
+    assert len(ids) >= 7
+    for must in ["sites", "calendar", "print", "bigtext", "pay", "reply-clock", "recipe-followup"]:
+        assert must in ids
+        assert page.locator('[data-test="idea-%s"]' % must).count() == 1
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    for i in ids:
+        assert os.path.exists(os.path.join(root, "docs", "features", i + ".md")), i
+    assert_no_errors(page, allow=ALLOW_MISSING)
