@@ -204,7 +204,7 @@ can follow a day later if it must).
   off, the research step is gone; the context never includes notes; e2e: copy works from a job's detail view
   (`job.actions`: "Practise an interview for this job").
 
-- [ ] **T3.7 Improving recipes** (P0, DESIGN 9.11). "Change the instructions" (editor, placeholder list,
+- [x] **T3.7 Improving recipes** (P0, DESIGN 9.11). "Change the instructions" (editor, placeholder list,
   missing-placeholder warning, Save, "Back to the original", the last 5 versions) as `recipe-edit`, which
   `prompt.js` uses in place of the template; the notes list under each recipe; "Improve these instructions with AI"
   as a built-in recipe (its answer is the code line, then a code block of new text, then one "what changed" line;
@@ -442,3 +442,11 @@ can follow a day later if it must).
   and CONTRACT should say so. The prompt record holds up to 8,000 characters of posting, and it goes into the backup.
   This recipe and T3.7 were built at the same time, so this commit also carries T3.7's two small hooks in
   `core/recipes.js` (`panelExtras`, `edited`). They do nothing until `core/recipe-edit.js` lands.
+- 2026-10-16, T3.7: core owns `recipe-edit` (ids `re_<recipeId>`) in the new `core/recipe-edit.js`, loaded after
+  `core/recipes.js`. T4.1 must inline it, and DESIGN 5 should list it. "Back to the original" empties `text` and keeps
+  the versions. `improve` is a hidden built-in recipe (`listed:false`), opened at `#ai/improve/<taskId>`. It needs
+  `keep` from T3.5. Use this saves the edit and marks the notes used in one undo step. `prompt.js` adds the example
+  line for `answer:'text'`. In text mode, `reply.js` now lets a "What changed:" line after the block win over nearer
+  prose. Coach "Copy only the instructions" now uses the edited template. Open: an edited coach prompt is not held to
+  the 1,500 cap (a warning would be good). The dropped-placeholder warning is only as good as each recipe's
+  `placeholders` list. `recipe-edit` records keep `source:'user'` even after Use this.

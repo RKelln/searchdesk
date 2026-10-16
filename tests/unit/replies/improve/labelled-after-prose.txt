@@ -1,0 +1,11 @@
+DESK-H2WX
+
+```
+Pick events for {profile}.
+
+  Keep {items} here.
+```
+
+Hope this helps!
+
+What changed: shorter.

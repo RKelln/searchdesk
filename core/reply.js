@@ -680,8 +680,12 @@ window.Desk = window.Desk || {};
       }
       text = trimBlank(inner).join('\n');
       afterIdx = b.end;
-      for (i = afterIdx + 1; i < lines.length; i++) {
-        if (lines[i].trim()) { summary = lines[i].trim().replace(/^(?:[-*\u2022]\s+)?(?:\*\*)?what changed(?:\*\*)?\s*[:\-\u2013\u2014]\s*/i, ''); break; }
+      var labelled = /^(?:[-*\u2022]\s+)?(?:\*\*)?what changed(?:\*\*)?\s*[:\-\u2013\u2014]\s*/i;
+      for (i = afterIdx + 1; i < lines.length; i++) { // (T3.7) a line that says "What changed:" wins over a nearer line of prose
+        if (labelled.test(lines[i].trim())) { summary = lines[i].trim().replace(labelled, ''); break; }
+      }
+      if (!summary) for (i = afterIdx + 1; i < lines.length; i++) {
+        if (lines[i].trim()) { summary = lines[i].trim().replace(labelled, ''); break; }
       }
       if (!summary) { // the line may sit inside the block, after the text
         var m2 = /\n\s*(?:\*\*)?what changed(?:\*\*)?\s*[:\-\u2013\u2014]\s*(.*)$/i.exec(text);

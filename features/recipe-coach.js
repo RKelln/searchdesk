@@ -111,6 +111,11 @@ After {questions} questions and follow-ups, or "interview over", switch to coach
     instructions(raw, workshop) {
       return this.fill(this.TEMPLATE, this.parts(raw, workshop)) + '\n';
     },
+    // (T3.7) The same, from any template: the person's edited text, or the original. The {context} part is left out, so
+    // only the instructions are copied. With the original full template this gives exactly instructions().
+    instructionsFrom(template, raw, workshop) {
+      return this.fill(template, Object.assign(this.parts(raw, workshop), { context: '' })).replace(/\s+$/, '') + '\n';
+    },
     // The template the recipe registers: the instructions, then the context.
     fullTemplate() {
       return this.TEMPLATE + '\n\n' + this.CONTEXT_TAIL;
@@ -214,7 +219,8 @@ After {questions} questions and follow-ups, or "interview over", switch to coach
       },
       answer: null,
       copies: [{ id: 'instructions', label: ctx.t('copyInstructions'), done: ctx.t('copiedInstructions'),
-        text: (c, opts) => L.instructions(opts.options, c.workshop()) }],
+        // c.edited('coach') is the person's changed instructions (T3.7), or null for the original
+        text: (c, opts) => L.instructionsFrom(c.edited('coach') || L.fullTemplate(), opts.options, c.workshop()) }],
       tips: [ctx.t('tipVoice'), ctx.t('tipKeep'), ctx.t('tipStop')],
     });
     ctx.slot('job.actions', { id: 'coach', label: ctx.t('jobAction'), run: (job) => ctx.ui.go('ai/coach/' + job.id) });

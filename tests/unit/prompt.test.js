@@ -243,3 +243,10 @@ test('remember: saves a prompt record and keeps the newest 30', () => {
   assert.ok(kept.every((r) => r.id === 'p_' + r.code.toLowerCase() && r.aliases.L1 === 'e_l0'));
   assert.ok(!kept.some((r) => r.code === codes[0]) && kept.some((r) => r.code === codes[32]));
 });
+
+test('howToAnswer: a text answer may carry one more line of format (T3.7)', () => {
+  const plain = P.howToAnswer({ answer: 'text' }, { code: '7Q3K' });
+  const more = P.howToAnswer({ answer: 'text', example: 'After the block, one more line.\nWhat changed: a sentence.\n' }, { code: '7Q3K', replyLanguage: 'French' });
+  assert.ok(more.includes('Then your answer as plain text.\nAfter the block, one more line.\nWhat changed: a sentence.\nWrite it in French.'));
+  assert.ok(!plain.includes('What changed'));
+});

@@ -76,7 +76,7 @@ Desk.check('recipe-coach', (t, f) => {
   t.eq(def.id, 'coach', 'the recipe is "coach" (the address is #ai/coach/<jobId>)');
   t.eq(def.answer, null, 'no answer is read back');
   t.eq(def.options.map((o) => o.id), ['kind', 'questions', 'research', 'language'], 'four options');
-  const rctx = (w) => ({ workshop: () => w });
+  const rctx = (w, edited) => ({ workshop: () => w, edited: () => edited || null });
   const dflt = (o, w) => (typeof o.default === 'function' ? o.default(rctx(w)) : o.default);
   t.ok([true, false].every((w) => def.options.every((o) => o.choices.some((c) => String(c.value) === String(dflt(o, w))))), 'every default is one of its choices, in both modes');
   const qopt = def.options.filter((o) => o.id === 'questions')[0];
@@ -87,6 +87,10 @@ Desk.check('recipe-coach', (t, f) => {
   t.eq(def.copies[0].text(rctx(true), { options: {} }), L.instructions({}, true), '"Copy only the instructions" copies the instructions alone');
   t.eq(def.copies[0].text(rctx(false), { options: {} }), L.instructions({}, false), 'and follows the mode');
   t.ok(def.copies[0].text(rctx(true), { options: {} }).indexOf('Job posting') < 0, 'and none of the context');
+  // (T3.7) the person's changed instructions are what "Copy only the instructions" copies
+  const mine = 'My coach words. Ask {questions} questions.{language}\n\n{research}Be kind.\n\n{context}';
+  t.eq(def.copies[0].text(rctx(true, mine), { options: { questions: '4', research: 'off', language: 'French' } }), 'My coach words. Ask 4 questions. Reply in French.\n\nBe kind.\n', 'an edit is filled with the options, without the context');
+  t.eq(L.instructionsFrom(L.fullTemplate(), { language: 'French' }, true), L.instructions({ language: 'French' }, true), 'the original template through instructionsFrom gives the same text');
   t.eq(slots.length, 1, 'it adds one slot');
   t.eq(slots[0].n, 'job.actions', 'the slot is job.actions');
   t.eq(slots[0].d.label, 'Practise an interview for this job', 'the button says what it does');

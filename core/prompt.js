@@ -152,6 +152,7 @@ window.Desk = window.Desk || {};
     var lang = o.replyLanguage ? String(o.replyLanguage).replace(/\s+/g, ' ').trim() : '';
     if (ans === 'text') {
       out.push('Then your answer as plain text.');
+      if (r.example) out.push(asText(r.example).replace(/\s+$/, '')); // (T3.7) a recipe may add one more line of format
       if (lang) out.push('Write it in ' + lang + '.');
       return out.join('\n');
     }

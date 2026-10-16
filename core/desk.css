@@ -244,3 +244,20 @@ dialog.confirm::backdrop { background: rgba(0, 0, 0, .5); }
 .ai-better-wrap textarea { width: 100%; }
 .ai-option { display: grid; gap: .25rem; margin: 0 0 .75rem; }
 .ai-option label { font-weight: 600; }
+
+/* recipe edit (T3.7) */
+.re-wrap { margin: 0 0 .75rem; }
+.re-box textarea { width: 100%; font: .85rem/1.4 ui-monospace, Menlo, Consolas, monospace; }
+.re-box input[type="text"] { width: 100%; }
+.re-ph { margin: 0 0 .5rem; padding-left: 1.25rem; }
+.re-out { color: var(--muted); }
+.re-state { color: var(--muted); font-size: .85rem; }
+.re-warn { color: var(--danger); font-weight: 600; margin: 0 0 .25rem; }
+.re-notes ul { margin: 0 0 .5rem; padding-left: 1.25rem; }
+.re-compare { border-top: 1px solid var(--line); margin-top: .75rem; padding-top: .5rem; }
+.re-diff { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin: 0 0 .75rem; background: var(--line); border: 1px solid var(--line); }
+.re-head { background: var(--surface); font-weight: 600; padding: .25rem .5rem; }
+.re-cell { background: var(--surface); padding: .15rem .5rem; white-space: pre-wrap; overflow-wrap: anywhere; font: .85rem/1.4 ui-monospace, Menlo, Consolas, monospace; min-width: 0; }
+.re-changed { background: var(--banner-bg); color: var(--banner-text); }
+.re-empty { background: var(--surface); }
+.re-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
