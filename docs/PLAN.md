@@ -236,7 +236,7 @@ can follow a day later if it must).
   on a new version, never registered on `file://`.
   *Done when:* the hosted URL loads on a desktop and a phone, and the round trip works there (V8 is checked by the
   maintainer with a real phone).
-- [ ] **T4.3 README** (P0, DESIGN 14). Three readers in order. For people looking for work: what it is, the link, "your
+- [x] **T4.3 README** (P0, DESIGN 14). Three readers in order. For people looking for work: what it is, the link, "your
   data stays on this device: save a copy", the free-help line. For libraries: running a workshop, the locale pack.
   For developers: `AGENTS.md`, `docs/`, tests. Plain words in the first part.
 - [x] **T4.4 Planned-feature briefs** (P0 for 7: `sites`, `calendar`, `print`, `bigtext`, `pay`,
@@ -498,3 +498,6 @@ can follow a day later if it must).
   `wait_for_function` uses eval, so a polling helper replaces it on built files. Tests now open `#ai/fixtureq` by
   name, since load order differs when built. Open: `data/inbox.js` cannot work in a built file (T5.3 decides), and
   `#selftest` is neutral when built. DESIGN 12 could record the style-src and manifest choices.
+- 2026-10-16, T4.3: README.md has three parts (job seekers, workshop hosts, developers). Its button words and commands
+  were checked against the code, and I ran the workshop build myself (`dist/workshop/searchdesk.html`, connect-src 'none').
+  There is no doc for swapping in another city's locale pack beyond "point index.html at your file"; that belongs to the P2 `docs/LOCALE.md`.
