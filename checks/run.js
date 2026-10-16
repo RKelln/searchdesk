@@ -8,7 +8,7 @@
 // indirect eval used in the JXA branch is fine here.
 
 var IS_NODE = typeof process !== 'undefined' && !!process.versions && !!process.versions.node;
-var CORE = ['core/strings.js', 'core/h.js', 'core/contract.js', 'core/merge.js']; // pure: safe with no page
+var CORE = ['core/strings.js', 'core/h.js', 'core/contract.js', 'core/merge.js', 'core/prompt.js']; // pure: safe with no page
 var ID_RE = /^[a-z]+(-[a-z]+)*$/; // same rule as validId in core/desk.js and the test in check.sh
 
 // ---- the parts that differ between node and JXA --------------------------------------------------

@@ -106,11 +106,11 @@ can follow a day later if it must).
 
 ## Phase 2: base features
 
-- [ ] **T2.1 `jobs`** (P0, DESIGN 8.1). List with a stage filter and counts; add and edit form (title required,
+- [x] **T2.1 `jobs`** (P0, DESIGN 8.1). List with a stage filter and counts; add and edit form (title required,
   the rest optional; dates with native date inputs); one-tap stage change; detail view hosting `job.panel` and
   `job.actions`; delete with undo. `logic`: sorting, filtering, the "next date" for a job.
   *Done when:* check file passes; e2e adds, edits, changes stage, deletes and undoes.
-- [ ] **T2.2 `profile`** (P0, DESIGN 6 and 9.9). The fields, the share switches with their defaults, and a "What the
+- [x] **T2.2 `profile`** (P0, DESIGN 6 and 9.9). The fields, the share switches with their defaults, and a "What the
   AI will see" preview that uses the same function the recipes use (`Desk.prompt.profileLines`).
   *Done when:* check: `profileLines` includes only shared, non-empty fields; e2e: switching one off removes it from
   the preview.
@@ -328,3 +328,11 @@ can follow a day later if it must).
   treat null as "no live fetch". Tier shape is `{id, name, query}` (T2.5 may change it). Help copy is paraphrased
   from `docs/inputs/toronto-help.md` and awaits the maintainer's review; TODOs in `locale/toronto.js` list the gaps.
   Phone numbers are plain text because `h()` has no `tel:` links.
+- 2026-10-16, T2.1: `interviewAt` is `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM` local wall-clock (DESIGN 6 should say so).
+  Jobs uses hash sub-routes `#jobs`, `#jobs/new`, `#jobs/<id>`, `#jobs/<id>/edit`. Features call `Desk.fmtDate`
+  etc. and `Desk.route()` directly because `ctx` has no date or route helpers; contract rule 1 says ctx only, so add
+  `ctx.fmt` and `ctx.route()` (or allow these in CONTRACT). A store change while a form is open loses unfocused
+  typed values.
+- 2026-10-16, T2.2: `Desk.prompt.profileLines` / `profileFields` exist ("<Label>: <value>", fixed order); the
+  profile feature repeats the field list in its `logic` and a unit test keeps them in step. `store.put` replaces
+  the whole record, so singleton writers must spread the existing record. `checks/run.js` now loads `core/prompt.js`.
