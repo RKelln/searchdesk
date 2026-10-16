@@ -43,6 +43,7 @@ Desk.register({
             h('h4', {}, e.name),
             h('p', {}, e.what),
             h('p', {}, h('strong', {}, ctx.t('how') + ': '), e.how),
+            e.phone && e.phone.tel ? h('p', {}, h('a', { href: 'tel:' + e.phone.tel, 'data-test': 'help-call' }, e.phone.label)) : null,
             h('p', {}, h('strong', {}, ctx.t('who') + ': '), e.who),
             h('p', {}, h('a', { href: e.source, 'data-test': 'help-source' }, ctx.t('source')))))));
     }

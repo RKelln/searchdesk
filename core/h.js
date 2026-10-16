@@ -5,12 +5,14 @@ window.Desk = window.Desk || {};
   var BAD_TAGS = /^(script|style|iframe|frame|frameset|object|embed|link|meta|base|template|noscript)$/i;
   var BAD_ATTRS = /^(style|srcdoc|innerhtml|outerhtml|html|textcontent|innertext|is)$/i;
   var LINK_OK = /^(https?:|mailto:)/i;
+  var TEL_OK = /^tel:\+?[0-9][0-9\-(). ]{0,30}$/i; // phone numbers only
   var IMG_OK = /^data:image\/(png|jpeg|gif|webp);/i;
 
-  // Only http:, https: and mailto: survive. Whitespace and control characters are stripped first,
+  // Only http:, https:, mailto: and tel: (digits only) survive. Whitespace and control characters are stripped first,
   // because browsers ignore them inside a scheme ("java\tscript:").
   function safeHref(v) {
     var s = String(v).replace(/[\u0000-\u0020\u007f-\u009f\u200b-\u200f\u2028\u2029\ufeff]/g, '');
+    if (TEL_OK.test(String(v).trim())) return String(v).trim();
     return LINK_OK.test(s) ? String(v).trim() : null;
   }
 

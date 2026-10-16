@@ -54,6 +54,7 @@ window.DESK_LOCALE = {
       id: '211', kind: 'person', name: '211 Ontario',
       what: 'A free helpline and website that points you to the right community service, including newcomer employment programs in Toronto. If you do not know which agency you qualify for, 211 answers that in one call.',
       how: 'Call 2-1-1, or use the website.',
+      phone: { label: 'Call 2-1-1', tel: '211' },
       who: 'Anyone who does not know where to start.',
       source: 'https://211ontario.ca/',
     },

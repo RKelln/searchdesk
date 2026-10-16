@@ -81,7 +81,7 @@ say so.
 ## 4. `h()`: the only way to make elements
 
 - Children that are strings become text nodes. There is no way to pass HTML.
-- `href` must be `https:`, `http:` or `mailto:`; anything else is dropped. Links get `rel="noopener noreferrer"` and
+- `href` must be `https:`, `http:`, `mailto:` or `tel:` (a phone number: digits, `+`, `-`, spaces, brackets); anything else is dropped. Links get `rel="noopener noreferrer"` and
   open in a new tab.
 - `on: { click: fn }` attaches handlers. `class`, `aria-*`, `data-*` and form attributes pass through.
 

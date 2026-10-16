@@ -30,7 +30,7 @@ test('children: arrays flattened, null/false/undefined skipped, nodes appended',
 });
 
 test('javascript: and other schemes in href are dropped', () => {
-  for (const bad of ['javascript:alert(1)', ' JaVa\tScRiPt:alert(1)', 'data:text/html,hi', 'vbscript:x', '//evil.com', '/rel', '#x', 'ftp://x']) {
+  for (const bad of ['javascript:alert(1)', ' JaVa\tScRiPt:alert(1)', 'data:text/html,hi', 'vbscript:x', '//evil.com', '/rel', '#x', 'ftp://x', 'tel:javascript:x', 'tel:211;x=1', 'tel:']) {
     const a = h('a', { href: bad }, 'x');
     assert.strictEqual(a.getAttribute('href'), null, bad);
     assert.strictEqual(a.getAttribute('target'), null, bad);
@@ -38,7 +38,7 @@ test('javascript: and other schemes in href are dropped', () => {
 });
 
 test('good links get rel and target', () => {
-  for (const ok of ['https://example.com/a', 'http://example.com', 'mailto:a@b.ca', 'HTTPS://EXAMPLE.COM']) {
+  for (const ok of ['https://example.com/a', 'http://example.com', 'mailto:a@b.ca', 'HTTPS://EXAMPLE.COM', 'tel:211', 'tel:+1 (416) 555-0100']) {
     const a = h('a', { href: ok }, 'x');
     assert.strictEqual(a.getAttribute('href'), ok);
     assert.strictEqual(a.getAttribute('rel'), 'noopener noreferrer');
