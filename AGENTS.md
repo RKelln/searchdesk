@@ -55,6 +55,8 @@ Read [`docs/CONTRACT.md`](docs/CONTRACT.md). It has the `ctx` API, the slots, `h
 - Check one feature on a Mac with no Node: `bash checks/check.sh <id>`. This arrives with task T1.6; if
   `checks/check.sh` is not there yet, it is not built yet.
 - Browser tests (needs `uv`): `uv run tests/e2e/run.py`. This arrives with task T1.7.
+- Screenshots for design work (needs `uv`): `uv run tools/screens.py` takes every screen on a phone and a computer,
+  light and dark, writes `screens/index.html`, and flags sideways scroll, page errors and stray `null` text.
 - In the browser, open the app and go to `#selftest`. It runs every loaded feature's check and the contract scan.
 
 Run the checks before you say a feature is done, and tell the person what passed.
