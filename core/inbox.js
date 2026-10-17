@@ -3,7 +3,10 @@
 // `records` is a list of whole records. The page checks them, merges them with Desk.merge as ONE batch, and shows
 // "Brought in 5 changes from your helper" with Undo.
 // Pure parts (Desk.inbox.check, fingerprint, sentence) never touch the DOM. load() and run() do.
-// - Ties: if the page's record and the inbox's record have the same `updated`, the page's record stays.
+// - Ties: if the page's record and the inbox's record have the same `updated`, the page's record stays. That is not a rule
+//   of its own: `Desk.merge` (core/merge.js) breaks a tie on the state-level `device` string, and the incoming state built
+//   here has none, so "" never beats the page's device id. Do not give the incoming state a `device`: an inbox file that
+//   wins ties would quietly overwrite a record the person changed more recently.
 // - Every record is stored with source "ai". `settings`, tombstones and records the page does not know are left out.
 // - Texts that look like HTML are left out, so nothing from a file is ever run as markup.
 // - Idempotent twice over: merging the same records again changes nothing (the records are stored exactly as

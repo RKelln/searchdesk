@@ -598,3 +598,14 @@ can follow a day later if it must).
 - 2026-10-17, fixes the second item found in the Mode A trial (the export name): `.gitignore` ignores `searchdesk-*.json`,
   `AGENTS.md` and `DESIGN.md` name the file `Desk.io.filename` names, and a new test in `tests/unit/io.test.js` fails unless
   the name the code produces is one git actually ignores and both docs name it. `PLAN.md` item (2) above is now done.
+- 2026-10-17, the first item from the Mode A trial is handled without changing what the app does. An agent could not see the
+  shape of a saved copy without a real person's data, because every export leaves out the made-up person on purpose, and
+  `loadExample` deletes `updated` from the example records so only the live store has it. `node tools/demo-export.js` now
+  loads the made-up person the way the page does and hands the state to the real export writer with `source` put back to
+  "user", so it prints a copy the page would actually read (`--ids` for one line per record). Nothing is written to disk and
+  no real data is read. `AGENTS.md` gained the rule that mattered more: when you change a record that is already on the
+  device, give it a NEW `updated`, never the one you read, or the merge sees a tie, keeps the page's record and reports the
+  change as "kept". `core/inbox.js` now says why a tie keeps the page's record (the incoming state carries no `device`, and
+  `Desk.merge` breaks a tie on that) and warns against adding one. Considered and not done: a dev flag that keeps the
+  made-up person in a real export, which would put a hole in "she is not in the copies you save". Unit: 356. Python: 25.
+  Source e2e: 362 (not re-run for this change: no file the browser loads is different).

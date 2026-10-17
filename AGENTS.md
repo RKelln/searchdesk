@@ -59,6 +59,8 @@ For the person-facing steps (with an agent, or a free chat and a kit), see [`doc
 - Browser tests (needs `uv`): `uv run tests/e2e/run.py`. This arrives with task T1.7.
 - Screenshots for design work (needs `uv`): `uv run tools/screens.py` takes every screen on a phone and a computer,
   light and dark, writes `screens/index.html`, and flags sideways scroll, page errors and stray `null` text.
+- The made-up person's records in the shape a saved copy has: `node tools/demo-export.js` (add `--ids` for one line per
+  record). Use it instead of asking a real person for their data.
 - In the browser, open the app and go to `#selftest`. It runs every loaded feature's check and the contract scan.
 - The words you type as a slash command live in `tools/commands/<name>.md`, and the skills live in
   `tools/skills/<name>.md`. Those are the only two places to edit them. `uv run tools/agent-files.py` copies them where
@@ -101,7 +103,12 @@ For an agent that can read and write files (the person's exported backup sits in
 - **Reading:** the person exports to `searchdesk-<date>.json` in the folder (`Desk.io.filename` names it, for example
   `searchdesk-2026-10-16.json`), and you read that. Whoever runs the model may keep what you send it: if the model does
   not say that it keeps nothing, act as if it does. Never paste a real backup, name, email or phone number into a chat
-  in a browser.
+  in a browser. To see what a copy looks like without asking a real person for theirs, run
+  `node tools/demo-export.js`. It prints the made-up person's records in the shape a copy has, and
+  `node tools/demo-export.js --ids` prints each id with its `updated`.
+- **Changing a record that is already here:** give it a NEW `updated`, the time you made the change. Never reuse the
+  one you read. On equal dates the page keeps its own record, so a reused `updated` means your change quietly does
+  nothing, and the person is told it was "kept". An `updated` more than a day in the future is left out entirely.
 - **Writing:** write `data/inbox.js` containing `window.DESK_INBOX = { schema, records }`, with your records marked
   `source: "ai"`. On load the page merges the inbox as one batch ("Brought in 5 changes from your helper · Undo"). The
   merge is idempotent, so a reload does not duplicate anything. `schema` is `"searchdesk/1"` and `records` is a list
