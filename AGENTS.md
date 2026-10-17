@@ -47,12 +47,14 @@ Read [`docs/CONTRACT.md`](docs/CONTRACT.md). It has the `ctx` API, the slots, `h
 7. **Registering is idempotent.** Registering the same id twice replaces the first and logs a warning.
 8. **One file.** No other files except `checks/<id>.check.js` and `docs/features/<id>.md`.
 
+For the person-facing steps (with an agent, or a free chat and a kit), see [`docs/BUILDING.md`](docs/BUILDING.md).
+
 ## Running tests and checks
 
 - Unit tests (needs Node): `node --test tests/unit/*.test.js`. Node 22 rejects a folder, so keep the glob.
 - Check one feature (Linux or anywhere with Node): `node checks/run.js <id>`. It loads `features/<id>.js` and
   `checks/<id>.check.js`. Try it on the example with `node checks/run.js example`. This exists now.
-- Check one feature on a Mac with no Node: `bash checks/check.sh <id>`. This arrives with task T1.6; if
+- Check one feature on a Mac without Node: `bash checks/check.sh <id>` (it runs through `osascript -l JavaScript`). This arrives with task T1.6; if
   `checks/check.sh` is not there yet, it is not built yet.
 - Browser tests (needs `uv`): `uv run tests/e2e/run.py`. This arrives with task T1.7.
 - Screenshots for design work (needs `uv`): `uv run tools/screens.py` takes every screen on a phone and a computer,
@@ -83,15 +85,14 @@ For an agent that can read and write files (the person's exported backup sits in
 - Always write `source: "ai"` on what you add, and keep `updated` honest (the real time you made the change).
 - Never put a name, email or phone number in the profile. The profile has no field for them, on purpose.
 
-## Mac pitfalls
+## Portability
 
-The first workshop runs on managed macOS 14 Macs in Chrome. They have no Python, Node or git.
+People use this on macOS as well as Linux. Keep scripts and file names safe for both.
 
 - Scripts must be bash 3.2 and safe with BSD tools: `sed -i ''` (not `sed -i`), no `date -d`, no `timeout`,
   `shasum -a 256` (not `sha256sum`), no associative arrays, no `mapfile`, no `${var,,}`.
 - Finder drops `.DS_Store` files into folders. Ignore them; never treat them as features or data.
 - File names are case-insensitive: `Sites.js` and `sites.js` are the same file. Use lowercase names.
-- Do not rely on Python, Node or git being there. Checks run through `osascript -l JavaScript` instead.
 
 ## Other rules
 
