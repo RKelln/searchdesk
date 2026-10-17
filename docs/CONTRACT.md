@@ -92,6 +92,47 @@ Add the `data-test` names your tests use to `tests/e2e/README.md`.
 New slots are added to core, never improvised inside a feature. If a feature needs a slot that is not here, stop and
 say so.
 
+### Remembering a setting
+
+A person turning something on expects it to still be on tomorrow. There is one way to do that, and one way that looks
+like it works and then fails the self-test.
+
+**Use `ctx.store.ext('settings', patch)`.** Never `localStorage`: it is a banned word, the self-test scans for it and
+fails the feature, and it is not where the backup is made from.
+
+```js
+// in mount
+ctx.slot('settings', { id: 'mine', title: ctx.t('settingsTitle'), render: renderSettings });
+
+function renderSettings(el) {
+  const s = ctx.store.get('settings') || {};        // undefined until something is saved
+  const size = (s.ext && s.ext.mine && s.ext.mine.size) || 'normal';
+  el.appendChild(h('p', { class: 'muted' }, ctx.t('sizeLabel') + ': ' + size));
+}
+```
+
+Five things to know:
+
+1. **Where it goes.** Your patch lands on the `settings` record under `ext.<your feature id>`, so two features can
+   both have a `size` without colliding. Read it back from `ctx.store.get('settings')`.
+2. **It merges.** `ext` copies the keys in one at a time, so saving one setting does not wipe another. You never need
+   to read-modify-write the whole object to add a key.
+3. **The record may not exist yet.** On the first save, core makes it. Nothing is counted as a change to back up, and
+   `ctx.store.get('settings')` returns `undefined` until then, so always guard the read.
+4. **It travels in the backup.** The `settings` record goes out in the person's file and comes back on another device.
+   Only core's own `lastExport`, `exampleLoaded` and `inboxSeen` stay on the device. So a setting is not "remembered on
+   this device" unless you say so in your own words.
+5. **Treat an unknown value as your default.** A file can be old, hand-edited, or from a version that offered different
+   choices. If the saved value is not one you offer, show your default and do not crash. Write this check in `logic`
+   and test it.
+
+To change it, write and redraw: `ctx.store.ext('settings', { size: v }); ctx.ui.go('data');`. Saving is a store change,
+so it lands on the undo stack, but nothing pops up on its own — if you want an Undo button for it, pass one:
+`ctx.ui.toast(ctx.t('saved'), { undo: true })`.
+
+There is a `settings` slot on the Data screen for exactly this. No feature uses it yet, so the block you add is the
+first one there.
+
 ## 4. `h()`: the only way to make elements
 
 - Children that are strings become text nodes. There is no way to pass HTML.
@@ -103,6 +144,25 @@ say so.
 h('a', { href: job.link }, 'Open the posting')
 h('button', { type: 'button', on: { click: save } }, ctx.t('save'))
 ```
+
+`click` is not special. Any event name goes through, so a feature can use `focus`, `blur`, `change`, `input`,
+`keydown`, `pointerdown`, or a drag (`dragstart`, `dragover`, `drop`). Handlers only ever arrive through `on`:
+`ondragstart="..."` as an attribute is dropped.
+
+```js
+// Drag a card onto another one. This needs no permission and no core change.
+const card = h('div', { class: 'card', draggable: 'true', on: {
+  dragstart: (e) => e.dataTransfer.setData('text/plain', job.id)
+} }, job.title);
+
+const lane = h('div', { class: 'lane', on: {
+  dragover: (e) => e.preventDefault(),   // without this the drop never fires
+  drop: (e) => { e.preventDefault(); move(e.dataTransfer.getData('text/plain')); }
+} });
+```
+
+Two things that bite: `dragover` must call `preventDefault()` or the browser refuses the drop, and the data has to
+travel through `dataTransfer`, because a drag is not a normal event and the handler gets no arguments to close over.
 
 ### Looking like the rest
 

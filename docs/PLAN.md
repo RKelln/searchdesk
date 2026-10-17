@@ -622,3 +622,19 @@ can follow a day later if it must).
   first 8 characters of a sha256 over the sources that went into the build (`tools/build.py`, `default_version`), and there
   are no git tags yet so the front part is the build date. Two builds of the same sources match; a commit that only changes
   docs, tests or tools leaves it untouched.
+- 2026-10-17, desktop layout work, while writing the board: **drag and drop needs no contract change**, which had been
+  assumed it did. `h()` passes *any* event through `on:` (`core/h.js` is a bare `addEventListener` loop over the keys you
+  give it), and `draggable` is not in `BAD_ATTRS`. Proved with a real HTML5 drag in the real app: the drop fired and the
+  payload arrived via `dataTransfer`. Documented in CONTRACT.md §4 with the two traps (`dragover` needs
+  `preventDefault()`, and the data must travel through `dataTransfer` because a drag handler closes over nothing).
+- 2026-10-17, same work: **there is no shared way to remember a preference**, and that is the largest gap found for the
+  workshop. What exists is enough to build one — `ctx.store.ext('settings', patch)` persists (merges, and core makes the
+  record on the first save), the `settings` slot on the Data screen is empty and free, and prefs travel in the backup
+  file — but every feature that wants a setting has to hand-roll the same five things: its own key names, its own control,
+  its own validation of a value it does not recognise, its own reset, and its own strings. `bigtext` is briefed to do
+  exactly this by hand, and it is one of the T6.3 trial kits, so **T6.3 should run before this is built**: the trial is
+  the cheapest way to find out whether hand-rolling a preference is what actually breaks a kit reply. CONTRACT.md §3
+  now documents the mechanism and the `localStorage` trap, so at least the failure is explained rather than mysterious.
+- 2026-10-17, same work: the sidebar's white stopping at the fold in full-page pictures is a picture artefact, not a bug.
+  `.app` is `display: flex; align-items: flex-start` on a wide screen, so the sticky sidebar is exactly one viewport tall,
+  which is right. Fixed in `tools/screens.py` for full-page shots only. See commit `f9bca63`.
