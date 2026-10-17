@@ -25,8 +25,11 @@ New features need nothing: every tab in the menu (built or a "not built yet" stu
 unless SHOTS below already covers it. For a screen behind a tap (a form, a detail view), use --route, or add a line
 to SHOTS when the shot is worth keeping for everyone.
 
-On a phone the menu is fixed to the bottom of the screen. A full-page picture would draw it halfway down, so for
-full-page pictures the menu is moved to the end of the page. --viewport pictures show it where a person sees it.
+A full-page picture is not quite what a person sees, because things that stick or are fixed are drawn where they
+are rather than where they sit once you scroll. Two cases, both fixed for the picture only (see FULLPAGE_CSS): on a
+phone the menu is fixed to the bottom, so it is moved to the end of the page instead of appearing halfway down; on a
+wide screen the menu is a sticky sidebar one screen tall, so it is stretched the length of the page instead of
+stopping at the fold. --viewport pictures need no fixing: they are one screen, so nothing has moved.
 """
 
 import argparse
@@ -43,8 +46,18 @@ SIZES = {"phone": (375, 812), "small": (320, 640), "tablet": (768, 1024), "desk"
          "wide": (1680, 1050)}
 EXAMPLE = "window.DESK_WORKSHOP = { autoExample: true, liveEvents: false };"
 NO_NET = "window.DESK_WORKSHOP = { liveEvents: false };"
-# For full-page pictures only: put the fixed phone menu at the end of the page instead of in the middle.
-FULLPAGE_CSS = "@media (max-width: 767px) { body { position: relative; } .tabs { position: absolute !important; } }"
+# For full-page pictures only, so a picture shows what a person actually sees rather than how the page is built.
+# Keep the phone rule first: `shoot` finds this whole <style> again by the "position: absolute !important" in it,
+# so that substring has to stay, or the -top pictures would keep these overrides too.
+FULLPAGE_CSS = (
+    # The phone menu is fixed to the bottom of the screen, so a full-page picture draws it halfway down. Move it
+    # to the end of the page, where it belongs once there is nothing fixed holding it there.
+    "@media (max-width: 767px) { body { position: relative; } .tabs { position: absolute !important; } }"
+    # On a wide screen the menu is a sticky sidebar exactly one screen tall, so its white stops at the fold and the
+    # rest of the column below it is bare background. That is right in the app: scroll, and it follows you. It is
+    # only the picture that is wrong, so stretch it down the page here. The app is not changed.
+    " @media (min-width: 768px) { .app { align-items: stretch; } .tabs { height: auto; } }"
+)
 LEAKS = ["null", "undefined", "[object Object]", "NaN"]
 
 FIRST_JOB = "Desk.store.all('job').sort((a, b) => a.title < b.title ? -1 : 1)[0].id"
