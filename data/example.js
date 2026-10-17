@@ -59,18 +59,18 @@ window.DESK_EXAMPLE = window.DESK_EXAMPLE || function () {
       replyLanguage: 'English',
       availability: 'Evenings and weekends',
       avoid: 'Anything that costs money to attend' },
-    { type: 'job', title: 'Accounts Payable Clerk', org: 'Birchmount Supply Co.', stage: 'applied',
+    { type: 'job', id: 'job_amira_ap_clerk', title: 'Accounts Payable Clerk', org: 'Birchmount Supply Co.', stage: 'applied',
       applied: day(-9), followUp: day(0), nextStep: 'Email to ask if they got my application' },
-    { type: 'job', title: 'Office Administrator', org: 'Kingsway Dental Group', stage: 'interview',
+    { type: 'job', id: 'job_amira_kingsway', title: 'Office Administrator', org: 'Kingsway Dental Group', stage: 'interview',
       interviewAt: day(2) + 'T10:00', nextStep: 'Practise: tell me about yourself',
       asks: 'QuickBooks or similar\nScheduling\nCustomer service', posting: posting },
     { type: 'job', id: 'job_amira_bookkeeper', title: 'Bookkeeper (part-time)', org: 'Fenwick & Rao Accounting', stage: 'saved',
       closes: day(4), nextStep: 'Ask library coach to check resume first' },
-    { type: 'job', title: 'Administrative Assistant', org: 'Lakeview Community Housing', stage: 'applied',
+    { type: 'job', id: 'job_amira_lakeview', title: 'Administrative Assistant', org: 'Lakeview Community Housing', stage: 'applied',
       applied: day(-16), followUp: day(-2) },
-    { type: 'job', title: 'Data Entry Clerk', org: 'Northgate Logistics', stage: 'closed',
+    { type: 'job', id: 'job_amira_northgate', title: 'Data Entry Clerk', org: 'Northgate Logistics', stage: 'closed',
       applied: day(-30), nextStep: 'No reply. Job reposted.' },
-    { type: 'job', title: 'Receptionist / Bookkeeping Support', org: 'Danforth Physio Clinic', stage: 'interview',
+    { type: 'job', id: 'job_amira_danforth', title: 'Receptionist / Bookkeeping Support', org: 'Danforth Physio Clinic', stage: 'interview',
       interviewAt: day(-10), nextStep: 'Waiting to hear back' }
   ].concat(marks) };
 };

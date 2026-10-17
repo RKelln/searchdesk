@@ -570,3 +570,14 @@ can follow a day later if it must).
   The event note is stored on the event-mark record but the events feature does not show it yet. Unit: 350. Source e2e:
   362 pass. Build tests: 25. The paragraph that T5.3 added to AGENTS.md is in the working tree, mixed with another
   session's edits to that file, and is not in this commit.
+- 2026-10-17, Mode A trial with the made-up person (maintainer's request to see the harness act as the AI): events picks written to
+  `data/inbox.js` as `suggestion` records (the same shape the chat route saves) landed in "Suggested for you", and Undo
+  worked. Not yet looked at by the maintainer: the "Brought in N changes" toast. `data/example.js` now gives all six example
+  jobs fixed ids (`job_amira_*`), so an agent can edit them; an AI edit makes a job `source: "ai"`, so "Remove the made-up
+  person" leaves it and pressing the button again skips it. Unit: 353. Source e2e: 362 pass (one earlier run showed 9
+  failures while another session was editing the repo; two later runs were clean).
+- 2026-10-17, found in that trial (to fix, not done): (1) exports leave out every `source: "example"` record on purpose, so an
+  agent cannot read the made-up person from an export; it has to read `data/example.js`. (2) The app saves
+  `searchdesk-YYYY-MM-DD.json` (`core/io.js`), but AGENTS.md, DESIGN.md and `.gitignore` say `searchdesk-backup-*.json`.
+  A real person's export dropped in the folder would not be ignored by git. Fix the docs to the real name, or the name to
+  the docs, and make `.gitignore` match both.
