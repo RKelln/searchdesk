@@ -510,3 +510,9 @@ can follow a day later if it must).
   The maintainer has done DNS and Pages (it resolves to GitHub). The site shows GitHub's 404 until the first push of main.
   In e2e, Playwright's WebKit cannot reload offline under a service worker, so that one step is skipped there; Chromium
   runs the full offline test. Source e2e: 334 pass. Dist e2e: 283 pass. Unit: 338. Build: 25.
+- 2026-10-16, events (maintainer's request after the site went live): "Around the city" was the whole Togather feed
+  (1,024 events, mostly not about work). Togather's tags are too sparse to filter on (one event in a month has
+  `career & job search`), so a locale tier can now have `match` words. Its list shows only events whose title or tags
+  have one (at the start of a word, any case; `logic.matchesWords`), with "Show all events here (n more)". Toronto's
+  city words keep about 20 events. The events recipe still sees the whole feed. DESIGN 9.x and the locale docs could
+  record `match`.

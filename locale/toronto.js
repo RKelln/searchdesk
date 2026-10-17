@@ -110,7 +110,11 @@ window.DESK_LOCALE = {
     api: 'https://staging.toronto.togather.foundation/api/v1/events',
     tiers: [
       { id: 'library', name: 'At the library', query: { keywords: 'career & job search' } },
-      { id: 'city', name: 'Around the city', query: {} },
+      // `match`: the list shows only events whose title or tags have one of these words (at the start of a word, any
+      // case), with a button to show the rest. Togather's own tags are too sparse to filter on, so this is ours.
+      { id: 'city', name: 'Around the city', query: {}, match: ['job', 'career', 'resume', 'résumé', 'interview', 'hiring',
+        'employ', 'networking', 'linkedin', 'newcomer', 'settlement', 'english conversation', 'esl', 'digital skills',
+        'computer basics', 'mentor', 'entrepreneur', 'small business', 'cover letter', 'workplace', 'volunteer'] },
     ],
   },
 

@@ -75,8 +75,19 @@ Desk.check('events', (t, f) => {
   t.eq(sug[0].why, 'Fits you', 'the reason comes along');
   t.eq(L.suggested(undefined, events, marks, TODAY), [], 'no suggestions is fine');
 
+  // match words (a locale tier's `match`)
+  const W = ['job', 'english conversation', 'résumé'];
+  t.ok(L.matchesWords(ev('a', '2026-10-20', { title: 'Jobs Fair' }), W), 'a word matches at the start of a word, any case');
+  t.ok(!L.matchesWords(ev('a', '2026-10-20', { title: 'Banjo night' }), W), 'not inside a word');
+  t.ok(L.matchesWords(ev('a', '2026-10-20', { title: 'Big job-ready day' }), W), 'after a space, before a dash');
+  t.ok(L.matchesWords(ev('a', '2026-10-20', { title: 'Free English Conversation Circle' }), W), 'a phrase matches');
+  t.ok(L.matchesWords(ev('a', '2026-10-20', { title: 'Mon Résumé' }), W), 'accents match');
+  t.ok(L.matchesWords(ev('a', '2026-10-20', { title: 'Talk', tags: ['job fairs'] }), W), 'tags count');
+  t.ok(L.matchesWords(ev('a', '2026-10-20', { title: 'Anything' }), []) && L.matchesWords(ev('a', '2026-10-20'), undefined), 'no words means all match');
+  t.ok(L.matchesWords(ev('a', '2026-10-20', { title: 'C++ (a+b)' }), ['c++', '(a+b)']), 'words with symbols are taken literally');
+
   // strings used by the screen
-  ['tabLabel', 'weekThis', 'weekNext', 'weekAll', 'star', 'unstar', 'dismiss', 'listing', 'fromAi', 'why', 'suggestedHeading', 'starredHeading'].forEach((k) => {
+  ['tabLabel', 'weekThis', 'weekNext', 'weekAll', 'star', 'unstar', 'dismiss', 'listing', 'fromAi', 'why', 'suggestedHeading', 'starredHeading', 'matchedOnly', 'matchShowAll', 'matchShowFew'].forEach((k) => {
     t.ok(typeof f.strings[k] === 'string' && f.strings[k], 'string ' + k + ' exists');
   });
 });

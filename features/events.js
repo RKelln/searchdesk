@@ -64,6 +64,9 @@ Desk.register({
     toSuggestionOff: 'Suggestion put away.',
     timeTo: '{start} to {end}',
     tierListLabel: 'Events {tier}',
+    matchedOnly: 'Showing events about finding work.',
+    matchShowAll: 'Show all events here ({n} more)',
+    matchShowFew: 'Show only events about finding work',
   },
   css: `
     .events-weeks { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; }
@@ -173,6 +176,15 @@ Desk.register({
       const map = this.marksByEvent(marks);
       return this.sortEvents(events.filter((e) => !map[e.id] && this.inWeek(e, week, today)));
     },
+    // Does the event's title or tags have one of the words? A word matches at the start of a word, in any case
+    // ("job" matches "Jobs" and "job-ready", not "banjo"). No words means everything matches.
+    matchesWords(e, words) {
+      if (!Array.isArray(words) || !words.length) return true;
+      const text = String((e && e.title) || '') + ' ' + ((e && Array.isArray(e.tags)) ? e.tags.join(' ') : '');
+      const esc = (w) => String(w).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp('(^|[^\\p{L}\\p{N}])(' + words.filter(Boolean).map(esc).join('|') + ')', 'iu');
+      return re.test(text);
+    },
     // [{id, name, events}] for each locale tier, in the locale's order. An event with a tier the locale does not
     // list goes in the last group.
     groupByTier(events, tiers) {
@@ -212,6 +224,7 @@ Desk.register({
     let showHidden = false;
     let asked = false;
     const shown = {}; // tier id -> how many rows
+    const showAll = {}; // tier id -> true when the person asked to see every event, not just the matching ones
 
     function short(s) { return s.length > 60 ? s.slice(0, 57) + '...' : s; }
 
@@ -353,6 +366,21 @@ Desk.register({
           const groups = logic.groupByTier(logic.listed(data.events, marks, week, today), tiers);
           groups.forEach((g) => {
             const sec = section('events-tier-' + g.id, g.name);
+            // A tier with `match` words shows only the events that match, unless the person asked for all of them.
+            const tier = tiers.find((t) => t.id === g.id) || {};
+            const all = g.events;
+            if (Array.isArray(tier.match) && tier.match.length && all.length) {
+              const few = all.filter((e) => logic.matchesWords(e, tier.match));
+              if (few.length < all.length) {
+                if (!showAll[g.id]) {
+                  g.events = few;
+                  sec.append(h('p', { class: 'muted', 'data-test': 'events-matched-' + g.id }, ctx.t('matchedOnly')));
+                }
+                sec.append(button('events-all-' + g.id,
+                  showAll[g.id] ? ctx.t('matchShowFew') : ctx.t('matchShowAll', { n: all.length - few.length }),
+                  () => { showAll[g.id] = !showAll[g.id]; delete shown[g.id]; drawLower(); }));
+              }
+            }
             if (!g.events.length) {
               sec.append(h('p', { class: 'muted' }, ctx.t('emptyTier')));
             } else {

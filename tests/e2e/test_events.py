@@ -86,7 +86,15 @@ def test_events_weeks_and_tiers(page, app):
     assert ids(page, LIB) == ["lib2"] and ids(page, CITY) == [], (ids(page, LIB), ids(page, CITY))
     assert page.locator(CITY + " .muted").count() == 1  # an empty tier says so
     page.click('[data-test="events-week-all"]')
-    assert ids(page, LIB) == ["lib1", "lib2"] and ids(page, CITY) == ["city1", "city2"]
+    # the city tier has `match` words: "Trades Night" is not about finding work, so it waits behind a button
+    assert ids(page, LIB) == ["lib1", "lib2"] and ids(page, CITY) == ["city1"], ids(page, CITY)
+    assert page.locator('[data-test="events-matched-city"]').count() == 1
+    assert page.locator('[data-test="events-all-library"]').count() == 0  # the library tier has no words
+    page.click('[data-test="events-all-city"]')
+    assert ids(page, CITY) == ["city1", "city2"] and page.locator('[data-test="events-matched-city"]').count() == 0
+    page.click('[data-test="events-all-city"]')
+    assert ids(page, CITY) == ["city1"]
+    page.click('[data-test="events-all-city"]')
     assert "Yesterday Meetup" not in page.locator("main").inner_text()
     # the snapshot date is shown
     assert "Oct 16" in page.locator('[data-test="events-source"]').inner_text()
@@ -202,7 +210,9 @@ def test_events_real_snapshot_shows_both_tiers(page, app):
     page.wait_for_selector('[data-screen="events"]')
     page.click('[data-test="events-week-all"]')
     assert page.locator(LIB + " " + ROW).count() > 0
-    assert page.locator(CITY + " " + ROW).count() > 0
+    few = page.locator(CITY + " " + ROW).count()
+    assert 0 < few <= 25, few  # only events about finding work, by the locale's words
+    page.click('[data-test="events-all-city"]')
     assert page.locator(CITY + " " + ROW).count() <= 25 and page.locator('[data-test="events-more-city"]').count() == 1
     page.click('[data-test="events-more-city"]')
     assert page.locator(CITY + " " + ROW).count() == 50

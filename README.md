@@ -83,7 +83,8 @@ Everything that belongs to one city is in one file: `locale/toronto.js`. It is p
 - `sites`: the default job sites.
 - `services`: the free AI chats the app offers (name and link).
 - `events`: the events API address and the tiers (for example "At the library" and "Around the city"), each with its
-  search words.
+  search words. A tier can also have `match` words: its list then shows only events with one of those words in the
+  title, and a button shows the rest.
 - `postingRules`: the posting rules for the area (Ontario's O. Reg. 476/24), the checklist, and how many days an
   employer has to reply.
 
