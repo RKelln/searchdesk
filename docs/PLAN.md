@@ -608,4 +608,17 @@ can follow a day later if it must).
   change as "kept". `core/inbox.js` now says why a tie keeps the page's record (the incoming state carries no `device`, and
   `Desk.merge` breaks a tie on that) and warns against adding one. Considered and not done: a dev flag that keeps the
   made-up person in a real export, which would put a hole in "she is not in the copies you save". Unit: 356. Python: 25.
-  Source e2e: 362 (not re-run for this change: no file the browser loads is different).
+  Source e2e: 362 (not re-run for this change: no file the browser loads is different). PLAN.md item (1) above is now done.
+- 2026-10-17, two Pages failures in a row, both worth keeping in mind. (a) `.gitignore` had `screens/` with no leading slash,
+  so it matched any folder named screens at any depth and swallowed `.agents/skills/screens/`: the copy existed on disk and
+  was never committed, which is why the staleness test passed here and failed on the runner. `dist/` and `screens/` are now
+  anchored, and a test asks git whether each generated copy is tracked rather than only whether it is on disk. (b) The reply
+  parser test held the parse to a flat 100 ms and read 112 ms on a shared runner while the same commit measured 44 ms here.
+  It now compares 100 KB against 400 KB on the same machine (a linear parse costs about 4x, a quadratic one about 16x, so
+  the limit is 10x), which tests the thing it was written for instead of the speed of the runner. Also: every action in the
+  Pages workflow moved to the first major that declares node24 (checkout v5, setup-node v5, setup-uv v7, configure-pages v6,
+  upload-pages-artifact v5, deploy-pages v5), which clears the Node 20 deprecation warnings. Unit: 357. Python: 25.
+- 2026-10-17, a note for whoever reads the version string next: `2026.10.17+9632a10b` is not a commit. The suffix is the
+  first 8 characters of a sha256 over the sources that went into the build (`tools/build.py`, `default_version`), and there
+  are no git tags yet so the front part is the build date. Two builds of the same sources match; a commit that only changes
+  docs, tests or tools leaves it untouched.
