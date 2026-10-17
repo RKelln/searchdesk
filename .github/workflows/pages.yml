@@ -32,6 +32,15 @@ jobs:
         run: |
           node --test tests/unit/*.test.js
           uv run tests/unit/test_build.py
+      - name: Feature checks
+        # Every check file has to pass on its own, or a broken feature can still reach the build.
+        # Plain parameter expansion only, so it stays safe in bash 3.2 and on a Mac.
+        run: |
+          node checks/run.js example
+          for f in checks/*.check.js; do
+            id="${f#checks/}"
+            node checks/run.js "${id%.check.js}"
+          done
       - name: Build
         run: uv run tools/build.py --cname searchdesk.ryankelln.com
       - uses: actions/configure-pages@v5
