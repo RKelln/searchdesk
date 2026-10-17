@@ -32,14 +32,40 @@ The brief is `docs/features/<id>.md`. Have your own idea? That works too. Say it
 
 ## Path A: an agent in the folder
 
-Use this if you have Claude Code, Codex or a similar agent that can read and save files.
+Use this if you have OpenCode, Claude Code, Codex or a similar agent that can read and save files. It does not have to
+be a paid one: see "Free ways to get help from AI" below.
 
 1. Open the agent in the Search Desk folder.
-2. Tell it what you want. In Claude Code, the `add-feature` skill starts by itself. With other agents, say:
+2. Tell it what you want. In OpenCode or Claude Code the `add-feature` skill starts by itself. With other agents, say:
    "Read AGENTS.md, then help me add a feature."
 3. If you do not know what to build, say so. It will ask you one question, then offer ideas one at a time.
 4. The agent writes the file, adds it to `features/list.js`, and runs the checks. It tells you what passed.
 5. Reload the page and open `#selftest`. That is the final check.
+
+In OpenCode or Claude Code you can type these instead of asking in words:
+
+| Type | What it does |
+| --- | --- |
+| `/new-feature` and what you want | The same as the skill. |
+| `/check` and a feature id | Runs that one feature's check. |
+| `/everything` | Runs every check in the repo. |
+| `/kit` | Rebuilds the free-chat kits. |
+| `/screens` | Pictures of every screen, for design work. |
+
+They work in both because each one is written once, in `tools/commands/`, and copied into each tool's own folder.
+
+### Which tools get them
+
+| Tool | Where to type a command | `add-feature` skill |
+| --- | --- | --- |
+| OpenCode | `/check` | `@add-feature`, or just ask |
+| Claude Code | `/check` | `/add-feature` |
+| Pi | `/check` | `/skill:add-feature` |
+| Codex | `$check` (no commands left; Codex retired its own) | `$add-feature` |
+| Antigravity | `/check` (its workflow files stop working on 19 October 2026) | `/add-feature` |
+
+Codex and Antigravity get the commands as skills instead of commands, because each has dropped or is about to drop its
+own command files. Every tool reads the same two folders in this repo: `.agents/skills/` and `AGENTS.md`.
 
 ## Path B: a free chat with a kit
 
@@ -67,6 +93,25 @@ the folder at `docs/kits/<id>.txt`. (They are made by `uv run tools/kit.py`. You
 
 The file must be only code. If there are words around it, copy only the code inside the box. If the chat gives
 several files, say: "Give me one file only. Put everything in `features/<id>.js`." Do not make other files.
+
+## Free ways to get help from AI
+
+Path A does not have to cost money. All of these are free:
+
+| Way | What you do | Good to know |
+| --- | --- | --- |
+| A free model in OpenCode | Run `/connect` once, then `/models`, and pick a model marked Free. Most are named with `-free` at the end. | It reads and saves files, so it can build a whole feature. |
+| GitHub Copilot Free | Run `/connect`, choose Copilot, and sign in with GitHub. | Easiest if you already have a GitHub account. |
+| A model on your own computer | Install [Ollama](https://ollama.com), run `ollama pull qwen3:8b`, and leave OpenCode open. | No account, no cost, and it works with no internet. Needs a computer with memory to spare. |
+| A free chat in your browser | Path B above, with a kit from `docs/kits/`. | Nothing to install. You copy and paste. |
+
+Two things to know about free models:
+
+- **They miss more than paid ones.** The rules in `AGENTS.md`, under "For a small or free model", are written for them.
+  Keep the feature small, and believe the checks instead of your own eyes.
+- **Some of them keep what you send them.** [The list of free models](https://opencode.ai/v2/docs/console/models/)
+  says which ones keep nothing and which ones may use your words to improve the model. Look before you send anything
+  real: a backup file holds a person's name, their jobs and their notes.
 
 ## Changing a feature that exists
 

@@ -1,0 +1,47 @@
+// Settings for OpenCode, so anyone can open this folder in it and get to work.
+// Every other tool that reads AGENTS.md works the same way, so nothing here is required to build a feature.
+// JSONC, so it can explain itself. The schema at the top gives editor checking. Docs:
+// https://opencode.ai/v2/docs/config
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // No model is set on purpose. Whoever opens this folder may have a different account, and the free models
+  // come and go. To pick one: run /connect once, then /models, and choose a model whose name ends in "-free".
+  // docs/BUILDING.md lists the free ways in, and which of them keep what you send them.
+  // To pin one for yourself, uncomment the next line and change the name.
+  // "model": "opencode/glm-5.3-flash-free",
+
+  // Big or generated files. Watching them wastes time, and they tempt an agent into reading a lot of text that
+  // is not about the task. data/events-snapshot.js is over 300 KB of past events.
+  "watcher": {
+    "ignore": ["dist/**", "screens/**", "**/__pycache__/**", "data/events-snapshot.js"]
+  },
+
+  // Last matching rule wins. Anything with no rule here asks first.
+  "permissions": [
+    // The checks are the point of this repo (AGENTS.md), so they never need a prompt.
+    { "action": "shell", "resource": "node --test *", "effect": "allow" },
+    { "action": "shell", "resource": "node checks/run.js *", "effect": "allow" },
+    { "action": "shell", "resource": "bash checks/check.sh *", "effect": "allow" },
+    { "action": "shell", "resource": "uv run *", "effect": "allow" },
+    { "action": "shell", "resource": "python3 tools/kit.py *", "effect": "allow" },
+    { "action": "shell", "resource": "git status *", "effect": "allow" },
+    { "action": "shell", "resource": "git diff *", "effect": "allow" },
+    { "action": "shell", "resource": "git log *", "effect": "allow" },
+
+    // Publishing is the maintainer's job, never the agent's.
+    { "action": "shell", "resource": "git push *", "effect": "deny" },
+
+    // The everyday work: a feature, its check, and the docs that go with it.
+    { "action": "edit", "resource": "features/*", "effect": "allow" },
+    { "action": "edit", "resource": "checks/*", "effect": "allow" },
+    { "action": "edit", "resource": "docs/*", "effect": "allow" },
+
+    // AGENTS.md: change core/, locale/ and data/ only when the task needs it, and say so. So ask first.
+    // index.html is the shell that loads core/, so it goes with them.
+    { "action": "edit", "resource": "core/*", "effect": "ask" },
+    { "action": "edit", "resource": "locale/*", "effect": "ask" },
+    { "action": "edit", "resource": "data/*", "effect": "ask" },
+    { "action": "edit", "resource": "index.html", "effect": "ask" }
+  ]
+}

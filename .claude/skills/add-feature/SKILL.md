@@ -5,9 +5,13 @@ description: Use when someone wants to add or change a Search Desk feature, or h
 
 # Add or change a Search Desk feature
 
+This file is written once, in `tools/skills/`, and copied into each tool's own folder. So it works in Claude Code,
+OpenCode, Codex, Antigravity and Pi. Any other agent that reads `AGENTS.md` can follow it too.
+
 This is a thin wrapper. The rules live in the docs; read them, do not copy them.
 
-1. Read `AGENTS.md` and `docs/CONTRACT.md`. Read `docs/BUILDING.md` if the person asks how this works.
+1. Read `AGENTS.md` and `docs/CONTRACT.md`. Read `docs/BUILDING.md` if the person asks how this works. If your model is
+   small or free, also follow "For a small or free model" in `AGENTS.md`.
 2. Find out what to build.
    - If they know, find its brief in `docs/features/<id>.md` (if there is one) and read it.
    - If they have no idea, follow "If the person has no idea what to build" in `AGENTS.md`. Ask one short question

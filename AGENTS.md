@@ -60,8 +60,31 @@ For the person-facing steps (with an agent, or a free chat and a kit), see [`doc
 - Screenshots for design work (needs `uv`): `uv run tools/screens.py` takes every screen on a phone and a computer,
   light and dark, writes `screens/index.html`, and flags sideways scroll, page errors and stray `null` text.
 - In the browser, open the app and go to `#selftest`. It runs every loaded feature's check and the contract scan.
+- The words you type as a slash command live in `tools/commands/<name>.md`, and the skills live in
+  `tools/skills/<name>.md`. Those are the only two places to edit them. `uv run tools/agent-files.py` copies them where
+  each tool looks: commands into `.opencode/commands/` (OpenCode), `.claude/commands/` (Claude Code) and
+  `.pi/prompts/` (Pi), and every command and skill into `.agents/skills/<name>/SKILL.md` (Codex, Antigravity, Pi and
+  OpenCode) and `.claude/skills/<name>/SKILL.md` (Claude Code). `uv run tools/agent-files.py --check` says if a copy is
+  stale, and `tests/unit/agent-files.test.js` fails when one is, so do not edit a copy by hand.
 
 Run the checks before you say a feature is done, and tell the person what passed.
+
+## For a small or free model
+
+Most people who build this will be using a free model. These rules are for one that is not as sharp.
+
+1. Read all of `AGENTS.md` and all of `docs/CONTRACT.md` before you write anything. Do not work from memory of them.
+2. One feature, one file. Do not read another feature's file unless the contract says to.
+3. Copy the shape of `docs/example-feature.js`, and keep its order: `id`, `types`, `strings`, `logic`, `mount`.
+4. Run `node checks/run.js <id>` as soon as the file is written, and again after every change. It takes under a
+   second and it is the truth. Never call a feature done because it looks right.
+5. If a check fails, fix the feature file. Do not change the check file to make it pass, unless the brief says the
+   behaviour itself changed.
+6. Stay inside one document at a time. `docs/DESIGN.md`, `docs/PLAN.md` and `reference/` are large: read the part
+   you need, not the whole file.
+7. Say what you are about to do before a long run of tool calls, and name the files you changed at the end.
+8. If the brief is thin, ask one short question instead of guessing. A feature that fails its check is easier to fix
+   than one that nearly works.
 
 ## If the person has no idea what to build
 
@@ -78,7 +101,11 @@ For an agent that can read and write files (the person's exported backup sits in
 - **Reading:** the person exports to `searchdesk-backup-*.json` in the folder, and you read that.
 - **Writing:** write `data/inbox.js` containing `window.DESK_INBOX = { schema, records }`, with your records marked
   `source: "ai"`. On load the page merges the inbox as one batch ("Brought in 5 changes from your helper · Undo"). The
-  merge is idempotent, so a reload does not duplicate anything.
+  merge is idempotent, so a reload does not duplicate anything. `schema` is `"searchdesk/1"` and `records` is a list
+  of whole records (`id`, `type`, `updated`, and the fields). A record that is newer here is kept; on a tie, the
+  record here stays. The page leaves out (and says how many) records of unknown types, `settings`, deletes, dates
+  in the future and text that looks like HTML. It reads the file once: change the file to bring in more. Only the
+  source copy reads it, not a built single file. See `docs/examples/inbox-demo.js`.
 - Unlike the chat route, you can edit existing records. That is the person's choice, and undo covers it.
 - In demos, stay synthetic: use the made-up person in `data/example.js`, never real names, emails or phone numbers.
 - Never invent links. If you do not have the real address, leave the link empty.
