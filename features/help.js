@@ -53,6 +53,7 @@ Desk.register({
       order: 50,
       render(el) {
         el.append(h('h2', {}, ctx.t('heading')), h('p', {}, ctx.t('intro')));
+        if (notes.prototype) el.append(h('p', { 'data-test': 'help-prototype' }, notes.prototype));
         const a = section('people', 'person');
         const b = section('online', 'online');
         if (!a && !b) el.append(h('p', {}, ctx.t('empty')));

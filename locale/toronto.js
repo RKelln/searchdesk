@@ -79,6 +79,7 @@ window.DESK_LOCALE = {
 
   // The help screen's own lines (copy from toronto-help.md).
   helpNotes: {
+    prototype: 'Search Desk is an early test version, made for people in Toronto. Things may change, so save a copy of your data now and then.',
     status: 'Some programs check your immigration status and some do not. If you are not sure, call 211 or ask a library settlement worker.',
     libraryClasses: 'The library also runs free career and job search sessions (resumes, interviews, using AI in a job search). Find them in the Events tab, under the library.',
   },

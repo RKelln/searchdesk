@@ -22,4 +22,5 @@ def test_help_lists_entries(page, app):
     hrefs = page.locator('[data-test="help-source"]').evaluate_all("els => els.map(e => e.href)")
     assert len(hrefs) == expected
     assert all(u.startswith("https://") for u in hrefs), hrefs
+    assert "early test version" in page.locator('[data-test="help-prototype"]').inner_text()
     assert_no_errors(page, allow=ALLOW_MISSING)
