@@ -26,7 +26,7 @@ Everything except the AI helper works without any AI.
 
 ### Where to open it
 
-Use the hosted copy: https://searchdesk.ryankelln.com (it is being set up, so it may not be there yet).
+Use the hosted copy: https://searchdesk.ryankelln.com.
 
 ### Your data stays on this device
 

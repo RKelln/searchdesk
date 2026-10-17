@@ -26,9 +26,9 @@ Things only you can do, in rough order of urgency for the Mon Oct 19, 2pm tag. T
   answer), for events, posting and coach.
 - [ ] **Phone check (V8):** the hosted copy on a real phone, including copy, app switch, paste and Undo.
 - [x] **DNS** for `searchdesk.ryankelln.com` to GitHub Pages (T4.2). Done 2026-10-16; it resolves to GitHub.
-- [ ] **First deploy:** after main is pushed, check that the "Publish to GitHub Pages" Action goes green. In
-  Settings → Pages, the source must be "GitHub Actions" and the custom domain `searchdesk.ryankelln.com`; tick
-  "Enforce HTTPS" once the certificate is ready. Then open the site on a laptop and a phone.
+- [x] **First deploy:** live 2026-10-16 at https://searchdesk.ryankelln.com.
+- [ ] **Enforce HTTPS** in Settings → Pages once the certificate is ready (http:// does not redirect yet). Then open
+  the site on a laptop and a phone.
 - [ ] **Decide the cut list** on Sunday night if time is short. The plan's order: the service worker, your own AI
   tasks (T3.8), `recipe-posting`, and reference features beyond `sites`.
 
