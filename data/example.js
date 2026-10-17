@@ -64,7 +64,7 @@ window.DESK_EXAMPLE = window.DESK_EXAMPLE || function () {
     { type: 'job', title: 'Office Administrator', org: 'Kingsway Dental Group', stage: 'interview',
       interviewAt: day(2) + 'T10:00', nextStep: 'Practise: tell me about yourself',
       asks: 'QuickBooks or similar\nScheduling\nCustomer service', posting: posting },
-    { type: 'job', title: 'Bookkeeper (part-time)', org: 'Fenwick & Rao Accounting', stage: 'saved',
+    { type: 'job', id: 'job_amira_bookkeeper', title: 'Bookkeeper (part-time)', org: 'Fenwick & Rao Accounting', stage: 'saved',
       closes: day(4), nextStep: 'Ask library coach to check resume first' },
     { type: 'job', title: 'Administrative Assistant', org: 'Lakeview Community Housing', stage: 'applied',
       applied: day(-16), followUp: day(-2) },

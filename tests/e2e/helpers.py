@@ -37,6 +37,11 @@ PASTE_BOX = '[data-test="paste-box"]'
 
 
 
+def _is_inbox(url):
+    """The optional data/inbox.js is absent on purpose most of the time; the browser's note about it is not an error."""
+    return str(url or "").split("?")[0].endswith("/data/inbox.js")
+
+
 class Monitor:
     """Collects console errors, page errors and failed requests for one page."""
 
@@ -46,16 +51,18 @@ class Monitor:
         self.failed_requests = []
         page.on("console", self._console)
         page.on("pageerror", lambda e: self.page_errors.append(str(e)))
-        page.on("requestfailed", lambda r: self.failed_requests.append(
+        page.on("requestfailed", lambda r: None if _is_inbox(r.url) else self.failed_requests.append(
             f"{r.url} ({r.failure})"))
         page.on("response", self._response)
 
     def _console(self, msg):
         if msg.type == "error":
+            if _is_inbox(getattr(msg, "location", None) and msg.location.get("url", "")) or "/data/inbox.js" in msg.text:
+                return  # the browser's own line for the optional data/inbox.js being absent (T5.3)
             self.console_errors.append(msg.text)
 
     def _response(self, resp):
-        if resp.status >= 400:
+        if resp.status >= 400 and not _is_inbox(resp.url):
             self.failed_requests.append(f"{resp.url} (HTTP {resp.status})")
 
     def problems(self, allow=()):

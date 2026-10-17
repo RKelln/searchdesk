@@ -636,6 +636,7 @@ window.Desk = window.Desk || {};
       if (wk && wk.autoExample && Desk.io && Desk.io.exampleAvailable() && !Desk.io.hasExample() &&
           !Desk.store.all().length && !(Desk.store.get('settings') || {}).exampleLoaded) Desk.io.loadExample();
     } catch (e) { logError(e); }
+    if (Desk.inbox) { try { Desk.inbox.run(); } catch (e) { logError(e); } } // Mode A: an agent's data/inbox.js (T5.3)
     updateBanner();
     var order = defOrder.slice();
     order.forEach(function (id) { mountFeature(defs[id]); });
@@ -660,7 +661,10 @@ window.Desk = window.Desk || {};
   Desk.boot = function () {
     if (Desk.booted || !doc) return;
     Desk.booted = true;
-    loadFeatures(function () { Desk.start(); });
+    loadFeatures(function () {
+      if (Desk.inbox) Desk.inbox.load(function () { Desk.start(); }); // the source copy reads data/inbox.js first (T5.3)
+      else Desk.start();
+    });
   };
 
   registerCoreScreens();

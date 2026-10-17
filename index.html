@@ -17,6 +17,7 @@
 <script src="core/hosting.js"></script>
 <script src="core/merge.js"></script>
 <script src="core/io.js"></script>
+<script src="core/inbox.js"></script>
 <script src="core/net.js"></script>
 <script src="core/prompt.js"></script>
 <script src="core/reply.js"></script>
@@ -26,7 +27,7 @@
 <script src="locale/toronto.js"></script>
 <script src="data/example.js"></script>
 <script src="data/events-snapshot.js"></script>
-<!-- A workshop copy adds <script src="data/workshop.js"></script> here; an agent's data/inbox.js goes here too. They are left out by default because a missing file would log an error. -->
+<!-- A workshop copy adds <script src="data/workshop.js"></script> here; data/inbox.js is not listed here on purpose: core/inbox.js adds it at start (silent when missing; the source copy only). -->
 <script src="features/list.js"></script>
 </body>
 </html>

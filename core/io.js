@@ -11,7 +11,7 @@ window.Desk = window.Desk || {};
   'use strict';
   var Desk = window.Desk;
   var MAX_BYTES = 5 * 1024 * 1024; // DESIGN 6: the import size cap
-  var DEVICE_KEYS = ['lastExport', 'exampleLoaded']; // settings fields that belong to this device, not to a file
+  var DEVICE_KEYS = ['lastExport', 'exampleLoaded', 'inboxSeen']; // settings fields that belong to this device, not to a file
   if (!Desk.version) Desk.version = 'dev'; // the build stamps the real one (T4.1)
   Desk.pasteHandlers = Desk.pasteHandlers || [];
 

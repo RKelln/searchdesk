@@ -273,7 +273,7 @@ can follow a day later if it must).
 - [ ] T5.1 Live events (`net.js` on; the 12-hour cache; "Get the latest"; failure falls back to the cache, then the
   snapshot). Switch to Togather production when the maintainer says it is ready.
 - [x] T5.2 Service worker and offline (from T4.2; landed with it).
-- [ ] T5.3 Mode A inbox (`data/inbox.js` merge on load; the AGENTS section) and a demo script.
+- [x] T5.3 Mode A inbox (`data/inbox.js` merge on load; the AGENTS section) and a demo script.
 - [ ] T5.4 The remaining briefs and reference builds.
 - [ ] T5.5 Verified `prefill` URLs and `account` labels (V7, V9); a recipe choice that is remembered per service.
 - [ ] T5.6 `recipe-weekly` and `recipe-sites`.
@@ -558,3 +558,15 @@ can follow a day later if it must).
 - 2026-10-16, decision (maintainer): check files (`checks/<id>.check.js`) are expected when an agent builds a feature (the
   skill does this) and are not asked for in a free-chat kit, where `#selftest` and its source scan are the check. T6.3
   should only revisit this if wrong logic gets past `#selftest` in the trials.
+- 2026-10-16, T5.3: `core/inbox.js` (new; inlined by the build like other core files). `Desk.boot` injects `data/inbox.js` the
+  way features are injected (silent when missing) and `Desk.start` merges it before features mount: one `batch`, one Undo,
+  newer `updated` wins and a tie keeps the page's record. It runs only in the source copy (no `core/desk.js` script tag
+  means a built file, which skips it; a preset `window.DESK_INBOX` is ignored there). `settings.inboxSeen` (a device key,
+  not exported) holds a fingerprint, so a reload does not merge or toast again; the cost is that clearing all data and
+  reloading with the same file does not bring it back (change the file). Left out and counted: unknown types, `settings`,
+  deletes, bad or future `updated`, bad ids, a profile with name/email/phone keys, HTML-looking text, `javascript:`,
+  records past 500. `data/example.js` gives the Bookkeeper job the fixed id `job_amira_bookkeeper` so a demo can change
+  it. `docs/examples/inbox-demo.js` is a 5-record demo for Amira; its `WROTE` time must be set to the real copy time.
+  The event note is stored on the event-mark record but the events feature does not show it yet. Unit: 350. Source e2e:
+  362 pass. Build tests: 25. The paragraph that T5.3 added to AGENTS.md is in the working tree, mixed with another
+  session's edits to that file, and is not in this commit.
