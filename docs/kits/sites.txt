@@ -1,0 +1,535 @@
+======================================================================
+PART 1 OF 4: WHAT TO DO
+======================================================================
+
+You are building one feature file for Search Desk, a job-search helper that runs in a web browser.
+
+Reply with exactly one JavaScript file, in one code block, and nothing else.
+No words before the code block. No words after it.
+
+Follow the contract below. Do not use any of the banned words in it.
+Use the example feature as the shape of your file.
+Build the feature described in the brief at the end.
+
+
+======================================================================
+PART 2 OF 4: THE CONTRACT (docs/CONTRACT.md)
+======================================================================
+
+# The feature contract
+
+This file is all you need to write a Search Desk feature. A feature is one file that follows the rules below. If it
+follows them, it cannot break the rest of the app, and the app's self-test can check it.
+
+Search Desk is a job-search helper that runs in a browser with no install and no server. There are no packages, no
+frameworks and no build step. Every file is a plain script.
+
+## 1. A feature is one file
+
+```js
+// features/sites.js
+Desk.register({
+  id: 'sites',                       // matches the file name; lowercase, a-z and hyphens
+  name: 'Job sites',                 // plain words, shown to people
+  purpose: 'Keep the job sites you use in one place.',
+  types: ['site'],                   // record types this feature owns (may be empty)
+  uses: ['calendar'],                // optional: other features it adds a nicety to when present
+  strings: { addSite: 'Add a site', /* ... */ },
+  css: `.sites-list { /* ... */ }`,
+  logic: {                           // pure functions only: no DOM, no Desk globals, no time or random
+    sortSites(sites) { /* ... */ },
+  },
+  mount(ctx) {                       // called once at start; register slots here
+    ctx.slot('tab', { id: 'sites', label: ctx.t('tabLabel'), render: (el) => { /* ... */ } });
+  },
+});
+```
+
+The file does nothing at load time except call `Desk.register`. Nothing touches the DOM until `mount` runs. That is
+what lets the check runner load the file with no page, and test `logic`.
+
+To add a feature: put the file in `features/`, add its id to the list in `features/list.js`, and write
+`checks/<id>.check.js`.
+
+## 2. What `ctx` gives a feature
+
+`mount(ctx)` receives `ctx`. It is the only way a feature talks to the app. The shell calls it as `def.mount(ctx)`, so inside `mount`, `this` is your registered object and `this.logic` is your `logic` (the example uses this). Undo belongs to the shell: `ctx.store` has no `undo`.
+
+| `ctx.` | What it does |
+|---|---|
+| `store.all(type)` / `store.get(id)` | read records; deleted ones are hidden unless you pass `{withDeleted: true}` |
+| `store.put(record)` | create or update a record of a type you own; sets `id` (if missing), `updated`, and `source` (default `user`) |
+| `store.remove(id)` | mark one of your records as deleted |
+| `store.ext(id, patch)` | set this feature's `ext.<id>` on any record. On `'settings'` it works even if that record does not exist yet (core makes it) |
+| `store.batch(label, fn)` | group writes into one undo step |
+| `slot(name, def)` | add UI at a named place (section 3) |
+| `h(tag, attrs, ...children)` | build elements safely (section 4) |
+| `t(key, vars)` | this feature's strings, then the core strings; `{name}` in a string is replaced from `vars` |
+| `ui.toast(text, {undo})`, `ui.confirm(text, {yes, no}?)`, `ui.go(tab)` | small interface helpers. `ui.toast` with `{undo: true}` shows an Undo button for 10 seconds; it goes away if a newer change is made. `ui.confirm` asks a yes/no question and returns a Promise that resolves to `true` or `false`; `yes` and `no` are optional button words. |
+| `renderSlot(name, el, ...args)` | show the entries other features put in a slot (for example `ctx.renderSlot('job.panel', el, job)`); each gets its own empty block, an empty one is left out, and one that fails shows a short plain line instead. Buttons for `job.actions` and `event.actions` are made for you (test name `action-<id>`). Returns how many entries it showed, so you can write "Nothing here" when it is 0 |
+| `route()` | the current screen and its parts, from the address: `#jobs/j_abc/edit` gives `{tab: 'jobs', args: ['j_abc', 'edit']}`; change it with `ui.go('jobs/j_abc')` |
+| `fmt.date(v)`, `fmt.time(v)`, `fmt.dateTime(v)`, `fmt.relative(v, now)`, `fmt.daysFrom(v, now)` | show dates in plain words ("Thu Oct 22", "6:30pm", "in 3 days", "2 days late"); `v` is `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM` or an ISO time |
+| `has(featureId)` | whether another feature is loaded, for soft `uses` |
+| `locale` | the locale pack (local help, sites, rules), read-only |
+| `now()` | the current time (tests can fix it) |
+| `profile()` | the profile record |
+| `profileLines(profile?)` | the profile lines an AI question will contain: only fields whose "send to AI" switch is on (the same function the recipes use) |
+| `backupNudge()` | whether to remind the person to save a copy: `{show, text, days}` (`show` is true when there are changes since the last export and either 7 days have passed or there are 10 or more records; `days` is null if never exported). Used by Home |
+| `events.current()` / `events.refresh(opts?)` | the events to show: `{events, source, generated, note}` where `events` are `{id, title, start, end, venue, address, url, tier, tags}`, `source` is `'cache'` or `'snapshot'`. `current()` is instant. `refresh()` returns a Promise and asks `core/net.js` to fetch the latest only when live events are on (otherwise it just resolves `current()`); the screen is drawn again after a good fetch. `note` is a plain line when a fetch failed. Used by Events |
+| `download(name, text, type)` | save a text file (for example a calendar `.ics`). `name` uses only letters, digits, `-`, `.`, `_` (up to 80 characters); `type` is `text/calendar`, `text/plain`, `text/csv` or `application/json`. Returns `true`, or `false` if refused |
+| `recipe(def)` | register an AI recipe (the same id again replaces it) |
+| `removeRecipe(id)` | take back a recipe this feature registered (for example a task the person deleted) |
+
+Records are plain objects. Every record has `id`, `type`, `updated`, `source` (`user`, `ai`, `example`, `feed` or
+`import`), and sometimes `deleted: true` and `ext`. Unknown types and unknown `ext` keys are kept and exported
+untouched, so never delete what you do not own.
+
+## 3. Slots
+
+| Slot | Where it shows | `def` |
+|---|---|---|
+| `tab` | a screen in the main menu | `{id, label, order?, render(el)}` |
+| `home` | a block on Home, under "Today" | `{id, order?, render(el)}`; render nothing to hide it |
+| `job.panel` | a section in a job's detail view | `{id, title, render(el, job)}` |
+| `job.actions` | a button on a job's detail view | `{id, label, run(job)}` |
+| `event.actions` | a button on an event row | `{id, label, run(event)}` |
+| `settings` | a block on the Data and settings screen | `{id, title, render(el)}` |
+| `print` | a section in the printable summary (if `print` is loaded) | `{id, title, render(el)}` |
+| `ai` | a block on the AI screen, between the task list and the open task | `{id, title?, render(el, {selected, args}), paste?(text)}`; `selected` is the open task's recipe or null. `paste(text)` may read pasted text that is not an AI answer: return `null`, or `{text, render?(el)}` to show a result |
+
+Every slot entry needs an `id`. A `label` or `title` is the words people see, from your strings (`ctx.t('...')`).
+
+**The screen is drawn again after every store change**, so anything kept inside `render` (half-typed text, an open
+form) is lost. Keep that state in variables inside `mount`, and call `ctx.ui.go('<your tab id>')` to draw again. To
+change a record you own (for example a suggestion's `status`), `put` the whole record:
+`ctx.store.put(Object.assign({}, ctx.store.get(id), { status: 'taken' }))`. `ctx.locale` is frozen; read it only.
+Add the `data-test` names your tests use to `tests/e2e/README.md`.
+
+New slots are added to core, never improvised inside a feature. If a feature needs a slot that is not here, stop and
+say so.
+
+## 4. `h()`: the only way to make elements
+
+- Children that are strings become text nodes. There is no way to pass HTML.
+- `href` must be `https:`, `http:`, `mailto:` or `tel:` (a phone number: digits, `+`, `-`, spaces, brackets); anything else is dropped. Links get `rel="noopener noreferrer"` and
+  open in a new tab.
+- `on: { click: fn }` attaches handlers. `class`, `aria-*`, `data-*` and form attributes pass through.
+
+```js
+h('a', { href: job.link }, 'Open the posting')
+h('button', { type: 'button', on: { click: save } }, ctx.t('save'))
+```
+
+### Looking like the rest
+
+Plain buttons, inputs, `details` and headings are already styled, in light and dark, so a feature with no CSS looks
+right. When you do write `css`, use the colours from `core/desk.css` instead of your own: `var(--surface)`,
+`var(--surface-2)`, `var(--text)`, `var(--muted)`, `var(--line)`, `var(--accent)`, `var(--accent-soft)`,
+`var(--danger)`, `var(--danger-soft)`, `var(--warn)`, `var(--warn-soft)`, `var(--warn-edge)`, `var(--radius)`, `var(--shadow)`. Then dark
+mode works by itself. Shared classes: `card` (a white box with a border), `chip` (a small rounded label), `muted`
+(grey text), `sr-only` (read aloud but not shown). `class: 'primary'` makes the main button on a screen; a button with
+`aria-pressed="true"` shows as picked. To see your feature on a phone and a computer, in light and dark, run
+`uv run tools/screens.py --only <screen>` and open `screens/index.html`.
+
+## 5. Rules
+
+1. **Talk to the app only through `ctx`.** No globals of your own, no reaching into another feature's DOM, no calling
+   another feature.
+2. **Read anything; write only your own types and your own `ext`.**
+3. **Never** use `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write`, `eval`, `new Function`, `fetch`,
+   `XMLHttpRequest`, `import()`, `localStorage` or timers that run forever. The store and `net` do the storage and
+   network work. The self-test scans every loaded feature's source for these words and fails the feature if it finds
+   one.
+4. **Pure logic goes in `logic`**, and `mount` only does the DOM work. Checks test `logic`.
+5. **Plain-word strings** go in `strings`.
+6. **Missing is fine.** Guard soft uses with `ctx.has('id')`. If a feature listed in `list.js` fails to load, the
+   shell shows a stub with its `name` and `purpose` (taken from `Desk.planned` or the list) and the line "This part is
+   not built yet." The rest of the app works normally.
+7. **Registering is idempotent.** Registering the same id twice replaces the first and logs a warning.
+8. **One file.** No other files except `checks/<id>.check.js` and `docs/features/<id>.md`.
+
+## 6. Checks
+
+```js
+// checks/sites.check.js
+Desk.check('sites', (t, f) => {          // f = the registered feature
+  t.ok(f.logic.sortSites([]).length === 0, 'an empty list stays empty');
+  t.eq(f.logic.sortSites([{name:'b'},{name:'a'}])[0].name, 'a', 'sites sort by name');
+});
+```
+
+- `t.ok(condition, message)` and `t.eq(actual, expected, message)`. `t.eq` compares plain data deeply.
+- Test the functions in `logic`. They are pure, so no page is needed.
+- Run one check: `node checks/run.js <id>` (needs Node). On a Mac with no Node: `bash checks/check.sh <id>`, which
+  uses the built-in `osascript` (this script arrives with task T1.6, so it may not exist yet). It prints
+  `PASS`/`FAIL` lines and a summary. If the id is not plain a-z and hyphens, or the file is missing, it prints a
+  `STOP:` sentence.
+- The app's own self-test page (`#selftest`, also T1.6) runs the same checks for every loaded feature.
+
+## 7. How the contract is enforced
+
+- **`AGENTS.md`** is the primary rule. For most agents most of the time it is enough.
+- **The self-test** catches what slips through, wherever the app runs and whoever wrote the code. It scans each
+  feature's source for the banned words in rule 3.
+- **In a workshop folder,** edits under `features/` and `checks/` are pre-approved. Edits to `core/`, `locale/` and
+  `data/` ask first. Core may need a fix nobody expected, so the person can still say yes, but "I am about to change
+  the app's core" is a visible moment.
+
+## 8. A complete example
+
+This feature keeps short notes. It uses every part of the contract. Its source is `docs/example-feature.js` and its
+check is `docs/example-feature.check.js`; the copies below are identical to those files. Run it with:
+
+```
+node checks/run.js example
+```
+
+`checks/run.js` uses the two files in `docs/` when the id is `example`. For any other id it uses `features/<id>.js`
+and `checks/<id>.check.js`. You can also pass paths: `node checks/run.js <id> <featureFile> <checkFile>`.
+
+### The feature
+
+```js
+// features/example.js  (a complete example feature: short notes)
+Desk.register({
+  id: 'example',
+  name: 'Notes',
+  purpose: 'Keep short notes about your job search.',
+  types: ['note'],
+  strings: {
+    tabLabel: 'Notes',
+    heading: 'Your notes',
+    titleLabel: 'Title',
+    textLabel: 'Note',
+    add: 'Add note',
+    remove: 'Remove',
+    removed: 'Note removed.',
+    added: 'Note added.',
+    empty: 'No notes yet. Add your first one above.',
+    needTitle: 'Please give your note a title.',
+    searchLabel: 'Find a note',
+  },
+  css: `
+    .example-form { display: grid; gap: 0.5rem; margin-bottom: 1rem; }
+    .example-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; }
+    .example-note { padding: 0.75rem; border: 1px solid currentColor; border-radius: 0.5rem; }
+    .example-problem { font-weight: bold; }
+  `,
+  logic: {
+    // Newest first. Notes with the same time are put in title order.
+    sortNotes(notes) {
+      return notes.slice().sort((a, b) => {
+        if (a.updated !== b.updated) return a.updated < b.updated ? 1 : -1;
+        return String(a.title).localeCompare(String(b.title));
+      });
+    },
+    // Tidy what the person typed. Returns { ok: true, note } or { ok: false, problem },
+    // where problem is a string key for ctx.t().
+    cleanNote(input) {
+      const title = String(input.title || '').trim();
+      const text = String(input.text || '').trim();
+      if (!title) return { ok: false, problem: 'needTitle' };
+      return { ok: true, note: { type: 'note', title: title, text: text } };
+    },
+    // Notes whose title or text contains the words typed, ignoring capital letters.
+    findNotes(notes, query) {
+      const q = String(query || '').trim().toLowerCase();
+      if (!q) return notes;
+      return notes.filter((n) => (n.title + ' ' + n.text).toLowerCase().indexOf(q) !== -1);
+    },
+  },
+  mount(ctx) {
+    const h = ctx.h;
+    const logic = this.logic;
+    ctx.slot('tab', {
+      id: 'example',
+      label: ctx.t('tabLabel'),
+      order: 90,
+      render(el) {
+        let query = '';
+        const problem = h('p', { class: 'example-problem', role: 'alert' });
+        const title = h('input', { type: 'text', id: 'example-title' });
+        const text = h('textarea', { id: 'example-text', rows: '3' });
+        const list = h('ul', { class: 'example-list' });
+
+        function draw() {
+          const notes = logic.findNotes(logic.sortNotes(ctx.store.all('note')), query);
+          list.textContent = '';
+          if (notes.length === 0) list.append(h('li', {}, ctx.t('empty')));
+          notes.forEach((n) => {
+            list.append(h('li', { class: 'example-note' },
+              h('strong', {}, n.title),
+              h('p', {}, n.text),
+              h('button', { type: 'button', on: { click: () => {
+                ctx.store.batch('Remove note', () => ctx.store.remove(n.id));
+                ctx.ui.toast(ctx.t('removed'));
+                draw();
+              } } }, ctx.t('remove'))));
+          });
+        }
+
+        el.append(
+          h('h2', {}, ctx.t('heading')),
+          h('form', { class: 'example-form', on: { submit: (e) => {
+            e.preventDefault();
+            const result = logic.cleanNote({ title: title.value, text: text.value });
+            problem.textContent = result.ok ? '' : ctx.t(result.problem);
+            if (!result.ok) return;
+            ctx.store.put(result.note);
+            title.value = '';
+            text.value = '';
+            ctx.ui.toast(ctx.t('added'));
+            draw();
+          } } },
+            h('label', { for: 'example-title' }, ctx.t('titleLabel')), title,
+            h('label', { for: 'example-text' }, ctx.t('textLabel')), text,
+            problem,
+            h('button', { type: 'submit' }, ctx.t('add'))),
+          h('label', { for: 'example-search' }, ctx.t('searchLabel')),
+          h('input', { type: 'search', id: 'example-search', on: { input: (e) => {
+            query = e.target.value;
+            draw();
+          } } }),
+          list);
+        draw();
+      },
+    });
+  },
+});
+```
+
+### Its check
+
+```js
+// checks/example.check.js  (the check for the example feature)
+Desk.check('example', (t, f) => {
+  const L = f.logic;
+
+  t.eq(f.id, 'example', 'the feature has its id');
+  t.eq(f.types, ['note'], 'it owns the note type');
+  t.ok(typeof f.mount === 'function', 'it has a mount function');
+
+  t.eq(L.sortNotes([]), [], 'an empty list stays empty');
+  const sorted = L.sortNotes([
+    { title: 'b', updated: '2026-10-01T10:00:00Z' },
+    { title: 'a', updated: '2026-10-02T10:00:00Z' },
+    { title: 'c', updated: '2026-10-01T10:00:00Z' },
+  ]);
+  t.eq(sorted.map((n) => n.title), ['a', 'b', 'c'], 'newest first, then by title');
+
+  const input = [{ title: 'z', updated: '1' }, { title: 'y', updated: '2' }];
+  L.sortNotes(input);
+  t.eq(input[0].title, 'z', 'sorting does not change the list it was given');
+
+  t.eq(L.cleanNote({ title: '   ', text: 'x' }), { ok: false, problem: 'needTitle' }, 'a blank title is refused');
+  t.eq(L.cleanNote({ title: ' Call back ', text: ' soon ' }),
+    { ok: true, note: { type: 'note', title: 'Call back', text: 'soon' } }, 'spaces are trimmed');
+  t.ok(L.cleanNote({ title: 'ok' }).ok, 'the text may be left out');
+  t.ok(f.strings[L.cleanNote({ title: '' }).problem], 'the problem is a real string key');
+
+  const notes = [{ title: 'Library', text: 'Ask about coaching' }, { title: 'Bus', text: 'Route 25' }];
+  t.eq(L.findNotes(notes, 'LIBRARY').length, 1, 'find ignores capital letters');
+  t.eq(L.findNotes(notes, 'route').map((n) => n.title), ['Bus'], 'find looks in the text too');
+  t.eq(L.findNotes(notes, '  ').length, 2, 'an empty search shows everything');
+});
+```
+
+Things to copy from it:
+
+- `logic` holds the thinking (sorting, tidying, finding). It has no DOM, no `Desk`, no clock.
+- `logic` returns a string key for a problem (`needTitle`), and `mount` turns it into words with `ctx.t`.
+- Every word a person sees is in `strings`, in plain short words.
+- All elements come from `h()`. Text goes in as children, never as HTML.
+- Only the `note` type is written, because that is the only type in `types`.
+- Changes that touch records go through `ctx.store`, and removal is one `batch` so it can be undone.
+
+
+======================================================================
+PART 3 OF 4: THE EXAMPLE FEATURE (docs/example-feature.js)
+======================================================================
+
+// features/example.js  (a complete example feature: short notes)
+Desk.register({
+  id: 'example',
+  name: 'Notes',
+  purpose: 'Keep short notes about your job search.',
+  types: ['note'],
+  strings: {
+    tabLabel: 'Notes',
+    heading: 'Your notes',
+    titleLabel: 'Title',
+    textLabel: 'Note',
+    add: 'Add note',
+    remove: 'Remove',
+    removed: 'Note removed.',
+    added: 'Note added.',
+    empty: 'No notes yet. Add your first one above.',
+    needTitle: 'Please give your note a title.',
+    searchLabel: 'Find a note',
+  },
+  css: `
+    .example-form { display: grid; gap: 0.5rem; margin-bottom: 1rem; }
+    .example-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; }
+    .example-note { padding: 0.75rem; border: 1px solid currentColor; border-radius: 0.5rem; }
+    .example-problem { font-weight: bold; }
+  `,
+  logic: {
+    // Newest first. Notes with the same time are put in title order.
+    sortNotes(notes) {
+      return notes.slice().sort((a, b) => {
+        if (a.updated !== b.updated) return a.updated < b.updated ? 1 : -1;
+        return String(a.title).localeCompare(String(b.title));
+      });
+    },
+    // Tidy what the person typed. Returns { ok: true, note } or { ok: false, problem },
+    // where problem is a string key for ctx.t().
+    cleanNote(input) {
+      const title = String(input.title || '').trim();
+      const text = String(input.text || '').trim();
+      if (!title) return { ok: false, problem: 'needTitle' };
+      return { ok: true, note: { type: 'note', title: title, text: text } };
+    },
+    // Notes whose title or text contains the words typed, ignoring capital letters.
+    findNotes(notes, query) {
+      const q = String(query || '').trim().toLowerCase();
+      if (!q) return notes;
+      return notes.filter((n) => (n.title + ' ' + n.text).toLowerCase().indexOf(q) !== -1);
+    },
+  },
+  mount(ctx) {
+    const h = ctx.h;
+    const logic = this.logic;
+    ctx.slot('tab', {
+      id: 'example',
+      label: ctx.t('tabLabel'),
+      order: 90,
+      render(el) {
+        let query = '';
+        const problem = h('p', { class: 'example-problem', role: 'alert' });
+        const title = h('input', { type: 'text', id: 'example-title' });
+        const text = h('textarea', { id: 'example-text', rows: '3' });
+        const list = h('ul', { class: 'example-list' });
+
+        function draw() {
+          const notes = logic.findNotes(logic.sortNotes(ctx.store.all('note')), query);
+          list.textContent = '';
+          if (notes.length === 0) list.append(h('li', {}, ctx.t('empty')));
+          notes.forEach((n) => {
+            list.append(h('li', { class: 'example-note' },
+              h('strong', {}, n.title),
+              h('p', {}, n.text),
+              h('button', { type: 'button', on: { click: () => {
+                ctx.store.batch('Remove note', () => ctx.store.remove(n.id));
+                ctx.ui.toast(ctx.t('removed'));
+                draw();
+              } } }, ctx.t('remove'))));
+          });
+        }
+
+        el.append(
+          h('h2', {}, ctx.t('heading')),
+          h('form', { class: 'example-form', on: { submit: (e) => {
+            e.preventDefault();
+            const result = logic.cleanNote({ title: title.value, text: text.value });
+            problem.textContent = result.ok ? '' : ctx.t(result.problem);
+            if (!result.ok) return;
+            ctx.store.put(result.note);
+            title.value = '';
+            text.value = '';
+            ctx.ui.toast(ctx.t('added'));
+            draw();
+          } } },
+            h('label', { for: 'example-title' }, ctx.t('titleLabel')), title,
+            h('label', { for: 'example-text' }, ctx.t('textLabel')), text,
+            problem,
+            h('button', { type: 'submit' }, ctx.t('add'))),
+          h('label', { for: 'example-search' }, ctx.t('searchLabel')),
+          h('input', { type: 'search', id: 'example-search', on: { input: (e) => {
+            query = e.target.value;
+            draw();
+          } } }),
+          list);
+        draw();
+      },
+    });
+  },
+});
+
+
+======================================================================
+PART 4 OF 4: THE BRIEF FOR YOUR FEATURE (docs/features/sites.md)
+======================================================================
+
+# Job sites  (id: sites, size: S)
+In plain words: Keep the job sites you use in one place, with a note about each.
+Why someone wants it: Job searching means many sites and it is easy to lose track of which ones you check. This also
+gives the AI's "new place to look" leads a home: you can take one, and it becomes a site.
+
+Done when:
+- [ ] `node checks/run.js sites` passes.
+- [ ] A "Job sites" item is in the menu. It shows your sites, sorted by name, each with its name, its note, and a link
+      that opens in a new tab.
+- [ ] You can add a site (name, link, note), edit it, and delete it. Delete can be undone with the toast's Undo.
+- [ ] A name is needed. A link is optional, but if it is there it must start with `https://` or `http://`. A bad one is
+      refused with a plain sentence from `strings`.
+- [ ] Adding the same link twice is refused (links match when you ignore capital letters, `www.` and a last `/`).
+- [ ] The locale's starting sites (`ctx.locale.sites`, for example Job Bank) show in a "To start with" list, each with
+      an "Add to my sites" button. A site you already have is not shown there.
+- [ ] Leads from the AI: every `suggestion` record with `kind: 'lead'`, `status: 'new'` shows in a "New places to look,
+      from AI" lane at the top. Each row shows the title, the link's domain as plain text (not a link), the `why`
+      line, and the words "From AI, not checked". Two buttons:
+      "Take it" adds a site (name = the lead's title, link = the lead's url, note = the why line) and sets the
+      suggestion's `status` to `'taken'` in the same `ctx.store.batch`; "Not for me" sets `status` to `'dismissed'`.
+- [ ] A lead whose link is empty or not `https://` still shows, with no link, and can be taken without a link.
+- [ ] A lead whose link you already have as a site is shown as "You have this one", and taking it adds nothing.
+- [ ] With no sites and no leads the screen says so in one plain sentence.
+
+Data: owns `site` = `{name, url, note}` (`url` and `note` may be empty). Also lists `suggestion` in `types`,
+only to change a lead's `status` (the same way `features/events.js` does). Never create suggestions here; core makes them.
+Record types: `site`, `suggestion` (status changes only).
+Slots: `tab`   Soft uses: none. (`recipe-sites` suggests leads for this screen; `recipe-events` already does.)
+Lead shape (from `features/recipe-events.js`): `{type: 'suggestion', kind: 'lead', recipe: 'events', status, why,
+target: {title, url}}`. Read `target.title` and `target.url`; fall back to the top-level `title` and `url` if the target
+is missing.
+ctx calls: `ctx.store.all`, `put`, `remove`, `batch`, `ctx.slot('tab', ...)`, `ctx.locale.sites`, `ctx.ui.toast` (with
+`{undo: true}`), `ctx.h`, `ctx.t`.
+
+Checks to write (all in `logic`):
+- `sortSites(list)` returns a new list sorted by name, ignoring capital letters; it does not change the input.
+- `cleanSite({name, url, note})` returns `{ok: true, site}` with trimmed text, or `{ok: false, problem: 'needName' |
+  'badLink'}` (the problem is a key in `strings`).
+- `sameLink(a, b)` is true for `https://www.Example.com/` and `https://example.com`, false for different sites, and
+  false for two empty links.
+- `domainOf(url)` gives `example.com` for `https://www.example.com/a/b`, and `''` for junk or an empty value.
+- `newLeads(suggestions, sites)` keeps only `kind: 'lead'`, `status: 'new'`, not deleted; marks each one with
+  `have: true` when its link matches a site.
+- `startingSites(localeSites, sites)` leaves out the ones already added.
+
+Build notes (things that tripped the first build):
+- The tab is drawn again after every store change, so a form or "which site I am editing" kept inside `render` is lost.
+  Keep that state in a variable in `mount` (outside `render`), and call `ctx.ui.go('sites')` to draw again when only
+  that state changed (it re-draws even when you are already on `#sites`).
+- A locale site is `{id, name, url}` with no note. `ctx.locale` is frozen: copy before you change anything. Adding one
+  makes a new `site` with `note: ''`.
+- Changing a suggestion: `ctx.store.put(Object.assign({}, ctx.store.get(id), {status: 'taken'}))`. Put the whole
+  record, not just the status.
+- Put the site and the status change in one `ctx.store.batch`, and call `ctx.ui.toast(..., {undo: true})` after it, so
+  one Undo takes both back.
+- Keep `logic` methods safe to call as `f.logic.x(...)`: when one logic function calls another, use `this.` (the check
+  calls them as methods). An "except this id" check (for editing) must not match when the id is missing: write
+  `exceptId && s.id === exceptId`, not `s.id !== exceptId`.
+- A link is "good" if it matches `^https?://\S+$`. Do the same test for leads: a lead link that fails it is shown with
+  no link and no domain. `domainOf` also drops a port, a user name and `www.`.
+- A tab's `order` is a number (the example uses 90); anything works.
+- Test hooks (`data-test`) are not in the brief's checks but tests need them. Use: `sites-add`, `sites-form`,
+  `sites-name`, `sites-url`, `sites-note`, `sites-save`, `sites-cancel`, `sites-problem`, `site-row` (with `data-id`),
+  `site-link`, `site-edit`, `site-delete`, `sites-start`, `start-row`, `start-add`, `sites-leads`, `lead-row` (with
+  `data-id`), `lead-domain`, `lead-have`, `lead-ai-mark`, `lead-take`, `lead-dismiss`, `sites-empty`. The menu link is
+  `nav-sites` (core makes it). Add any new ones to `tests/e2e/README.md`.
+- When this feature is added to `features/list.js`, also take `sites` out of `Desk.planned`, and update
+  `BASE_FEATURES` in `tests/e2e/test_smoke.py` and the `must` list in `tests/e2e/test_data.py`
+  (`test_data_lists_ideas_you_could_build_with_a_brief_each`); both fail otherwise.
+
+Out of scope: checking whether a link works; fetching anything from a site; folders or tags; reminders to visit.
+Ideas for after: a "last looked" date with a "Looked today" button; a star for the sites that work best; show the site
+list on the one-page summary through the `print` slot.

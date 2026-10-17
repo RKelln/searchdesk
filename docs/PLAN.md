@@ -260,7 +260,7 @@ can follow a day later if it must).
   does not copy their rules. `docs/BUILDING.md` has two paths: (A) an agent in the folder, (B) a free chat in the browser
   with a kit. It says plainly that building is a computer job (a feature is a file you save and reload). It covers the
   P2 "at home" guide. Plain words.
-- [ ] **T6.2 Build kits** (P0). `tools/kit.py` (stdlib, `uv run`) writes `docs/kits/<id>.txt` for each brief in
+- [x] **T6.2 Build kits** (P0). `tools/kit.py` (stdlib, `uv run`) writes `docs/kits/<id>.txt` for each brief in
   `docs/features/`: a short instruction ("reply with exactly one file, nothing else"), `docs/CONTRACT.md`,
   `docs/example-feature.js`, then that brief. Commit the output so people need no tools. A unit or build check fails when
   a kit is out of date. `docs/BUILDING.md` path B says: copy the kit, paste into a free chat, save the reply as
@@ -544,3 +544,8 @@ can follow a day later if it must).
 - 2026-10-16, first phone trial (maintainer): the hosted site on a phone, the "find events" AI route copied into ChatGPT and
   the answer pasted back. It worked well. This covers part of V8 and one chat-route trial. Not yet tried: other chat
   services, the Mac in Chrome (V1–V4), the other recipes.
+- 2026-10-16, T6.2: `uv run tools/kit.py` writes `docs/kits/<id>.txt` (4 parts: instruction, CONTRACT.md, example-feature.js,
+  the brief); `--check` names stale, missing and orphan kits. Each kit is 25–30k characters (the contract and example
+  are about 25k of that), so none is near a size that a free chat might refuse. A unit test (`tests/unit/kits.test.js`)
+  runs the check, so any edit to CONTRACT.md, the example or a brief fails until the kits are regenerated and committed.
+  The instruction wording is untested in a real chat (T6.3). Unit: 340.
