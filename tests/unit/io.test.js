@@ -1,7 +1,9 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert');
-const { load } = require('./_load');
+const { spawnSync } = require('child_process');
+const fs = require('fs');
+const { load, root } = require('./_load');
 
 function fresh() {
   const D = load(['core/strings.js', 'core/store.js', 'core/merge.js', 'core/io.js']);
@@ -15,6 +17,24 @@ test('filename uses the local date', () => {
   const D = fresh();
   assert.strictEqual(D.io.filename(new Date(2026, 9, 5, 23, 59)), 'searchdesk-2026-10-05.json');
   assert.strictEqual(D.io.filename(new Date(2027, 0, 31, 0, 1)), 'searchdesk-2027-01-31.json');
+});
+
+// A person's export holds their name, jobs and notes. It lands in this folder when someone uses the app here,
+// so git must ignore it, and the docs must name it the way the code does. They drifted apart once already.
+const noGit = spawnSync('git', ['--version'], { cwd: root }).status !== 0;
+
+test('the export filename is ignored by git and named in the docs', { skip: noGit && 'git is not installed' }, () => {
+  const D = fresh();
+  for (const date of [new Date(2026, 9, 16), new Date(2026, 0, 1)]) {
+    const name = D.io.filename(date);
+    const r = spawnSync('git', ['check-ignore', '-q', name], { cwd: root });
+    assert.strictEqual(r.status, 0, name + ' is not ignored by .gitignore: a real export could be committed');
+  }
+  for (const doc of ['AGENTS.md', 'docs/DESIGN.md']) {
+    const text = fs.readFileSync(root + '/' + doc, 'utf8');
+    assert.ok(!text.includes('searchdesk-backup-'), doc + ' still names the old export file');
+    assert.ok(text.includes('searchdesk-<date>.json'), doc + ' does not name the export file');
+  }
 });
 
 test('exportText is pretty, drops example records and their tombstones, and strips device settings', () => {

@@ -2,3 +2,10 @@ dist/
 __pycache__
 .DS_Store
 screens/
+
+# A person's own data. These land in the folder when someone uses the app here, and they hold real
+# names, jobs and notes. Never commit them. (The demo file is docs/examples/inbox-demo.js.)
+# The app names an export searchdesk-<date>.json, for example searchdesk-2026-10-16.json. Keep this
+# pattern in step with Desk.io.filename; tests/unit/io.test.js fails if the two drift apart.
+searchdesk-*.json
+data/inbox.js

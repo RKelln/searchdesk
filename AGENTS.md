@@ -98,7 +98,10 @@ help them most this week.
 
 For an agent that can read and write files (the person's exported backup sits in the folder).
 
-- **Reading:** the person exports to `searchdesk-backup-*.json` in the folder, and you read that.
+- **Reading:** the person exports to `searchdesk-<date>.json` in the folder (`Desk.io.filename` names it, for example
+  `searchdesk-2026-10-16.json`), and you read that. Whoever runs the model may keep what you send it: if the model does
+  not say that it keeps nothing, act as if it does. Never paste a real backup, name, email or phone number into a chat
+  in a browser.
 - **Writing:** write `data/inbox.js` containing `window.DESK_INBOX = { schema, records }`, with your records marked
   `source: "ai"`. On load the page merges the inbox as one batch ("Brought in 5 changes from your helper · Undo"). The
   merge is idempotent, so a reload does not duplicate anything. `schema` is `"searchdesk/1"` and `records` is a list

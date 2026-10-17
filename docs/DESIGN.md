@@ -734,7 +734,9 @@ that a normal, small step, not a developer's job.
 
 For demos and for people with a coding agent of their own. Workshop participants use the chat route.
 
-- **Reading:** the person exports to `searchdesk-backup-*.json` in the folder, and the agent reads that.
+- **Reading:** the person exports to `searchdesk-<date>.json` in the folder (`Desk.io.filename` names it, for example
+  `searchdesk-2026-10-16.json`), and the agent reads that. `.gitignore` ignores `searchdesk-*.json` so a real export in
+  this folder cannot be committed.
 - **Writing:** the agent writes `data/inbox.js` containing `window.DESK_INBOX = { schema, records }`, with its
   records marked `source: "ai"`. On load, the page merges the inbox as one batch ("Brought in 5 changes from your
   helper · Undo"). The merge is idempotent, so a reload does not duplicate anything.
