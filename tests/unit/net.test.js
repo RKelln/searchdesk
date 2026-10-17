@@ -288,3 +288,18 @@ test('the committed snapshot: both tiers, https links, no descriptions, sorted, 
   const { Desk } = world({ snapshot: win.DESK_EVENTS_SNAPSHOT });
   assert.strictEqual(Desk.net.snapshot().events.length, s.events.length, 'net.js accepts every event in the snapshot');
 });
+
+test('tidy decodes HTML entities the feed leaves in, and tidyPlace drops the "Event location:" label', () => {
+  const { Desk } = world();
+  const n = Desk.net;
+  assert.strictEqual(n.tidy("Toronto&#39;s  BIGGEST &amp; best", 200), "Toronto's BIGGEST & best");
+  assert.strictEqual(n.tidy('32 Camden St. &#8220;The Social Room&#8221;', 200), '32 Camden St. “The Social Room”');
+  assert.strictEqual(n.tidy('&#x41;&nbsp;b &unknown; &#0; &#xD800;', 200), 'A b &unknown; &#0; &#xD800;');
+  assert.strictEqual(n.tidy('&lt;b&gt;', 200), '<b>'); // shown as text, never as HTML
+  assert.strictEqual(n.tidyPlace('MalvernEvent location: Malvern', 120), 'Malvern');
+  assert.strictEqual(n.tidyPlace('Cedarbrae - ClosedEvent location: Cedarbrae - Closed', 120), 'Cedarbrae - Closed');
+  assert.strictEqual(n.tidyPlace('Deer Park', 120), 'Deer Park');
+  const e = n.cleanEvent({ id: 'abc123', title: 'A &amp; B', start: '2026-10-20', venue: 'Burrows HallEvent location: Burrows Hall' });
+  assert.strictEqual(e.title, 'A & B');
+  assert.strictEqual(e.venue, 'Burrows Hall');
+});

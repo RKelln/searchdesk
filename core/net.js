@@ -30,8 +30,25 @@ window.Desk = window.Desk || {};
   function localeEvents() { return (window.DESK_LOCALE && window.DESK_LOCALE.events) || {}; }
 
   // ---- Pure helpers ------------------------------------------------------------------------------
+  // Feeds send some text still HTML-encoded ("Toronto&#39;s"). Decode the common entities to plain characters; the
+  // result is only ever shown as text, so a decoded "<" is harmless.
+  var NAMED = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', ndash: '\u2013', mdash: '\u2014',
+    lsquo: '\u2018', rsquo: '\u2019', ldquo: '\u201c', rdquo: '\u201d', hellip: '\u2026' };
+  function decodeEntities(s) {
+    return String(s).replace(/&(#x[0-9a-f]{1,6}|#[0-9]{1,7}|[a-z]{2,8});/gi, function (all, e) {
+      var n = e[0] !== '#' ? -1 : (e[1] === 'x' || e[1] === 'X' ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10));
+      if (e[0] !== '#') return Object.prototype.hasOwnProperty.call(NAMED, e.toLowerCase()) ? NAMED[e.toLowerCase()] : all;
+      return n > 0 && n <= 0x10ffff && !(n >= 0xd800 && n <= 0xdfff) ? String.fromCodePoint(n) : all;
+    });
+  }
+  // Some place names arrive as "MalvernEvent location: Malvern": keep the part after the label.
+  function tidyPlace(s, limit) {
+    s = tidy(s, 1000);
+    var m = /^(.*?)\s*Event location:\s*(.+)$/.exec(s);
+    return tidy(m ? m[2] : s, limit);
+  }
   function tidy(s, limit) {
-    s = typeof s === 'string' ? s.replace(/\s+/g, ' ').replace(/^ | $/g, '') : '';
+    s = typeof s === 'string' ? decodeEntities(s).replace(/\s+/g, ' ').replace(/^ | $/g, '') : '';
     return s.length > limit ? s.slice(0, limit).replace(/ $/, '') : s;
   }
   function hostOf(u) {
@@ -68,7 +85,7 @@ window.Desk = window.Desk || {};
       k = tidy(k, 40).toLowerCase();
       if (k && tags.indexOf(k) < 0) tags.push(k);
     });
-    return { id: id, title: title, start: start, end: end >= start ? end : '', venue: tidy(place.name, 120),
+    return { id: id, title: title, start: start, end: end >= start ? end : '', venue: tidyPlace(place.name, 120),
       address: address, url: page, tier: String(tierId), tags: tags.slice(0, 6) };
   }
 
@@ -102,7 +119,7 @@ window.Desk = window.Desk || {};
     var id = typeof e.id === 'string' ? e.id : '', title = tidy(e.title, 200), start = localTime(e.start);
     if (!id || id.length > 60 || !title || !start || start.length !== String(e.start).length) return null;
     var end = localTime(e.end);
-    return { id: id, title: title, start: start, end: end >= start ? end : '', venue: tidy(e.venue, 120),
+    return { id: id, title: title, start: start, end: end >= start ? end : '', venue: tidyPlace(e.venue, 120),
       address: tidy(e.address, 170), url: httpsUrl(e.url), tier: tidy(e.tier, 40),
       tags: (Array.isArray(e.tags) ? e.tags : []).filter(function (t) { return typeof t === 'string'; }).map(function (t) { return tidy(t, 40); }).slice(0, 6) };
   }
@@ -240,7 +257,7 @@ window.Desk = window.Desk || {};
 
   Desk.net = Object.freeze({
     get: get, events: events, current: current, snapshot: snapshot, liveEnabled: liveEnabled,
-    allowedHost: allowedHost, normalise: normalise, normaliseAll: normaliseAll, cleanEvent: cleanEvent,
+    allowedHost: allowedHost, tidy: tidy, tidyPlace: tidyPlace, normalise: normalise, normaliseAll: normaliseAll, cleanEvent: cleanEvent,
     FRESH_MS: FRESH_MS, CACHE_KEY: CACHE_KEY,
   });
 })();

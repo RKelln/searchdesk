@@ -69,17 +69,23 @@ Desk.register({
     matchShowFew: 'Show only events about finding work',
   },
   css: `
-    .events-weeks { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; }
-    .events-weeks button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 700; }
-    .events-source { margin: 0 0 1rem; }
-    .events-section { margin: 0 0 1.5rem; }
-    .events-list { list-style: none; padding: 0; margin: 0 0 .75rem; display: grid; gap: .5rem; }
-    .events-row { background: var(--surface); border: 1px solid var(--line); border-radius: .5rem; padding: .75rem; display: grid; gap: .25rem; }
-    .events-row[data-starred="true"] { border-left: .35rem solid var(--accent); }
-    .events-row h4 { margin: 0; font-size: 1rem; overflow-wrap: anywhere; }
+    .events-weeks { display: inline-flex; flex-wrap: wrap; gap: 0; margin: 0 0 1.25rem; }
+    .events-weeks button { border-radius: 0; margin-left: -1px; min-height: 40px; padding: .35rem 1rem; }
+    .events-weeks button:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); margin-left: 0; }
+    .events-weeks button:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .events-weeks button[aria-pressed="true"] { position: relative; z-index: 1; }
+    .events-source { margin: 0 0 1rem; color: var(--muted); }
+    .events-section { margin: 0 0 1.75rem; }
+    .events-section > h3 { margin-top: 0; }
+    .events-list { list-style: none; padding: 0; margin: 0 0 .75rem; display: grid; gap: .6rem; }
+    .events-row { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: .85rem 1rem; display: grid; gap: .2rem; box-shadow: var(--shadow); }
+    .events-row[data-starred="true"] { border-left: .3rem solid var(--accent); }
+    .events-row h4 { margin: 0 0 .1rem; font-size: 1.05rem; overflow-wrap: anywhere; }
     .events-row p { margin: 0; overflow-wrap: anywhere; }
-    .events-buttons { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .25rem; }
-    .events-ai { display: inline-block; font-size: .85rem; font-weight: 700; border: 1px solid var(--line); border-radius: .25rem; padding: 0 .4rem; margin-left: .5rem; color: var(--muted); }
+    .events-row .events-when { font-weight: 600; color: var(--accent); }
+    .events-buttons { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
+    .events-buttons button { min-height: 40px; padding: .35rem .9rem; }
+    .events-ai { display: inline-block; font-size: .8rem; font-weight: 700; border-radius: 999px; padding: .05rem .5rem; margin-left: .5rem; color: var(--accent); background: var(--accent-soft); vertical-align: middle; }
   `,
   logic: {
     WEEK_DAYS: 7,
@@ -276,7 +282,7 @@ Desk.register({
     function details(e) {
       const where = [e.venue, e.address].filter(Boolean).join(', ');
       return [
-        h('p', {}, when(e)),
+        h('p', { class: 'events-when' }, when(e)),
         where ? h('p', { class: 'muted' }, where) : null,
         e.url ? h('p', {}, h('a', { href: e.url, 'data-test': 'events-link' }, ctx.t('listing'))) : null,
       ];

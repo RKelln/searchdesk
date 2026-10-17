@@ -90,7 +90,8 @@ Desk.register({
     noEvents: '(no starred events coming up)',
   },
   css: `
-    .custom-form { display: grid; gap: .25rem; max-width: 40rem; }
+    .custom-form { display: grid; gap: .25rem; max-width: 40rem; padding: 1rem; margin: 0 0 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .custom-form label { margin-top: .5rem; }
     .custom-words { margin: .25rem 0; padding-left: 1.25rem; }
     .custom-words .custom-out { color: var(--muted); }
     .custom-warn { color: var(--danger); font-weight: 600; margin: .25rem 0; }

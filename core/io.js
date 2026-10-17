@@ -474,7 +474,7 @@ window.Desk = window.Desk || {};
   Desk.dataSection({ id: 'storage', order: 40, render: function (el) {
     el.appendChild(H('h3', {}, T('storageHeading')));
     var mode = Desk.persist ? Desk.persist.status() : 'memory';
-    var text = mode === 'memory' ? Desk.persist.message() || T('notSaving') : T('storageOk', { n: userRecordCount(Desk.store.state()) });
+    var text = mode === 'memory' ? Desk.persist.message() || T('notSaving') : (function (n) { return n === 1 ? T('storageOkOne') : T('storageOk', { n: n }); })(userRecordCount(Desk.store.state()));
     el.appendChild(H('p', { 'data-test': 'storage-status', 'data-status': mode }, text));
     el.appendChild(H('p', { class: 'muted', 'data-test': 'app-version' }, T('versionLine', { v: Desk.version })));
   } });

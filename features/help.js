@@ -16,10 +16,11 @@ Desk.register({
     empty: 'No help is listed for this place yet.',
   },
   css: `
-    .help-list { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 0.75rem; }
-    .help-entry { padding: 0.75rem; border: 1px solid currentColor; border-radius: 0.5rem; }
-    .help-entry h4 { margin: 0 0 0.25rem; }
-    .help-entry p { margin: 0.25rem 0; }
+    .help-list { list-style: none; padding: 0; margin: 0 0 1.75rem; display: grid; gap: .75rem; }
+    .help-entry { padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .help-entry h4 { margin: 0 0 .35rem; font-size: 1.1rem; }
+    .help-entry p { margin: .3rem 0; }
+    .help-entry a { display: inline-block; margin-top: .25rem; font-weight: 600; }
   `,
   logic: {
     // Entries of one kind, in the order the locale lists them. Entries without a name or an https source are left out.

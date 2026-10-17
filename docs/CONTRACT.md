@@ -102,6 +102,17 @@ h('a', { href: job.link }, 'Open the posting')
 h('button', { type: 'button', on: { click: save } }, ctx.t('save'))
 ```
 
+### Looking like the rest
+
+Plain buttons, inputs, `details` and headings are already styled, in light and dark, so a feature with no CSS looks
+right. When you do write `css`, use the colours from `core/desk.css` instead of your own: `var(--surface)`,
+`var(--surface-2)`, `var(--text)`, `var(--muted)`, `var(--line)`, `var(--accent)`, `var(--accent-soft)`,
+`var(--danger)`, `var(--danger-soft)`, `var(--warn)`, `var(--warn-soft)`, `var(--radius)`, `var(--shadow)`. Then dark
+mode works by itself. Shared classes: `card` (a white box with a border), `chip` (a small rounded label), `muted`
+(grey text), `sr-only` (read aloud but not shown). `class: 'primary'` makes the main button on a screen; a button with
+`aria-pressed="true"` shows as picked. To see your feature on a phone and a computer, in light and dark, run
+`uv run tools/screens.py --only <screen>` and open `screens/index.html`.
+
 ## 5. Rules
 
 1. **Talk to the app only through `ctx`.** No globals of your own, no reaching into another feature's DOM, no calling

@@ -25,13 +25,16 @@ Desk.register({
     'label.avoid': 'What do you want to avoid?',
   },
   css: `
-    .profile-form { display: grid; gap: 1rem; margin: 1rem 0; max-width: 40rem; }
-    .profile-field { display: grid; gap: 0.35rem; }
-    .profile-field input[type="text"], .profile-field textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 0.5rem; }
-    .profile-share { display: flex; gap: 0.5rem; align-items: center; min-height: 44px; }
-    .profile-share input { width: 1.5rem; height: 1.5rem; }
-    .profile-hint { opacity: 0.8; font-size: 0.9em; }
-    .profile-preview-box { border: 1px solid currentColor; border-radius: 0.5rem; padding: 0.75rem; max-width: 40rem; }
+    .profile-form { display: grid; gap: .75rem; margin: 1.25rem 0; max-width: 40rem; }
+    .profile-field { display: grid; gap: .35rem; padding: .85rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .profile-field label { margin: 0; }
+    .profile-field input[type="text"], .profile-field textarea { width: 100%; }
+    .profile-field textarea { min-height: 4.5rem; }
+    .profile-share { display: flex; gap: .6rem; align-items: center; min-height: 44px; }
+    .profile-share label { margin: 0; font-weight: 600; }
+    .profile-hint { color: var(--muted); font-size: .9em; font-weight: 400; }
+    .profile-preview-box { border: 1px solid transparent; border-left: .3rem solid var(--accent); border-radius: var(--radius); padding: 1rem; max-width: 40rem; background: var(--accent-soft); }
+    .profile-preview-box h3 { margin-top: 0; }
     .profile-preview { white-space: pre-wrap; margin: 0; font: inherit; overflow-wrap: anywhere; }
   `,
   logic: {

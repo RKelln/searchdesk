@@ -18,6 +18,7 @@ window.Desk = window.Desk || {};
     daysAgo: '{n} days ago',
     notSaving: 'This browser is not saving. Save a copy before you close it.',
     // shell (T1.5)
+    appName: 'Search Desk',
     menuLabel: 'Main menu',
     skipToContent: 'Skip to the main part',
     tabAi: 'AI helper',
@@ -83,6 +84,7 @@ window.Desk = window.Desk || {};
     exampleBanner: 'Amira (made up) is on this screen. She is not a real person. Remove her on the Data screen.',
     storageHeading: 'Saving on this device',
     storageOk: 'Saved in this browser. {n} things are kept here.',
+    storageOkOne: 'Saved in this browser. 1 thing is kept here.',
     versionLine: 'Search Desk version {v}',
     lastChange: 'Last change: {label}',
     lastChangeNone: 'The last change',

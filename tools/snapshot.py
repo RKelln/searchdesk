@@ -44,6 +44,7 @@ RULES
 import argparse
 import concurrent.futures
 import datetime
+import html
 import json
 import re
 import sys
@@ -77,8 +78,16 @@ def get_json(url, tries=3):
 
 
 def tidy(s, limit):
-    s = re.sub(r"\s+", " ", s if isinstance(s, str) else "").strip()
+    """Whitespace tidied and HTML entities decoded ("Toronto&#39;s" -> "Toronto's"); same rule as core/net.js."""
+    s = re.sub(r"\s+", " ", html.unescape(s) if isinstance(s, str) else "").strip()
     return s[:limit].rstrip()
+
+
+def tidy_place(s, limit):
+    """A place name without the "Event location:" label some listings glue on ("MalvernEvent location: Malvern")."""
+    s = tidy(s, 1000)
+    m = re.match(r"^(.*?)\s*Event location:\s*(.+)$", s)
+    return tidy(m.group(2) if m else s, limit)
 
 
 def https_url(u):
@@ -123,7 +132,7 @@ def normalise(item, tier, detail_url=""):
             tags.append(k)
     return {
         "id": eid, "title": title, "start": start, "end": end if end >= start else "",
-        "venue": tidy(place.get("name"), 120), "address": address,
+        "venue": tidy_place(place.get("name"), 120), "address": address,
         "url": https_url(detail_url) or page, "tier": tier, "tags": tags[:6],
     }
 

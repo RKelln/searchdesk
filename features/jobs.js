@@ -103,24 +103,52 @@ Desk.register({
     noteNoRoom: 'The notes are full. Make some room, then try again.',
   },
   css: `
-    .jobs-top { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; margin-bottom: .75rem; }
-    .jobs-filter { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; padding: 0; border: 0; }
-    .jobs-filter button[aria-pressed="true"], .jobs-stages button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 700; }
+    .jobs-top { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .jobs-top h2 { margin: 0; }
+    .jobs-filter { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1rem; }
+    .jobs-filter legend { font-size: .9rem; color: var(--muted); }
+    .jobs-filter button { min-height: 40px; padding: .35rem .9rem; border-radius: 999px; font-size: .95rem; }
     .jobs-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .75rem; }
-    .jobs-row { padding: .75rem; background: var(--surface); border: 1px solid var(--line); border-radius: .5rem; }
-    .jobs-row h3 { margin: 0 0 .25rem; font-size: 1.1rem; }
-    .jobs-row-open { width: 100%; text-align: left; font-weight: 700; }
+    .jobs-row { padding: .9rem 1rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .jobs-row h3 { margin: 0; font-size: 1.15rem; }
+    .jobs-row-open { display: flex; align-items: center; justify-content: space-between; gap: .5rem; width: 100%; padding: .25rem 0; margin: 0;
+      text-align: left; font-size: inherit; font-weight: 700; color: var(--text); background: none; border: 0; border-radius: var(--radius-sm); }
+    .jobs-row-open::after { content: ""; flex: none; width: .55rem; height: .55rem; margin-right: .3rem; border: solid var(--muted); border-width: 2px 2px 0 0; transform: rotate(45deg); }
+    .jobs-row-open:hover { color: var(--accent); background: none; }
+    .jobs-row-open:hover::after { border-color: var(--accent); }
     .jobs-meta { margin: 0 0 .5rem; color: var(--muted); }
-    .jobs-next { font-weight: 600; margin: 0 0 .5rem; }
-    .jobs-stages { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 .5rem; padding: 0; border: 0; }
-    .jobs-form { display: grid; gap: .25rem; max-width: 34rem; }
+    .jobs-next { display: inline-block; font-weight: 650; font-size: .95rem; margin: 0 0 .75rem; padding: .2rem .65rem; border-radius: var(--radius-sm); background: var(--surface-2); border: 1px solid var(--line); }
+    .jobs-next[data-when="late"] { background: var(--danger-soft); border-color: transparent; color: var(--danger); }
+    .jobs-next[data-when="today"] { background: var(--warn-soft); border-color: transparent; color: var(--warn); }
+    .jobs-next[data-kind="interview"][data-when="later"] { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
+    .jobs-stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 0 0 .5rem; max-width: 32rem; }
+    .jobs-stages legend { font-size: .9rem; color: var(--muted); }
+    .jobs-row .jobs-stages legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .jobs-stages button { min-width: 0; padding: .4rem .15rem; font-size: .85rem; border-radius: 0; margin-left: -1px; overflow-wrap: normal; word-break: keep-all; }
+    @media (max-width: 400px) { .jobs-stages button { font-size: .78rem; letter-spacing: -.01em; } }
+    .jobs-stages button:first-of-type { border-radius: var(--radius-sm) 0 0 var(--radius-sm); margin-left: 0; }
+    .jobs-stages button:last-of-type { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .jobs-stages button:hover, .jobs-stages button:focus-visible, .jobs-stages button[aria-pressed="true"] { position: relative; z-index: 1; }
+    .jobs-form { display: grid; gap: .25rem; max-width: 36rem; }
+    .jobs-form label { margin-top: .6rem; }
     .jobs-problem { color: var(--danger); font-weight: 600; margin: 0; }
+    .jobs-problem:not(:empty) { padding: .6rem .8rem; border-radius: var(--radius-sm); background: var(--danger-soft); }
+    .jobs-form [aria-invalid="true"] { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
     .jobs-help { margin: 0; color: var(--muted); font-size: .9rem; }
-    .jobs-facts { margin: 0 0 1rem; }
-    .jobs-facts dt { font-weight: 700; margin-top: .5rem; }
-    .jobs-facts dd { margin: 0; overflow-wrap: anywhere; }
+    .jobs-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); gap: .75rem 1rem; margin: 1rem 0; }
+    .jobs-facts > div { min-width: 0; }
+    .jobs-facts > .jobs-fact-wide { grid-column: 1 / -1; }
+    .jobs-facts ul { margin: .1rem 0 0; }
+    .jobs-back { display: inline-flex; align-items: center; gap: .45rem; padding-left: .75rem; color: var(--accent); border-color: transparent; background: none; }
+    .jobs-back::before { content: ""; width: .5rem; height: .5rem; border: solid currentColor; border-width: 0 0 2px 2px; transform: rotate(45deg); }
+    [data-test="job-detail"] .jobs-stages { margin: .5rem 0 0; }
+    .jobs-facts dt { font-weight: 650; font-size: .85rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .jobs-facts dd { margin: .1rem 0 0; overflow-wrap: anywhere; }
     .jobs-text { white-space: pre-wrap; overflow-wrap: anywhere; }
     .jobs-detail-buttons { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+    .jobs-drafts { margin: 0 0 1.5rem; }
+    .jobs-drafts .jobs-row { border-style: dashed; border-color: var(--accent); background: var(--accent-soft); }
+    .jobs-drafts .jobs-detail-buttons { margin-bottom: 0; }
   `,
   logic: {
     STAGES: ['saved', 'applied', 'interview', 'offer', 'closed'],
@@ -319,7 +347,9 @@ Desk.register({
       const n = logic.nextDate(job, today());
       if (!n) return null;
       const key = { followUp: 'nextFollowUp', interview: 'nextInterview', closes: 'nextCloses' }[n.kind];
-      return h('p', { class: 'jobs-next', 'data-test': 'job-next' }, ctx.t(key) + ': ' + when(n.date));
+      const day = n.date.slice(0, 10), now = today();
+      return h('p', { class: 'jobs-next', 'data-test': 'job-next', 'data-kind': n.kind,
+        'data-when': day < now ? 'late' : (day === now ? 'today' : 'later') }, ctx.t(key) + ': ' + when(n.date));
     };
 
     function changeStage(job, stage) {
@@ -410,7 +440,7 @@ Desk.register({
         h('div', { class: 'jobs-top' },
           h('h2', {}, ctx.t('heading')),
           h('button', { type: 'button', class: 'primary', 'data-test': 'job-add', on: { click: () => ctx.ui.go('jobs/new') } }, ctx.t('add'))),
-        lane,
+        lane || '',
         filterBox,
         shown.length ? list : h('p', { 'data-test': 'job-empty' }, ctx.t(all.length ? 'emptyFilter' : 'empty')));
     }
@@ -459,6 +489,7 @@ Desk.register({
         Object.keys(inputs).forEach((k) => { vals[k] = inputs[k].value; });
         const r = logic.cleanJob(vals);
         problem.textContent = r.ok ? '' : ctx.t(r.problem);
+        inputs.title.setAttribute('aria-invalid', r.ok ? 'false' : 'true');
         if (!r.ok) { inputs.title.focus(); return; }
         let saved;
         ctx.store.batch(isNew ? 'Add job' : 'Edit job', () => {
@@ -485,7 +516,7 @@ Desk.register({
     // ---- detail ----
     function renderDetail(el, job) {
       const facts = h('dl', { class: 'jobs-facts' });
-      function fact(label, node) { if (node) facts.append(h('dt', {}, ctx.t(label)), h('dd', {}, node)); }
+      function fact(label, node, wide) { if (node) facts.append(h('div', { class: wide ? 'jobs-fact-wide' : null }, h('dt', {}, ctx.t(label)), h('dd', {}, node))); }
       const iv = job.interviewAt;
       fact('dWhere', job.where);
       fact('dApplied', job.applied ? ctx.fmt.date(job.applied, { now: ctx.now() }) : '');
@@ -493,14 +524,14 @@ Desk.register({
       fact('dInterview', when(iv));
       fact('dCloses', when(job.closes));
       fact('dNextStep', job.nextStep);
-      if (job.notes) fact('dNotes', h('span', { class: 'jobs-text' }, job.notes));
+      if (job.notes) fact('dNotes', h('span', { class: 'jobs-text' }, job.notes), true);
       const tags = logic.lines(job.tags);
       if (tags.length) fact('dTags', tags.join(', '));
       const asks = logic.lines(job.asks);
-      if (asks.length) fact('dAsks', h('ul', {}, asks.map((a) => h('li', {}, a))));
+      if (asks.length) fact('dAsks', h('ul', {}, asks.map((a) => h('li', {}, a))), true);
       const meta = [job.org].filter((x) => x).join(' · ');
       el.append(
-        h('p', {}, h('button', { type: 'button', 'data-test': 'job-back', on: { click: () => ctx.ui.go('jobs') } }, ctx.t('back'))),
+        h('p', {}, h('button', { type: 'button', class: 'jobs-back', 'data-test': 'job-back', on: { click: () => ctx.ui.go('jobs') } }, ctx.t('back'))),
         h('div', { 'data-test': 'job-detail', 'data-id': job.id },
           h('h2', { 'data-test': 'job-detail-title' }, job.title),
           meta ? h('p', { class: 'jobs-meta' }, meta) : null,

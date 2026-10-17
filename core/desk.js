@@ -405,6 +405,7 @@ window.Desk = window.Desk || {};
 
   function renderNav(tabs) {
     els.nav.textContent = '';
+    els.nav.appendChild(H('div', { class: 'brand', 'aria-hidden': 'true' }, T('appName')));
     tabs.forEach(function (t) {
       if (t.hidden) return;
       var a = doc.createElement('a');
