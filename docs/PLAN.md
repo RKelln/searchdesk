@@ -252,6 +252,22 @@ can follow a day later if it must).
   *Done when:* each reference passes its checks; e2e with it copied into `features/` and added to `list.js` passes;
   the brief diff is committed with it.
 
+## Phase 5: building features (P0 for Oct 19; desktop only, by an agent in the folder or by a free chat in the browser)
+
+- [ ] **T6.1 Agent skill and `docs/BUILDING.md`** (P0). `.claude/skills/add-feature/SKILL.md`: a thin wrapper that follows
+  AGENTS.md "If the person has no idea what to build" (ask about them, offer three briefs one at a time), then builds the
+  file, runs `node checks/run.js <id>`, and says what passed. It points at `docs/CONTRACT.md` and `docs/features/`; it
+  does not copy their rules. `docs/BUILDING.md` has two paths: (A) an agent in the folder, (B) a free chat in the browser
+  with a kit. It says plainly that building is a computer job (a feature is a file you save and reload). It covers the
+  P2 "at home" guide. Plain words.
+- [ ] **T6.2 Build kits** (P0). `tools/kit.py` (stdlib, `uv run`) writes `docs/kits/<id>.txt` for each brief in
+  `docs/features/`: a short instruction ("reply with exactly one file, nothing else"), `docs/CONTRACT.md`,
+  `docs/example-feature.js`, then that brief. Commit the output so people need no tools. A unit or build check fails when
+  a kit is out of date. `docs/BUILDING.md` path B says: copy the kit, paste into a free chat, save the reply as
+  `features/<id>.js`, add it to `list.js`, open `#selftest`, and if it fails copy the problem back to the chat.
+- [ ] **T6.3 Trial the kits** (P0). Give two or three kits (`bigtext`, `pay`, one more) to a free chat; record whether the
+  file passes `#selftest` unedited. Fix the kit wording for what breaks. Maintainer runs the chat; the agent records.
+
 ## P1 (by Nov 16)
 
 - [ ] T5.1 Live events (`net.js` on; the 12-hour cache; "Get the latest"; failure falls back to the cache, then the
@@ -261,6 +277,7 @@ can follow a day later if it must).
 - [ ] T5.4 The remaining briefs and reference builds.
 - [ ] T5.5 Verified `prefill` URLs and `account` labels (V7, V9); a recipe choice that is remembered per service.
 - [ ] T5.6 `recipe-weekly` and `recipe-sites`.
+- [ ] T5.8 "Build a feature" card in the AI helper screen: a feature file that fills the kit and has a copy button.
 - [ ] T5.7 Accessibility pass: keyboard-only run, screen-reader labels, 200% zoom, contrast check, print stylesheet.
 
 ## P2 (later)
@@ -522,7 +539,7 @@ can follow a day later if it must).
   cleans HTML entities and "Event location:" text from events (tested), and `tools/snapshot.py` does the same. Fixed: Jobs
   showed "null" with no drafts, and "1 things are kept here". Today marks due-today items with an orange edge, and a
   closing date days away is grey. `tools/screens.py` takes every screen on phone and computer, light and dark
-  (`--route` for one screen). Unit: 339 pass. The e2e suite was not run for this entry. CONTRACT.md gained 11 lines
+  (`--route` for one screen). Unit: 339 pass. Source e2e: 334 pass, 0 fail, 30 skipped. CONTRACT.md gained 11 lines
   about the shared classes. T5.7 (accessibility) should start from these screenshots.
 - 2026-10-16, first phone trial (maintainer): the hosted site on a phone, the "find events" AI route copied into ChatGPT and
   the answer pasted back. It worked well. This covers part of V8 and one chat-route trial. Not yet tried: other chat
