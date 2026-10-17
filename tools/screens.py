@@ -17,6 +17,11 @@ Options:
   --only LIST        only these shots, by name (see SHOTS below), e.g. --only home,jobs-detail
   --app PATH         the page to open (default index.html; try dist/searchdesk.html)
   --viewport         also save what fits on the first screen, without scrolling (named *-top.png)
+  --route NAME=HASH  add a shot of any route, e.g. --route sites-new=sites/new (may be given more than once)
+
+New features need nothing: every tab in the menu (built or a "not built yet" stub) gets a shot, named after its id,
+unless SHOTS below already covers it. For a screen behind a tap (a form, a detail view), use --route, or add a line
+to SHOTS when the shot is worth keeping for everyone.
 
 On a phone the menu is fixed to the bottom of the screen. A full-page picture would draw it halfway down, so for
 full-page pictures the menu is moved to the end of the page. --viewport pictures show it where a person sees it.
@@ -39,7 +44,7 @@ LEAKS = ["null", "undefined", "[object Object]", "NaN"]
 
 FIRST_JOB = "Desk.store.all('job').sort((a, b) => a.title < b.title ? -1 : 1)[0].id"
 
-# name: (start empty?, hash or None, JS to run after the hash, or None). JS may return a hash to go to next.
+# name: (start empty?, hash or None, JS to run after the hash, or None).
 SHOTS = {
     "home": (False, "home", None),
     "jobs": (False, "jobs", None),
@@ -83,25 +88,47 @@ def shoot(page, out, name, width, viewport):
         page.screenshot(path=str(out / (name + "-top.png")))
 
 
+def menu_tabs(browser, app):
+    """The tab ids in the app's menu, in menu order (features, stubs and core tabs)."""
+    ctx = browser.new_context()
+    ctx.add_init_script(EXAMPLE)
+    page = ctx.new_page()
+    page.goto(app + "#home")
+    page.wait_for_function("window.Desk && Desk.started === true")
+    ids = page.evaluate("[...document.querySelectorAll('.tabs a.tab')].map((a) => a.getAttribute('href').slice(1))")
+    ctx.close()
+    return ids
+
+
 def run(args):
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     app = (ROOT / args.app).resolve().as_uri()
-    names = [n for n in SHOTS if not args.only or n in args.only]
     rows, problems = [], 0
     with sync_playwright() as p:
         browser = p.chromium.launch()
+        shots = dict(SHOTS)
+        covered = {v[1] for v in SHOTS.values()}
+        for tab in menu_tabs(browser, app):
+            if tab not in covered and tab not in shots:
+                shots[tab] = (False, tab, None)
+        for name, hash_ in args.route:
+            shots[name] = (False, hash_.lstrip("#"), None)
+        bad = [n for n in args.only if n not in shots]
+        if bad:
+            sys.exit("Unknown shot: %s. Shots: %s" % (", ".join(bad), ", ".join(shots)))
+        names = [n for n in shots if not args.only or n in args.only]
         for scheme in args.schemes:
             for size in args.sizes:
                 w, hgt = SIZES[size]
                 for empty in (False, True):
-                    todo = [n for n in names if SHOTS[n][0] == empty]
+                    todo = [n for n in names if shots[n][0] == empty]
                     if not todo:
                         continue
                     ctx = browser.new_context(viewport={"width": w, "height": hgt}, color_scheme=scheme)
                     ctx.add_init_script(NO_NET if empty else EXAMPLE)
                     for name in todo:
-                        _, hash_, js = SHOTS[name]
+                        _, hash_, js = shots[name]
                         page = ctx.new_page()
                         errors = []
                         page.on("pageerror", lambda e: errors.append(str(e)))
@@ -153,13 +180,18 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--app", default="index.html")
     ap.add_argument("--viewport", action="store_true")
+    ap.add_argument("--route", action="append", default=[])
     args = ap.parse_args()
     args.sizes = [s for s in args.sizes.split(",") if s]
     args.schemes = [s for s in args.schemes.split(",") if s]
     args.only = [s for s in args.only.split(",") if s]
-    bad = [s for s in args.sizes if s not in SIZES] + [n for n in args.only if n not in SHOTS]
+    bad = [s for s in args.sizes if s not in SIZES]
     if bad:
-        sys.exit("Unknown size or shot: %s. Sizes: %s. Shots: %s" % (", ".join(bad), ", ".join(SIZES), ", ".join(SHOTS)))
+        sys.exit("Unknown size: %s. Sizes: %s" % (", ".join(bad), ", ".join(SIZES)))
+    routes = [r.split("=", 1) for r in args.route]
+    if any(len(r) != 2 or not r[0] or not r[1] for r in routes):
+        sys.exit("--route needs NAME=HASH, e.g. --route sites-new=sites/new")
+    args.route = routes
     sys.exit(run(args))
 
 
