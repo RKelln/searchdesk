@@ -133,11 +133,16 @@ def skill(name, description, body):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--check", action="store_true", help="exit 1 if any copy is missing or stale")
+    ap.add_argument("--paths", action="store_true", help="print every copy this tool writes, one per line")
     args = ap.parse_args()
     want = expected()
     if not want:
         print("nothing in %s or %s" % (COMMANDS.relative_to(ROOT), SKILLS.relative_to(ROOT)))
         return 1
+    if args.paths:
+        for path in sorted(want):
+            print(path.relative_to(ROOT).as_posix())
+        return 0
     if args.check:
         bad = []
         for path, text in sorted(want.items()):

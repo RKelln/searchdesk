@@ -26,3 +26,18 @@ test('each command copy has the same body in every tool folder', { skip: !has &&
     for (const body of bodies) assert.strictEqual(body, bodies[0], `${name} differs between tools`);
   }
 });
+
+// --check only looks at the files on disk, so a copy that was never committed still passes it: a .gitignore
+// pattern with no leading slash will happily swallow a whole folder. This asks git instead.
+const noGit = spawnSync('git', ['--version'], { cwd: root }).status !== 0;
+
+test('every copy is in git, not only on disk', { skip: !has || noGit ? 'needs python3 and git' : false }, () => {
+  const listed = spawnSync('python3', ['tools/agent-files.py', '--paths'], { cwd: root, encoding: 'utf8' });
+  assert.strictEqual(listed.status, 0, listed.stdout + listed.stderr);
+  const paths = listed.stdout.trim().split('\n');
+  assert.ok(paths.length > 10, 'the tool found nothing to write');
+  const tracked = new Set(spawnSync('git', ['ls-files'], { cwd: root, encoding: 'utf8' }).stdout.split('\n'));
+  for (const p of paths) {
+    assert.ok(tracked.has(p), p + ' is not in git: a .gitignore pattern is probably hiding it');
+  }
+});

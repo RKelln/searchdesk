@@ -1,7 +1,9 @@
-dist/
+# Build output. The leading slash matters: these names only count at the top of the repo. Without it, the
+# pattern screens/ also matched .agents/skills/screens/, and that skill was never committed.
+/dist/
+/screens/
 __pycache__
 .DS_Store
-screens/
 
 # A person's own data. These land in the folder when someone uses the app here, and they hold real
 # names, jobs and notes. Never commit them. (The demo file is docs/examples/inbox-demo.js.)
