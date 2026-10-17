@@ -105,14 +105,32 @@ test('reply: date forms (weekday, trailing time, ranges, yearless past)', () => 
   assert.strictEqual(d('Nov 2', ''), 'unknown');
 });
 
+// This used to hold the parse to a flat 100 ms. That passes on a laptop and fails on a shared CI runner
+// that is simply slower: it read 112 ms on the Pages build while reply.js was unchanged. What matters is not
+// how fast the machine is but whether the cost grows with the size of the input, so compare the same work
+// at two sizes. A linear parse costs about 4x for 4x the text (3.7x measured here), a quadratic one about
+// 16x; ten is between the two, with room for a busy runner. The ceiling stays generous, so a parse that
+// hangs fails this test rather than the whole suite.
 test('reply: a 100 KB flood of wrapped lines parses in linear time', () => {
   const ctx = readJson(path.join(base, 'layout', 'clean-block.json'));
+  const flood = (unit, bytes) => 'DESK-7Q3K\nL1 | a\n' + unit.repeat(Math.ceil(bytes / unit.length));
+  const best = (text) => {   // best of three: other test files run in parallel and can steal the CPU
+    let ms = Infinity, r;
+    for (let i = 0; i < 3; i++) {
+      const t0 = Date.now();
+      r = Desk.reply.parse(text, ctx);
+      ms = Math.min(ms, Date.now() - t0);
+    }
+    return { ms, r };
+  };
   for (const unit of ['b\n', ' b\n', 'b b b b b b b b b b b b b b b b b b b b\n']) {
-    const text = 'DESK-7Q3K\nL1 | a\n' + unit.repeat(Math.ceil(100000 / unit.length));
-    let best = Infinity, r;   // best of three: other test files run in parallel and can steal the CPU
-    for (let i = 0; i < 3; i++) { const t0 = Date.now(); r = Desk.reply.parse(text, ctx); best = Math.min(best, Date.now() - t0); }
-    assert.ok(best < 100, 'took ' + best + ' ms');
-    assert.strictEqual(r.accepted.length, 1);
+    const at100k = best(flood(unit, 100000));
+    const at400k = best(flood(unit, 400000));
+    assert.strictEqual(at100k.r.accepted.length, 1);
+    assert.strictEqual(at400k.r.accepted.length, 1);
+    assert.ok(at400k.ms < 5000, '400 KB took ' + at400k.ms + ' ms');
+    assert.ok(at400k.ms <= at100k.ms * 10,
+      '4x the text cost ' + at400k.ms + ' ms, against ' + at100k.ms + ' ms for a quarter of it');
   }
 });
 
