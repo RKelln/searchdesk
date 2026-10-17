@@ -555,3 +555,6 @@ can follow a day later if it must).
   chat for a `checks/<id>.check.js`, so chat builders rely on `#selftest`. Decide in T6.3 whether to ask for one. AGENTS.md
   no longer says the workshop Macs lack Python, Node and git (the maintainer says that was wrong), and its "Mac pitfalls"
   is now a general "Portability" section. Changing CONTRACT.md means regenerating the kits.
+- 2026-10-16, decision (maintainer): check files (`checks/<id>.check.js`) are expected when an agent builds a feature (the
+  skill does this) and are not asked for in a free-chat kit, where `#selftest` and its source scan are the check. T6.3
+  should only revisit this if wrong logic gets past `#selftest` in the trials.
