@@ -18,6 +18,7 @@
   --danger-soft: #fbe9e7;
   --warn: #8a5a00;
   --warn-soft: #fdf1d6;
+  --warn-edge: #e8890c;
   --ok: #1d7a3a;
   --banner-bg: #ffe58a;
   --banner-text: #3a2c00;
@@ -52,6 +53,7 @@
     --danger-soft: #3d1c1a;
     --warn: #f3c56b;
     --warn-soft: #3a2e12;
+    --warn-edge: #f5a73b;
     --ok: #6fcf8c;
     --banner-bg: #5a4700;
     --banner-text: #fff2c2;

@@ -52,8 +52,8 @@ Desk.register({
     .home-list { list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; gap: .5rem; }
     .home-item { background: var(--surface); border: 1px solid var(--line); border-left: .3rem solid var(--line-strong); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
     .home-item[data-kind="interview"] { border-left-color: var(--accent); }
-    .home-item[data-kind="closes"] { border-left-color: var(--warn); }
     .home-item[data-kind="event"] { border-left-color: var(--ok); }
+    .home-item[data-today="true"] { border-left-color: var(--warn-edge); }
     .home-item[data-kind="followUp"][data-overdue="true"] { border-left-color: var(--danger); }
     .home-open { display: flex; align-items: center; justify-content: space-between; gap: .75rem; width: 100%; text-align: left;
       border: 0; border-radius: 0; background: transparent; font: inherit; font-weight: 500; padding: .85rem 1rem; min-height: 3.25rem; }
@@ -210,7 +210,8 @@ Desk.register({
         const list = h('ul', { class: 'home-list', 'data-test': 'home-list' });
         items.forEach((it) => {
           const d = describe(it);
-          list.append(h('li', { class: 'home-item', 'data-test': 'home-item', 'data-kind': it.kind, 'data-overdue': it.overdue ? 'true' : 'false' },
+          list.append(h('li', { class: 'home-item', 'data-test': 'home-item', 'data-kind': it.kind, 'data-overdue': it.overdue ? 'true' : 'false',
+            'data-today': it.days === 0 ? 'true' : 'false' },
             h('button', { type: 'button', class: 'home-open', 'data-test': 'home-open', on: { click: () => ctx.ui.go(d.go) } }, d.text)));
         });
         const slotBox = h('div', { class: 'home-slots' });
