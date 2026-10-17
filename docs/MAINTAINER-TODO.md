@@ -25,7 +25,10 @@ Things only you can do, in rough order of urgency for the Mon Oct 19, 2pm tag. T
 - [ ] **Chat-route trials (V5–V6):** a full round trip on the workshop's Claude seat (copy a question, paste the
   answer), for events, posting and coach.
 - [ ] **Phone check (V8):** the hosted copy on a real phone, including copy, app switch, paste and Undo.
-- [ ] **DNS** for `searchdesk.ryankelln.com` to GitHub Pages (T4.2).
+- [x] **DNS** for `searchdesk.ryankelln.com` to GitHub Pages (T4.2). Done 2026-10-16; it resolves to GitHub.
+- [ ] **First deploy:** after main is pushed, check that the "Publish to GitHub Pages" Action goes green. In
+  Settings → Pages, the source must be "GitHub Actions" and the custom domain `searchdesk.ryankelln.com`; tick
+  "Enforce HTTPS" once the certificate is ready. Then open the site on a laptop and a phone.
 - [ ] **Decide the cut list** on Sunday night if time is short. The plan's order: the service worker, your own AI
   tasks (T3.8), `recipe-posting`, and reference features beyond `sites`.
 

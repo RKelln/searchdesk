@@ -623,6 +623,7 @@ window.Desk = window.Desk || {};
     starting = true;
     buildShell();
     updateBanner();
+    if (Desk.hosting) { try { Desk.hosting.mount(els.root, els.notice); } catch (e) { logError(e); } } // hosting (T4.2)
     if (Desk.persist) {
       try { Desk.persist.load(); } catch (e) { logError(e); }
       updateNotice();

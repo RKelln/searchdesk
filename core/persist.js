@@ -92,6 +92,7 @@ window.Desk = window.Desk || {};
         else try { var s = storage(); if (s) s.removeItem(UNDO_KEY); } catch (e) { ok2 = false; setMode('memory'); }
       }
       if (ok && ok2) { hold = ''; setMode('ok'); }
+      if (ok && window.Desk.hosting) { try { window.Desk.hosting.saved(); } catch (e) {} } // hosting (T4.2)
       return ok;
     },
     status: function () { return mode; },

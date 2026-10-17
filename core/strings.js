@@ -227,7 +227,13 @@ window.Desk = window.Desk || {};
     'base.recipe-posting.name': 'AI: turn a posting into a job',
     'base.recipe-posting.purpose': 'Paste a job posting and get a job ready to save.',
     'base.recipe-coach.name': 'AI: practise an interview',
-    'base.recipe-coach.purpose': 'Practise interview questions with a free AI chat.'
+    'base.recipe-coach.purpose': 'Practise interview questions with a free AI chat.',
+    // hosting (T4.2)
+    installHintIos: 'Add Search Desk to your home screen: tap Share, then Add to Home Screen.',
+    installHintMenu: 'Add Search Desk to your home screen: open your browser menu, then tap Add to Home screen.',
+    installHintPrompt: 'Add Search Desk to your home screen so it opens in one tap.',
+    installAdd: 'Add it',
+    installDismiss: 'Not now'
   };
   Object.keys(core).forEach(function (k) {
     if (!Object.prototype.hasOwnProperty.call(Desk.strings, k)) Desk.strings[k] = core[k];

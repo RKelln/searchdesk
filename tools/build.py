@@ -6,7 +6,8 @@
 """Build the single-file Search Desk (DESIGN 12, 14).  Run: uv run tools/build.py  (or python3 tools/build.py)
 
 Writes, into dist/ (or --out DIR):
-  searchdesk.html, index.html (the same file), manifest.webmanifest, icon-192.png, icon-512.png
+  searchdesk.html, index.html (the same file), manifest.webmanifest, icon-192.png, icon-512.png, sw.js (the service
+  worker, with the version stamped in as its cache name), and CNAME when --cname is given
 
 How it works
   index.html is the template AND the boot order. Every <script src> and stylesheet in it is read in order and put
@@ -26,6 +27,7 @@ Options
                      (opens on the made-up person, never asks the network; connect-src becomes 'none')
   --banner TEXT      with --workshop, the banner words (default: the string table's)
   --version TEXT     use this version instead of the tag or date
+  --cname HOST       also write dist/CNAME with this host name (GitHub Pages custom domain)
 Standard library only. Bash 3.2 / macOS note: this needs Python 3 (use `uv run`), so it is for the maintainer, not
 for the Macs in a workshop; they get the built file.
 """
@@ -227,6 +229,26 @@ def manifest_json(title, version):
     }, indent=2) + "\n"
 
 
+def stamp_sw(sw_js, version):
+    """The service worker source with its VERSION line set. The cache name is built from it, so a new build means a
+    new worker file (the browser sees changed bytes) and a new cache."""
+    out, n = re.subn(r"^var VERSION = '[^'\n]*';", lambda m: "var VERSION = " + js_string(version).replace('"', "'") + ";", sw_js, count=1, flags=re.M)
+    if n != 1:
+        raise ValueError("sw.js has no `var VERSION = '...';` line")
+    return out
+
+
+HOST_RE = re.compile(r"^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$")
+
+
+def cname_text(host):
+    """The CNAME file text: one lower-case host name and a newline. Anything that is not a plain host name is an error."""
+    host = (host or "").strip().lower()
+    if not HOST_RE.match(host):
+        raise ValueError("--cname needs a plain host name such as searchdesk.example.com, not " + repr(host))
+    return host + "\n"
+
+
 ICON_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0b5cad"/>'
             '<circle cx="28" cy="28" r="13" fill="none" stroke="#fff" stroke-width="6"/>'
             '<path d="M38 38l14 14" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg>')
@@ -289,7 +311,7 @@ def default_version(content_hash, today=None):
     return base + "+" + content_hash[:8]
 
 
-def build(out_dir, only=None, without=None, workshop=None, version=None):
+def build(out_dir, only=None, without=None, workshop=None, version=None, cname=None):
     def read(path):
         return (ROOT / path).read_text(encoding="utf-8")
 
@@ -325,6 +347,9 @@ def build(out_dir, only=None, without=None, workshop=None, version=None):
     title_m = re.search(r"<title>(.*?)</title>", html)
     (out_dir / "manifest.webmanifest").write_text(manifest_json(title_m.group(1) if title_m else "Search Desk", version),
                                                   encoding="utf-8", newline="\n")
+    (out_dir / "sw.js").write_text(stamp_sw(read("sw.js"), version), encoding="utf-8", newline="\n")
+    if cname:
+        (out_dir / "CNAME").write_text(cname_text(cname), encoding="utf-8", newline="\n")
     for size in (192, 512):
         (out_dir / ("icon-%d.png" % size)).write_bytes(icon_png(size))
     return {"version": version, "size": len(html.encode("utf-8")), "scripts": len(scripts), "kept": kept,
@@ -339,11 +364,12 @@ def main(argv=None):
     ap.add_argument("--workshop", action="store_true")
     ap.add_argument("--banner")
     ap.add_argument("--version")
+    ap.add_argument("--cname")
     args = ap.parse_args(argv)
     out = Path(args.out) if args.out else ROOT / ("dist/workshop" if args.workshop else "dist")
     try:
         r = build(out, split_csv(args.features) or None, split_csv(args.without) or None,
-                  (args.banner or "") if args.workshop else None, args.version)
+                  (args.banner or "") if args.workshop else None, args.version, args.cname)
     except ValueError as e:
         sys.exit("build: " + str(e))
     print("built %s  version %s  %d bytes  %d inline scripts  connect-src %s" % (

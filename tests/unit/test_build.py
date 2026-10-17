@@ -191,6 +191,41 @@ class Icons(unittest.TestCase):
         self.assertTrue(all(i["src"].endswith(".png") for i in m["icons"]))
 
 
+class Hosting(unittest.TestCase):
+    SW = "// c\nvar VERSION = 'dev';\nvar CACHE = 'x' + VERSION;\n"
+
+    def test_sw_version_is_stamped_once(self):
+        out = build.stamp_sw(self.SW, "2026.10.19+ab12cd34")
+        self.assertIn("var VERSION = '2026.10.19+ab12cd34';", out)
+        self.assertNotIn("'dev'", out)
+        self.assertIn("var CACHE = 'x' + VERSION;", out)
+
+    def test_sw_without_version_line_is_an_error(self):
+        with self.assertRaises(ValueError):
+            build.stamp_sw("var x = 1;", "t")
+
+    def test_cname_text(self):
+        self.assertEqual(build.cname_text(" SearchDesk.RyanKelln.com "), "searchdesk.ryankelln.com\n")
+        for bad in ("", "https://a.example.com", "a b.com", "nodots", "a.com/x"):
+            with self.assertRaises(ValueError):
+                build.cname_text(bad)
+
+    def test_real_build_writes_sw_and_cname(self):
+        with tempfile.TemporaryDirectory() as d:
+            build.build(Path(d), version="v-test", cname="searchdesk.ryankelln.com")
+            self.assertIn("var VERSION = 'v-test';", (Path(d) / "sw.js").read_text())
+            self.assertEqual((Path(d) / "CNAME").read_text(), "searchdesk.ryankelln.com\n")
+            build.build(Path(d) / "n", version="v-test")
+            self.assertFalse((Path(d) / "n" / "CNAME").exists())
+
+    def test_hosting_script_is_inlined_and_hashed(self):
+        with tempfile.TemporaryDirectory() as d:
+            build.build(Path(d), version="t")
+            html = (Path(d) / "searchdesk.html").read_text()
+            self.assertIn("Desk.hosting", html)
+            self.assertIn("worker-src 'self'", html)
+
+
 class Whole(unittest.TestCase):
     def test_real_build_is_deterministic_and_has_no_external_script(self):
         with tempfile.TemporaryDirectory() as d:

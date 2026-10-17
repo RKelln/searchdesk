@@ -91,7 +91,9 @@ label { display: block; margin: .5rem 0 .25rem; font-weight: 600; }
 
 .banner { margin: 0; padding: .75rem 1rem; background: var(--banner-bg); color: var(--banner-text); font-weight: 600; text-align: center; }
 .notice { margin: 0; padding: .75rem 1rem; background: var(--notice-bg); color: var(--notice-text); font-weight: 600; }
-.banner[hidden], .notice[hidden] { display: none; }
+.install-hint { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin: 0; padding: .75rem 1rem; background: var(--banner-bg); color: var(--banner-text); font-weight: 600; }
+.install-hint .install-text { flex: 1 1 14rem; }
+.banner[hidden], .notice[hidden], .install-hint[hidden] { display: none; }
 
 /* Narrow screens: the menu is a bar along the bottom that scrolls sideways inside itself. */
 .app { min-height: 100vh; }

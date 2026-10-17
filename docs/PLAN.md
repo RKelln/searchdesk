@@ -229,7 +229,7 @@ can follow a day later if it must).
   `manifest.webmanifest` and icons. Flags: `--features a,b` (only these), `--without a,b`.
   *Done when:* the e2e smoke and the round-trip tests pass against `dist/searchdesk.html` on both engines; a test page
   that tries a `fetch` to another host is blocked by the CSP (check the console).
-- [ ] **T4.2 Hosting** (P0 without the service worker; the service worker is P1). A GitHub Action that runs
+- [x] **T4.2 Hosting** (P0 without the service worker; the service worker is P1). A GitHub Action that runs
   `build.py` and publishes `dist/` to Pages, on the custom domain `searchdesk.ryankelln.com` (DESIGN 14; DNS is
   the maintainer's); an install hint on phones (once,
   dismissible); a `navigator.storage.persist()` request after the first save. Then `sw.js`: cache the page, update
@@ -256,7 +256,7 @@ can follow a day later if it must).
 
 - [ ] T5.1 Live events (`net.js` on; the 12-hour cache; "Get the latest"; failure falls back to the cache, then the
   snapshot). Switch to Togather production when the maintainer says it is ready.
-- [ ] T5.2 Service worker and offline (from T4.2).
+- [x] T5.2 Service worker and offline (from T4.2; landed with it).
 - [ ] T5.3 Mode A inbox (`data/inbox.js` merge on load; the AGENTS section) and a demo script.
 - [ ] T5.4 The remaining briefs and reference builds.
 - [ ] T5.5 Verified `prefill` URLs and `account` labels (V7, V9); a recipe choice that is remembered per service.
@@ -501,8 +501,12 @@ can follow a day later if it must).
 - 2026-10-16, T4.3: README.md has three parts (job seekers, workshop hosts, developers). Its button words and commands
   were checked against the code, and I ran the workshop build myself (`dist/workshop/searchdesk.html`, connect-src 'none').
   There is no doc for swapping in another city's locale pack beyond "point index.html at your file"; that belongs to the P2 `docs/LOCALE.md`.
-- 2026-10-16, PAUSED mid T4.2 (usage limit). The agent was stopped before it reported. Its files are uncommitted
-  and unverified: `.github/`, `core/hosting.js`, `sw.js`, `tests/e2e/test_hosting.py`, `tests/unit/hosting.test.js`,
-  plus edits to core/desk.js, desk.css, persist.js, strings.js, index.html, tools/build.py and test_build.py. To resume, run
-  all the suites and the dist e2e, finish what is missing, and then add the maintainer's Pages and DNS click list to
-  docs/MAINTAINER-TODO.md.
+- 2026-10-16, T4.2: `.github/workflows/pages.yml` runs the unit tests, then `build.py --cname searchdesk.ryankelln.com`,
+  and publishes `dist/` on every push to main. `core/hosting.js` (http(s) only) shows a once-only "add to home screen" hint
+  on phones (the dismissal is a per-device localStorage key, not a setting, so it is not exported), asks
+  `navigator.storage.persist()` once after the first save that works, and registers `sw.js` only in a built copy. `sw.js` is
+  network first for the page (4 s wait, then the saved copy) and cache first for the icons and manifest. Its cache name is
+  `searchdesk-<Desk.version>`, stamped by the build, and old caches are dropped on activate. The CSP gains `worker-src 'self'`.
+  The maintainer has done DNS and Pages (it resolves to GitHub). The site shows GitHub's 404 until the first push of main.
+  In e2e, Playwright's WebKit cannot reload offline under a service worker, so that one step is skipped there; Chromium
+  runs the full offline test. Source e2e: 334 pass. Dist e2e: 283 pass. Unit: 338. Build: 25.
