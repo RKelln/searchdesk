@@ -516,3 +516,14 @@ can follow a day later if it must).
   have one (at the start of a word, any case; `logic.matchesWords`), with "Show all events here (n more)". Toronto's
   city words keep about 20 events. The events recipe still sees the whole feed. DESIGN 9.x and the locale docs could
   record `match`.
+- 2026-10-16, design pass (separate session, `27e28a6`, `c7e17ce`, `89534c4`, `9278147`): this touched `core/` on purpose.
+  `core/desk.css` has new tokens for a light and dark palette, shared cards, chips and `sr-only`, and styled inputs, focus and
+  pressed states. The phone menu fits all seven tabs at 375 px; the desktop sidebar shows the app name. `core/net.js` now
+  cleans HTML entities and "Event location:" text from events (tested), and `tools/snapshot.py` does the same. Fixed: Jobs
+  showed "null" with no drafts, and "1 things are kept here". Today marks due-today items with an orange edge, and a
+  closing date days away is grey. `tools/screens.py` takes every screen on phone and computer, light and dark
+  (`--route` for one screen). Unit: 339 pass. The e2e suite was not run for this entry. CONTRACT.md gained 11 lines
+  about the shared classes. T5.7 (accessibility) should start from these screenshots.
+- 2026-10-16, first phone trial (maintainer): the hosted site on a phone, the "find events" AI route copied into ChatGPT and
+  the answer pasted back. It worked well. This covers part of V8 and one chat-route trial. Not yet tried: other chat
+  services, the Mac in Chrome (V1–V4), the other recipes.
