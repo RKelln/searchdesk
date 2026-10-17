@@ -65,8 +65,8 @@ person only."), and turns live events off, so the page asks the network for noth
 2. Copy that one file to each workshop computer (a USB stick works).
 3. Open it in Chrome. It works from a file with no server and no internet.
 
-Managed Macs usually have no Python, Node or git. Build on another computer and copy the file over. Finder may
-leave `.DS_Store` files in folders; ignore them.
+Some managed computers have no Python, Node or git. If yours does not, build on another computer and copy the file
+over. Finder may leave `.DS_Store` files in folders; ignore them.
 
 For a normal copy (live events on, starts empty), run `uv run tools/build.py`. It writes `dist/searchdesk.html`
 (also `dist/index.html`, plus a manifest and icons, so you can host the `dist` folder on any web server).
@@ -108,6 +108,7 @@ Start with these:
   (`docs/example-feature.js`).
 - [`docs/DESIGN.md`](docs/DESIGN.md) and [`docs/PLAN.md`](docs/PLAN.md): the design and the task list.
 - [`docs/RECIPES.md`](docs/RECIPES.md): how the instructions sent to AI are made and changed.
+- [`docs/BUILDING.md`](docs/BUILDING.md): how to build a feature with an agent or a free chat.
 - [`docs/features/`](docs/features/): a short brief for each feature not built yet.
 - [`reference/`](reference/): reference builds of some of those features, with their checks and tests. They are
   not loaded by the app.

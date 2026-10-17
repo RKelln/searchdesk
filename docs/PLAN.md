@@ -254,7 +254,7 @@ can follow a day later if it must).
 
 ## Phase 5: building features (P0 for Oct 19; desktop only, by an agent in the folder or by a free chat in the browser)
 
-- [ ] **T6.1 Agent skill and `docs/BUILDING.md`** (P0). `.claude/skills/add-feature/SKILL.md`: a thin wrapper that follows
+- [x] **T6.1 Agent skill and `docs/BUILDING.md`** (P0). `.claude/skills/add-feature/SKILL.md`: a thin wrapper that follows
   AGENTS.md "If the person has no idea what to build" (ask about them, offer three briefs one at a time), then builds the
   file, runs `node checks/run.js <id>`, and says what passed. It points at `docs/CONTRACT.md` and `docs/features/`; it
   does not copy their rules. `docs/BUILDING.md` has two paths: (A) an agent in the folder, (B) a free chat in the browser
@@ -549,3 +549,9 @@ can follow a day later if it must).
   are about 25k of that), so none is near a size that a free chat might refuse. A unit test (`tests/unit/kits.test.js`)
   runs the check, so any edit to CONTRACT.md, the example or a brief fails until the kits are regenerated and committed.
   The instruction wording is untested in a real chat (T6.3). Unit: 340.
+- 2026-10-16, T6.1: `.claude/skills/add-feature/SKILL.md` (about 35 lines, points at the docs) and `docs/BUILDING.md` (path A: an
+  agent; path B: a kit in a free chat; a table of the 15 briefs). Gaps: CONTRACT.md does not say to remove an id from
+  `Desk.planned` when it is added to `Desk.features` (the skill and BUILDING.md say it); kits and path B do not ask the
+  chat for a `checks/<id>.check.js`, so chat builders rely on `#selftest`. Decide in T6.3 whether to ask for one. AGENTS.md
+  no longer says the workshop Macs lack Python, Node and git (the maintainer says that was wrong), and its "Mac pitfalls"
+  is now a general "Portability" section. Changing CONTRACT.md means regenerating the kits.
