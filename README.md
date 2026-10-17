@@ -3,6 +3,9 @@
 Search Desk is a job search helper that runs in your web browser. It keeps your jobs, dates, events and free help in
 one place. If you want, it also helps you use a free AI chat by copy and paste.
 
+**This is an early prototype, made for people in Toronto.** The events, free help and job posting rules are for
+Toronto and Ontario. Things may change or break, so save a copy of your data now and then (see below).
+
 This page has three parts:
 
 1. [For people looking for work](#for-people-looking-for-work)
