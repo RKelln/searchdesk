@@ -76,6 +76,7 @@ not listed twice.
 | `profile()` | the profile record |
 | `profileLines(profile?)` | the profile lines an AI question will contain: only fields whose "send to AI" switch is on (the same function the recipes use) |
 | `backupNudge()` | whether to remind the person to save a copy: `{show, text, days}` (`show` is true when there are changes since the last export and either 7 days have passed or there are 10 or more records; `days` is null if never exported). Used by Home |
+| `wide()` | true when the window is wide enough for the layout kit's two-pane and dashboard layouts (1100px, the same number as the `min-width: 1100px` rules in `core/desk.css`). Use it to choose a different default on a big screen — a board instead of a list, say — while a phone keeps the simpler one. The screen is drawn again when this flips, so a person who drags the window narrower or wider gets the right layout without tapping anything. |
 | `events.current()` / `events.refresh(opts?)` | the events to show: `{events, source, generated, note}` where `events` are `{id, title, start, end, venue, address, url, tier, tags}`, `source` is `'cache'` or `'snapshot'`. `current()` is instant. `refresh()` returns a Promise and asks `core/net.js` to fetch the latest only when live events are on (otherwise it just resolves `current()`); the screen is drawn again after a good fetch. `note` is a plain line when a fetch failed. Used by Events |
 | `download(name, text, type)` | save a text file (for example a calendar `.ics`). `name` uses only letters, digits, `-`, `.`, `_` (up to 80 characters); `type` is `text/calendar`, `text/plain`, `text/csv` or `application/json`. Returns `true`, or `false` if refused |
 | `recipe(def)` | register an AI recipe (the same id again replaces it) |
@@ -131,6 +132,59 @@ mode works by itself. Shared classes: `card` (a white box with a border), `chip`
 (grey text), `sr-only` (read aloud but not shown). `class: 'primary'` makes the main button on a screen; a button with
 `aria-pressed="true"` shows as picked. To see your feature on a phone and a computer, in light and dark, run
 `uv run tools/screens.py --only <screen>` and open `screens/index.html`.
+
+### The layout kit: a desktop layout with no CSS of your own
+
+A feature does not have to invent a layout for a big screen. These class names are all the app has, and they are
+what make a screen look right on a computer as well as a phone. **On a phone every one of them is a single column**,
+so using them costs nothing there and they cannot break a phone layout.
+
+| Class | What it gives you |
+|---|---|
+| `cols` | a list of cards that spreads into as many columns as fit, each at least 20rem wide |
+| `cols cols-sm` | smaller cards (16rem), so a wide screen fits more of them — good for short cards |
+| `cols cols-lg` | bigger cards (26rem), for cards with paragraphs in them |
+| `split` | two panes side by side on a wide screen, one above the other on a phone |
+| `split-main` | the first pane: the list. It scrolls with the page |
+| `split-side` | the second pane: the thing you opened. It sticks and scrolls on its own |
+| `dash` | a dashboard: a wide block beside a narrower one |
+| `dash-main` | the main block of a dashboard |
+| `dash-side` | the narrower block: summaries, counts, links |
+| `panel` | one titled block of a dashboard or a page (its heading sits flush at the top) |
+| `measure` | text that is read rather than scanned keeps one comfortable width, however wide the screen is |
+
+A list beside a detail pane is the commonest case, and it is two class names:
+
+```js
+const main = h('div', { class: 'split-main' });   // your list
+const side = h('div', { class: 'split-side' });   // what the person opened
+renderList(main);
+renderDetail(side, item);
+el.append(h('div', { class: 'split' }, main, side));
+```
+
+On a phone this stacks with the detail under the list, which is not what you want — so ask `ctx.wide()` first, and
+only build the split when it is true. That is what `jobs` does, and it is why the Jobs screen is a board on a big
+screen, a list on a phone, and the list beside the open job in between.
+
+**You can always change the kit.** It sits in the `desk.layout` cascade layer, which is the lowest priority there
+is, and CSS that is not in a layer beats CSS that is. So writing `.my-list { grid-template-columns: ... }` in your
+feature's own `css` overrides `cols` as normal. Never reach for `!important`.
+
+**Cards that react to their own width.** Put `container-type: inline-size` on a card, then use `@container` instead
+of `@media`, and the card adapts to how many columns there are rather than to the window:
+
+```js
+css: `
+  .my-card { container-type: inline-size; }
+  @container (max-width: 22rem) { .my-card button { font-size: .78rem; } }
+`
+```
+
+This is how a row of cards keeps a five-button control readable whether there are two cards across or four.
+
+When you check your work, use a wide size: `uv run tools/screens.py --sizes wide --only <screen>`. A layout can look
+tidy at 1280 and still waste half a real desktop.
 
 ## 5. Rules
 

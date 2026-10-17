@@ -340,14 +340,14 @@ Desk.register({
         const sug = logic.suggested(ctx.store.all('suggestion'), data.events, marks, today);
         if (sug.length) {
           const sec = section('events-suggested', ctx.t('suggestedHeading'), ctx.t('suggestedIntro'));
-          sec.append(h('ul', { class: 'events-list' }, sug.map(suggestionRow)));
+          sec.append(h('ul', { class: 'events-list cols cols-sm' }, sug.map(suggestionRow)));
           el.append(sec);
         }
 
         const starred = logic.markedEvents(marks, data.events, 'starred', today);
         if (starred.length) {
           const sec = section('events-starred', ctx.t('starredHeading'));
-          sec.append(h('ul', { class: 'events-list' }, starred.map((e) => eventRow(e, 'starred'))));
+          sec.append(h('ul', { class: 'events-list cols cols-sm' }, starred.map((e) => eventRow(e, 'starred'))));
           el.append(sec);
         }
 
@@ -391,7 +391,7 @@ Desk.register({
               sec.append(h('p', { class: 'muted' }, ctx.t('emptyTier')));
             } else {
               const n = shown[g.id] || logic.PAGE;
-              sec.append(h('ul', { class: 'events-list', 'aria-label': ctx.t('tierListLabel', { tier: g.name }) }, g.events.slice(0, n).map((e) => eventRow(e, 'tier'))));
+              sec.append(h('ul', { class: 'events-list cols cols-sm', 'aria-label': ctx.t('tierListLabel', { tier: g.name }) }, g.events.slice(0, n).map((e) => eventRow(e, 'tier'))));
               if (g.events.length > n) {
                 sec.append(button('events-more-' + g.id, ctx.t('moreEvents'), () => { shown[g.id] = n + logic.PAGE; drawLower(); }));
               }
@@ -404,7 +404,7 @@ Desk.register({
               () => { showHidden = !showHidden; drawLower(); }));
             if (showHidden) {
               const sec = section('events-hidden', ctx.t('hiddenHeading'));
-              sec.append(h('ul', { class: 'events-list' }, hidden.map((e) => eventRow(e, 'hidden'))));
+              sec.append(h('ul', { class: 'events-list cols cols-sm' }, hidden.map((e) => eventRow(e, 'hidden'))));
               lower.append(sec);
             }
           }

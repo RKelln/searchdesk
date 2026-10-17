@@ -35,6 +35,13 @@ window.Desk = window.Desk || {};
     workshopBanner: 'Practice computer: use the made-up person only.',
     dataHeading: 'Your data',
     dataSoon: 'Saving, sharing and backups will be here soon.',
+    // The five stages a job moves through. These words are app-wide, not one feature's: the job list, the board
+    // and the Today pipeline all show them, so they are translated in one place.
+    'stage.saved': 'Saved',
+    'stage.applied': 'Applied',
+    'stage.interview': 'Interview',
+    'stage.offer': 'Offer',
+    'stage.closed': 'Closed',
     // io / Data screen
     saveHeading: 'Save a copy',
     saveIntro: 'Your jobs and notes stay in this browser, on this device. Save a copy now and then so you do not lose them.',

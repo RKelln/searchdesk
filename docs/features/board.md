@@ -1,29 +1,34 @@
-# Board view  (id: board, size: M)
+# Board view  (was: id `board`, size: M)
 In plain words: Jobs as columns by stage.
-Why someone wants it: Some people see their search better as a board than as a list.
 
-Done when:
-- [ ] `node checks/run.js board` passes.
-- [ ] A "Board" item is in the menu. It shows five columns, in order: Saved, Applied, Interview, Offer, Closed.
-- [ ] Each job is a card with its title, organisation and next date (`ctx.fmt.date`). The cards in a column are
-      ordered by next date, soonest first, then by title.
-- [ ] A card is a button. Pressing it goes to the job's detail view (`ctx.ui.go('jobs/' + job.id)`). Moving a job to
-      another stage happens there, not here: this feature does not own `job` and cannot change it.
-- [ ] Each column header shows its count. An empty column says "None".
-- [ ] On a narrow phone screen the columns stack one under another (no sideways scroll at 320 px; look by hand).
-- [ ] A job with a stage that is not one of the five is shown in a sixth column, "Other".
-- [ ] The jobs `Closed` more than 30 days ago (by `updated`) are hidden behind a "Show older closed jobs" button.
+**This is built, inside Jobs.** It was first written as a separate `board` feature with its own menu tab. It is now a
+List/Board choice on the Jobs screen instead, so there is one place for jobs and the menu stays short. Nothing is
+planned here any more.
 
-Data: none. Reads `job`.
-Record types: none.
-Slots: `tab`   Soft uses: none.
-ctx calls: `ctx.slot('tab', ...)`, `ctx.store.all('job')`, `ctx.ui.go`, `ctx.now()`, `ctx.fmt.date`, `ctx.t`, `ctx.h`.
+Why it moved: a person who is looking at their search wants one screen, not a list of jobs over here and a board of
+the same jobs over there. And on a big screen the board is the better default; on a phone the list is.
 
-Checks to write (in `logic`):
-- `columns(jobs, today)` returns `[{stage, jobs}]` for the five stages in order, plus `other` only when a job needs it;
-  deleted jobs are left out; it does not change its input.
-- Each column's jobs are sorted by next date then title; a job with no next date comes last.
-- `hiddenClosed(jobs, today)` counts closed jobs older than 30 days.
+What is built (`features/jobs.js`, checks in `checks/jobs.check.js`):
 
-Out of scope: dragging cards; changing a job's stage here; colours per stage.
-Ideas for after: a filter box; show late follow-ups with a mark; a stage count on Home.
+- [x] `node checks/run.js jobs` passes.
+- [x] The Jobs screen shows **List** or **Board**. A screen 1100px and wider starts on the board, anything narrower
+      starts on the list, and whichever is chosen is remembered on that device (`ext.jobs.view` on `settings`).
+- [x] The board shows five columns, in order: Saved, Applied, Interview, Offer, Closed.
+- [x] Each card is a button with the job's title, organisation (or place) and next date (`ctx.fmt.dateTime`).
+      Pressing it opens the job.
+- [x] Each column's cards are ordered by next date, soonest first, then by title; a job with no next date comes last.
+- [x] Each column header shows its count. An empty column says "None".
+- [x] Below 1100px the columns stack one under another, so there is no sideways scroll at 320px.
+- [x] A job whose stage is not one of the five goes in a sixth column, "Other".
+- [x] Closed jobs whose last change is more than 30 days ago (by `updated`) are kept out of the Closed column
+      behind a "Show N older closed jobs" button.
+
+Changed from the original brief, on purpose:
+
+- **Moving a job to another stage is not here.** On a board a card is about as narrow as 180px, and five stage
+  buttons in 180px are unreadable. So a board card has no stage buttons. On a wide screen the job opens *beside*
+  the list and the stage buttons are in the job; on a phone the list keeps them on each row, as it always did.
+- **It is not a menu tab.** Nothing is lost by this except one more item in the menu.
+
+Ideas for after: a filter box on the board itself; a mark on cards whose follow-up is late; dragging a card between
+columns (this would need a change to the contract, since `board` no longer owns anything and `jobs` does).

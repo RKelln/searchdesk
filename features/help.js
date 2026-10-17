@@ -39,7 +39,7 @@ Desk.register({
       if (!items.length) return null;
       return h('section', {},
         h('h3', {}, ctx.t(titleKey)),
-        h('ul', { class: 'help-list' }, items.map((e) =>
+        h('ul', { class: 'help-list cols cols-lg' }, items.map((e) =>
           h('li', { class: 'help-entry', 'data-test': 'help-entry', 'data-help-id': e.id },
             h('h4', {}, e.name),
             h('p', {}, e.what),

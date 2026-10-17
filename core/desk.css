@@ -33,6 +33,11 @@
   --radius-sm: .5rem;
   --nav-h: 3.75rem;
   --mono: ui-monospace, Menlo, Consolas, monospace;
+  /* How wide a screen is allowed to grow before it stops (the reading area never needs more than this), and the
+     narrowest a card may be before a list drops from several columns to fewer. Features use these so one change
+     here moves every list in the app. */
+  --desk-max: 90rem;
+  --card-min: 20rem;
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -230,10 +235,10 @@ dd { margin: 0 0 .5rem; }
 .ideas-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); }
 .idea { padding: .75rem 1rem; background: var(--surface); border: 1px dashed var(--line-strong); border-radius: var(--radius); color: var(--muted); }
 .idea strong { display: block; color: var(--text); margin-bottom: .1rem; }
-.data-section { margin: 0 0 1rem; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.data-section { margin: 0 0 1rem; padding: 1rem; max-width: 46rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
 .data-section > h3:first-child { margin-top: 0; }
 .data-section > :last-child { margin-bottom: 0; }
-.undo-row { margin: 0 0 1.5rem; padding: 1rem; border-radius: var(--radius); background: var(--surface-2); border: 1px solid var(--line); }
+.undo-row { margin: 0 0 1.5rem; padding: 1rem; max-width: 46rem; border-radius: var(--radius); background: var(--surface-2); border: 1px solid var(--line); }
 .undo-row > :last-child { margin-bottom: 0; }
 
 /* ---- Toasts and the confirm box ---- */
@@ -292,8 +297,67 @@ dialog.confirm::backdrop { background: rgba(0, 0, 0, .45); }
   .brand::before { content: ""; width: 1.6rem; height: 1.6rem; flex: none; border-radius: .45rem; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .25); }
   .tab { flex: 0 0 auto; justify-content: flex-start; min-height: 2.75rem; padding: .5rem .75rem; text-align: left; font-size: 1rem; font-weight: 550; color: var(--text); }
   .tab.active { font-weight: 700; }
-  .screen { flex: 1 1 auto; min-width: 0; margin: 0 auto; padding: 2rem 2.5rem 4rem; max-width: 58rem; }
+  .screen { flex: 1 1 auto; width: 100%; min-width: 0; margin: 0 auto; padding: 2rem 2.5rem 4rem; max-width: var(--desk-max); }
   .toasts { left: auto; right: 1.5rem; bottom: 1.5rem; width: 26rem; max-width: calc(100vw - 3rem); }
+}
+
+/* ---- The layout kit: how a feature uses a wide screen ----
+   This block sits in the "desk.layout" cascade layer, which is the lowest priority of all. Any CSS a feature
+   brings with it is unlayered, and unlayered always wins, so a feature can change anything here by writing a
+   normal rule for its own class. Nothing in the kit ever needs !important from the person adding a feature.
+
+   A feature gets a proper desktop layout from class names alone, with no CSS of its own. On a phone everything
+   below is one column, so nothing changes there. Two breakpoints do the work:
+
+     768px and wider   the menu is the column on the left (see above) and the screen fills the rest
+     1100px and wider  a pane goes beside its list (.split) and dashboard blocks go two across (.dash)
+
+   .cols      a list of cards: as many columns as fit, each at least --card-min wide
+   .split     two panes: the first beside the second (.split-main, .split-side), stacked on a phone.
+              The side pane sticks and scrolls on its own, so a long list beside it stays readable
+   .dash      dashboard blocks: a wide main block (.dash-main) beside a narrower one (.dash-side)
+   .panel     one titled block of a dashboard or a page
+   .measure   text that is read rather than scanned keeps one comfortable width, however wide the screen is
+
+   Narrower cards: put .cols-sm on the same element as .cols to make the cards smaller (16rem) so a wide screen
+   fits more of them. Put .cols-lg for bigger ones (26rem), for cards with a lot of text in them.
+
+   Cards are also query containers (container-type: inline-size is set by each feature on its own card), so a
+   feature can make one part of a card react to the card's own width with @container, not the window's. That is
+   how a row of cards keeps its buttons readable at any number of columns. */
+@layer desk.layout {
+  .cols {
+    display: grid;
+    gap: .75rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-min)), 1fr));
+  }
+  .cols.cols-sm { --card-min: 16rem; }
+  .cols.cols-lg { --card-min: 26rem; }
+  .measure { max-width: 46rem; }
+
+  .split, .dash { display: grid; gap: 1.5rem; align-items: start; }
+  .panel { min-width: 0; }
+  .panel > h3:first-child, .panel > h2:first-child { margin-top: 0; }
+
+  @media (min-width: 1100px) {
+    .split { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+    .split > .split-main { grid-column: 1; grid-row: 1; }
+    .split > .split-side {
+      grid-column: 2; grid-row: 1;
+      position: sticky; top: 2rem;
+      max-height: calc(100dvh - 4rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .dash { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+    .dash > .dash-main { grid-column: 1; grid-row: 1; }
+    .dash > .dash-side { grid-column: 2; grid-row: 1; }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

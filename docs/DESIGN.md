@@ -385,7 +385,7 @@ versions of some are built and tested, but they are kept out of the workshop cop
 | `contacts` | People I met | A short note about people you met, linked to an event or a job. | M | `contact` / `tab`, `job.panel`, `event.actions` |
 | `stories` | My examples | Short stories from your work, ready for interview questions; the coach recipe can include them. | M | `story` / `tab` (soft-used by `recipe-coach`) |
 | `resumes` | Which resume | Which version of your resume you sent where. | S | `ext.resumes` on job / `job.panel` |
-| `board` | Board view | Jobs as columns by stage. | M | none / `tab` |
+| `board` | Board view | **Built, inside Jobs** (not its own tab): a List/Board choice on the Jobs screen, board by default at 1100px and wider. See `docs/features/board.md`. | — | `ext.jobs` on settings |
 | `week` | This week | How many you applied to, followed up and went to this week. No streaks and no scores. | S | none / `home` |
 | `recipe-followup` | AI: follow-up message | Drafts a short follow-up or thank-you note for a job. You copy it yourself. | S | recipe, no import |
 | `recipe-weekly` | AI: weekly check-in | Sends your open jobs and suggests the next step for each, as suggestions. | M | recipe, `job-next` suggestions |

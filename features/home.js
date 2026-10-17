@@ -47,6 +47,11 @@ Desk.register({
     stepJob: 'Add a job you are interested in',
     stepProfile: 'Say what work you look for',
     stepHelp: 'See free help near you',
+    nowHeading: 'Needs you now',
+    soonHeading: 'Coming up',
+    waitingHeading: 'Waiting for you',
+    jobsHeading: 'Where your jobs are',
+    jobsAll: 'All jobs',
   },
   css: `
     .home-list { list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; gap: .5rem; }
@@ -68,6 +73,26 @@ Desk.register({
     .home-empty button { display: flex; align-items: center; justify-content: space-between; gap: .75rem; text-align: left; padding: .85rem 1rem;
       min-height: 3.25rem; border-color: var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
     .home-empty button::after { content: ""; flex: none; width: .55rem; height: .55rem; border: solid var(--accent); border-width: 2px 2px 0 0; transform: rotate(45deg); margin-right: .25rem; }
+
+    /* ---- The dashboard (see the layout kit in core/desk.css) ----
+       On a wide screen the Today list takes the main column and the job pipeline sits beside it. On a phone the
+       two are one under another, in the same order. */
+    .home-group { margin: 0 0 1.5rem; }
+    .home-group > h3 { margin: 0 0 .55rem; font-size: 1.05rem; }
+    .home-group-count { color: var(--muted); font-weight: 600; }
+    .home-pipe { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: .4rem; }
+    .home-pipe-row { display: flex; align-items: center; gap: .75rem; padding: .5rem .7rem; background: var(--surface);
+      border: 1px solid var(--line); border-radius: var(--radius-sm); box-shadow: var(--shadow); }
+    .home-pipe-name { flex: 1 1 auto; font-weight: 600; font-size: .95rem; }
+    /* A plain <progress>, so it reads out loud and needs no inline width. */
+    .home-pipe-bar { flex: 0 1 7rem; width: 7rem; height: .5rem; appearance: none; border: 0; border-radius: 999px;
+      background: var(--surface-2); overflow: hidden; }
+    .home-pipe-bar::-webkit-progress-bar { background: var(--surface-2); border-radius: 999px; }
+    .home-pipe-bar::-webkit-progress-value { background: var(--accent); border-radius: 999px; }
+    .home-pipe-bar::-moz-progress-bar { background: var(--accent); border-radius: 999px; }
+    .home-pipe-row[data-stage="closed"] .home-pipe-bar::-webkit-progress-value { background: var(--line-strong); }
+    .home-pipe-row[data-stage="closed"] .home-pipe-bar::-moz-progress-bar { background: var(--line-strong); }
+    .home-pipe-n { flex: none; min-width: 1.5rem; text-align: right; font-weight: 700; font-size: 1.05rem; }
   `,
   logic: {
     WINDOW: 7,
@@ -150,6 +175,33 @@ Desk.register({
       return items;
     },
 
+    // The Today items in the three groups the dashboard shows, keeping the order they came in.
+    //   now:     late or today          soon: dated, later this week
+    //   waiting: no day at all (an answer, or a suggestion, is waiting on the person)
+    // -> { now: [item], soon: [item], waiting: [item] }. Does not change the list it is given.
+    groups(items) {
+      const out = { now: [], soon: [], waiting: [] };
+      (Array.isArray(items) ? items : []).forEach((it) => {
+        if (!it || typeof it !== 'object') return;
+        if (it.days === null || it.days === undefined) out.waiting.push(it);
+        else if (it.days <= 0) out.now.push(it);
+        else out.soon.push(it);
+      });
+      return out;
+    },
+
+    // How many jobs sit at each stage, and the biggest of those counts (so a bar can be drawn to scale).
+    // -> { rows: [{stage, count}], top }
+    pipeline(records) {
+      const live = (Array.isArray(records) ? records : []).filter((r) => r && typeof r === 'object' && !r.deleted && r.type === 'job');
+      const stages = String(this.STAGES || 'saved,applied,interview,offer,closed').split(',');
+      const counts = {};
+      live.forEach((j) => { counts[j.stage] = (counts[j.stage] || 0) + 1; });
+      const rows = stages.map((stage) => ({ stage: stage, count: counts[stage] || 0 }));
+      return { rows: rows, top: rows.reduce((m, r) => Math.max(m, r.count), 0) };
+    },
+    STAGES: 'saved,applied,interview,offer,closed',
+
     // The newest prompt from the last 7 days that no suggestion answers. -> the prompt record or null.
     pendingQuestion(records, nowDate) {
       const answered = {};
@@ -203,31 +255,62 @@ Desk.register({
       label: ctx.t('tabLabel'),
       order: 0,
       render(el) {
-        const items = logic.today(ctx.store.all('job')
-          .concat(ctx.store.all('event-mark'), ctx.store.all('suggestion'), ctx.store.all('prompt')), ctx.now());
-        el.append(h('h2', {}, ctx.t('heading')));
+        const records = ctx.store.all('job')
+          .concat(ctx.store.all('event-mark'), ctx.store.all('suggestion'), ctx.store.all('prompt'));
+        const items = logic.today(records, ctx.now());
+        const groups = logic.groups(items);
+        const pipe = logic.pipeline(ctx.store.all('job'));
 
-        const list = h('ul', { class: 'home-list', 'data-test': 'home-list' });
-        items.forEach((it) => {
+        // A wide screen gets a dashboard: what needs you on the left, where your jobs are on the right.
+        const main = h('div', { class: 'dash-main' });
+        const side = h('div', { class: 'dash-side' });
+        el.append(h('h2', {}, ctx.t('heading')));
+        el.append(h('div', { class: 'dash' }, main, side));
+
+        // The Today items in the three groups. Each row is built where it is used, so every item gets its own row.
+        function rowFor(it) {
           const d = describe(it);
-          list.append(h('li', { class: 'home-item', 'data-test': 'home-item', 'data-kind': it.kind, 'data-overdue': it.overdue ? 'true' : 'false',
+          return h('li', { class: 'home-item', 'data-test': 'home-item', 'data-kind': it.kind, 'data-overdue': it.overdue ? 'true' : 'false',
             'data-today': it.days === 0 ? 'true' : 'false' },
-            h('button', { type: 'button', class: 'home-open', 'data-test': 'home-open', on: { click: () => ctx.ui.go(d.go) } }, d.text)));
-        });
+            h('button', { type: 'button', class: 'home-open', 'data-test': 'home-open', on: { click: () => ctx.ui.go(d.go) } }, d.text));
+        }
+        function group(key, heading) {
+          const mine = groups[key];
+          if (!mine.length) return null;
+          const ul = h('ul', { class: 'home-list' });
+          mine.forEach((it) => ul.append(rowFor(it)));
+          return h('section', { class: 'home-group', 'data-test': 'home-group', 'data-group': key },
+            h('h3', {}, ctx.t(heading), ' ', h('span', { class: 'home-group-count' }, String(mine.length))), ul);
+        }
+        const grouped = [group('now', 'nowHeading'), group('soon', 'soonHeading'), group('waiting', 'waitingHeading')]
+          .filter((x) => x);
+        main.append(h('div', { 'data-test': 'home-list' }, grouped));
+
         const slotBox = h('div', { class: 'home-slots' });
         const slotShown = ctx.renderSlot('home', slotBox);
 
-        if (items.length) el.append(list);
         let nudge = null;
         try { nudge = ctx.backupNudge(); } catch (e) { nudge = null; }
         if (nudge && nudge.show) {
-          el.append(h('div', { class: 'home-nudge', 'data-test': 'home-nudge' },
+          main.append(h('div', { class: 'home-nudge', 'data-test': 'home-nudge' },
             h('p', {}, nudge.text),
             h('button', { type: 'button', 'data-test': 'home-nudge-go', on: { click: () => ctx.ui.go('data') } }, ctx.t('nudgeButton'))));
         }
-        if (slotShown) el.append(slotBox);
+        if (pipe.top) {
+          const rows = h('ul', { class: 'home-pipe', 'data-test': 'home-pipeline' }, pipe.rows.map((r) =>
+            h('li', { class: 'home-pipe-row', 'data-stage': r.stage, 'data-test': 'home-pipe-row' },
+              h('span', { class: 'home-pipe-name' }, ctx.t('stage.' + r.stage)),
+              h('progress', { class: 'home-pipe-bar', value: String(r.count), max: String(pipe.top),
+                'aria-label': ctx.t('stage.' + r.stage) + ': ' + r.count }),
+              h('span', { class: 'home-pipe-n' }, String(r.count)))));
+          side.append(h('section', { class: 'panel', 'data-test': 'home-pipeline-panel' },
+            h('h3', {}, ctx.t('jobsHeading')),
+            rows,
+            h('p', {}, h('button', { type: 'button', 'data-test': 'home-all-jobs', on: { click: () => ctx.ui.go('jobs') } }, ctx.t('jobsAll')))));
+        }
+        if (slotShown) side.append(slotBox);
         if (!items.length && !slotShown) {
-          el.append(h('div', { class: 'home-empty', 'data-test': 'home-empty' },
+          main.append(h('div', { class: 'home-empty', 'data-test': 'home-empty' },
             h('p', {}, ctx.t('emptyHeading')),
             stepButton('jobs', 'jobs/new', 'stepJob', 'home-step-job'),
             stepButton('profile', 'profile', 'stepProfile', 'home-step-profile'),

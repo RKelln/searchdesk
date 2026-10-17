@@ -12,7 +12,9 @@ with any problem it found: sideways scroll, a page error, or text that leaked ou
 
 Options:
   --out DIR          where to write (default screens/, which git ignores)
-  --sizes LIST       any of phone,small,tablet,desk (default phone,desk). small is 320 wide, the narrowest we support
+  --sizes LIST       any of phone,small,tablet,desk,wide (default phone,desk). small is 320 wide, the narrowest we
+                    support; wide is 1680, a real desktop. Check a wide size for layout work: at 1280 a layout can
+                    look tidy and still waste half the screen.
   --schemes LIST     light,dark (default light,dark)
   --only LIST        only these shots, by name (see SHOTS below), e.g. --only home,jobs-detail
   --app PATH         the page to open (default index.html; try dist/searchdesk.html)
@@ -35,7 +37,10 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent.parent
-SIZES = {"phone": (375, 812), "small": (320, 640), "tablet": (768, 1024), "desk": (1280, 900)}
+SIZES = {"phone": (375, 812), "small": (320, 640), "tablet": (768, 1024), "desk": (1280, 900),
+         # A real desktop. desk is a small laptop; wide is where a layout either uses the room or wastes it,
+         # and nothing below looked wrong at 1280. Add more here rather than only ever shooting 1280.
+         "wide": (1680, 1050)}
 EXAMPLE = "window.DESK_WORKSHOP = { autoExample: true, liveEvents: false };"
 NO_NET = "window.DESK_WORKSHOP = { liveEvents: false };"
 # For full-page pictures only: put the fixed phone menu at the end of the page instead of in the middle.
@@ -43,6 +48,11 @@ FULLPAGE_CSS = "@media (max-width: 767px) { body { position: relative; } .tabs {
 LEAKS = ["null", "undefined", "[object Object]", "NaN"]
 
 FIRST_JOB = "Desk.store.all('job').sort((a, b) => a.title < b.title ? -1 : 1)[0].id"
+
+# The Jobs screen shows a board on a wide screen and a list on a phone, and a board's cards carry no stage
+# buttons (five of them do not fit in one column). A shot that needs a stage button asks for the list first,
+# so it looks the same at every size.
+SHOW_LIST = "document.querySelector('[data-test=jobs-view-list]').click()"
 
 # name: (start empty?, hash or None, JS to run after the hash, or None).
 SHOTS = {
@@ -52,13 +62,15 @@ SHOTS = {
     "jobs-new": (False, "jobs/new", None),
     "jobs-problem": (False, "jobs/new", "document.querySelector('[data-test=job-save]').click()"),
     "jobs-edit": (False, None, "location.hash = '#jobs/' + " + FIRST_JOB + " + '/edit'"),
+    # The board is worth its own shot at every size: side by side on a desk, stacked on a phone.
+    "jobs-board": (False, "jobs", "document.querySelector('[data-test=jobs-view-board]').click()"),
     "profile": (False, "profile", None),
     "events": (False, "events", None),
     "help": (False, "help", None),
     "ai": (False, "ai", None),
     "ai-pending": (False, "ai", "document.querySelector('[data-test=ai-copy]').click()"),
     "data": (False, "data", None),
-    "toast": (False, "jobs", "document.querySelector('[data-test^=job-stage-]:not([aria-pressed=true])').click()"),
+    "toast": (False, "jobs", SHOW_LIST + "; document.querySelector('[data-test^=job-stage-]:not([aria-pressed=true])').click()"),
     "empty-home": (True, "home", None),
     "empty-jobs": (True, "jobs", None),
     "empty-ai": (True, "ai", None),
@@ -160,7 +172,7 @@ def write_index(out, rows, args):
              ".row{display:flex;gap:1rem;align-items:flex-start;overflow-x:auto;padding-bottom:1rem}",
              "figure{margin:0;flex:none}figcaption{font-weight:600}.bad{color:#a4262c}",
              "img{display:block;border:1px solid #999;background:#fff}",
-             ".phone img,.small img{width:300px}.tablet img{width:420px}.desk img{width:640px}</style>",
+             ".phone img,.small img{width:300px}.tablet img{width:420px}.desk img{width:640px}.wide img{width:840px}</style>",
              "<h1>Search Desk screens</h1>"]
     for name, shots in by_name.items():
         parts.append("<h2>%s</h2><div class=row>" % html.escape(name))

@@ -126,4 +126,43 @@ Desk.check('jobs', (t, f) => {
   t.ok(f.strings.noteNoRoom && f.strings.noteAdd && f.strings.notesReadyHeading, 'the note lane has its words');
   const sg = (o) => Object.assign({ type: 'suggestion', kind: 'job-note', status: 'new', updated: '1', target: { job: 'j1', text: 'hi' } }, o);
   t.eq(L.readyNotes([sg({ id: 'a' }), sg({ id: 'b', status: 'taken' }), sg({ id: 'c', target: { job: 'j2', text: 'x' } }), sg({ id: 'd', kind: 'job-draft' }), sg({ id: 'e', deleted: true }), sg({ id: 'f', target: { job: 'j1', text: ' ' } })], 'j1').map((x) => x.id), ['a'], 'only new job-note suggestions for that job are listed');
+
+  // ---- the board: one column per stage ----
+  const D = '2026-10-16';
+  const bj = (o) => Object.assign({ type: 'job', title: 'x', stage: 'saved' }, o);
+  const cols = L.boardColumns([
+    bj({ id: '1', title: 'Saved one', stage: 'saved' }),
+    bj({ id: '2', title: 'Applied one', stage: 'applied', followUp: '2026-10-20' }),
+    bj({ id: '3', title: 'Interview one', stage: 'interview', interviewAt: '2026-10-18T09:00' }),
+    bj({ id: '4', title: 'Offer one', stage: 'offer' }),
+    bj({ id: '5', title: 'Closed one', stage: 'closed' }),
+    bj({ id: '6', title: 'Odd one', stage: 'waiting' }),
+    bj({ id: '7', title: 'Gone', stage: 'saved', deleted: true }),
+  ], D);
+  t.eq(cols.map((c) => c.stage), ['saved', 'applied', 'interview', 'offer', 'closed', 'other'], 'the five stages in order, then Other when a job needs one');
+  t.eq(cols[0].jobs.map((j) => j.id), ['1'], 'a deleted job is left out');
+  t.eq(L.boardColumns([bj({ id: 'a', stage: 'saved' })], D).length, 5, 'with nothing odd there is no Other column');
+  t.eq(L.boardColumns([], D).map((c) => c.jobs.length), [0, 0, 0, 0, 0], 'no jobs gives five empty columns');
+
+  const sorted = L.boardSort([
+    bj({ title: 'Zebra', stage: 'applied', followUp: '2026-10-18' }),
+    bj({ title: 'Yak', stage: 'applied', followUp: '2026-10-25' }),
+    bj({ title: 'Wolf', stage: 'applied' }),
+    bj({ title: 'Ant', stage: 'applied', followUp: '2026-10-18' }),
+  ], D);
+  t.eq(sorted.map((j) => j.title), ['Ant', 'Zebra', 'Yak', 'Wolf'], 'soonest next date first, then title, and no date last');
+  const sortIn = [bj({ title: 'B' }), bj({ title: 'A', followUp: '2026-10-17' })];
+  L.boardSort(sortIn, D);
+  t.eq(sortIn.map((j) => j.title), ['B', 'A'], 'sorting does not change the list it was given');
+
+  const closedOld = bj({ id: 'o', stage: 'closed', updated: '2026-09-01T10:00:00Z' });
+  const closedNew = bj({ id: 'n', stage: 'closed', updated: '2026-10-10T10:00:00Z' });
+  t.eq(L.olderClosed([closedOld, closedNew, bj({ id: 'x', stage: 'saved', updated: '2026-01-01T00:00:00Z' })], D).map((j) => j.id), ['o'], 'a closed job older than 30 days is tucked away, and only closed ones count');
+  t.eq(L.olderClosed([closedOld], 'not a date'), [], 'a bad today lists nothing');
+  t.eq(L.olderClosed([closedOld], '2026-10-01'), [], 'exactly 30 days old is still shown');
+  t.eq(L.olderClosed([closedOld], '2026-10-02').map((j) => j.id), ['o'], '31 days old is tucked away');
+  t.eq(L.CLOSED_KEEP, 30, 'the board keeps 30 days of closed jobs');
+
+  t.ok(f.strings.viewList && f.strings.viewBoard && f.strings.viewLabel, 'the list-or-board buttons have their words');
+  t.ok(f.strings.boardNone && f.strings.stageOther && f.strings.showOlderClosed, 'the board has its words');
 });

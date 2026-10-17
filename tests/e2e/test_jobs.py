@@ -13,6 +13,14 @@ def open_jobs(page, app, hash="#jobs"):
     page.wait_for_selector('[data-screen="jobs"]')
 
 
+def show_list(page):
+    """The Jobs screen shows a board on a wide screen and a list on a phone (the view is remembered), and a
+    board's cards carry no stage buttons, because five of them do not fit in one column. Tests that need a
+    stage button in a row ask for the list first."""
+    page.click('[data-test="jobs-view-list"]')
+    page.wait_for_selector('[data-test="job-list"]')
+
+
 def add_job(page, title, **fields):
     page.click('[data-test="job-add"]')
     page.wait_for_selector('[data-test="job-form"]')
@@ -81,6 +89,7 @@ def test_jobs_add_edit_stage_delete_undo(page, app):
     # back to the list: counts, filter, stage change in the row
     page.click('[data-test="job-back"]')
     page.wait_for_selector(ROW)
+    show_list(page)
     assert page.locator('[data-test="stage-filter-all"]').inner_text().endswith("1")
     page.click(ROW + ' [data-test="job-stage-interview"]')
     page.wait_for_function("() => Desk.store.all('job')[0].stage === 'interview'")
@@ -102,6 +111,65 @@ def test_jobs_add_edit_stage_delete_undo(page, app):
     page.wait_for_selector(ROW)
     j = jobs(page)
     assert len(j) == 1 and j[0]["title"] == "Head cook" and j[0]["stage"] == "interview"
+    assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_jobs_board_and_list_toggle(page, app):
+    page.set_viewport_size({"width": 1400, "height": 900})
+    open_jobs(page, app)
+    # No hash change is needed: the store subscription redraws the screen by itself.
+    page.evaluate("""() => Desk.store.batch('seed', () => {
+      Desk.store.put({type: 'job', title: 'Baker', stage: 'saved', closes: '2026-12-01'});
+      Desk.store.put({type: 'job', title: 'Cook', stage: 'applied', followUp: '2026-11-02'});
+      Desk.store.put({type: 'job', title: 'Driver', stage: 'applied', followUp: '2026-10-20'});
+      Desk.store.put({type: 'job', title: 'Nurse', stage: 'interview', interviewAt: '2026-11-05T09:30'});
+      Desk.store.put({type: 'job', title: 'Odd one', stage: 'waiting'}); })""")
+    # a wide screen starts on the board: five stage columns, plus one for a stage that is not one of the five
+    board = '[data-test="job-board"]'
+    page.wait_for_selector(board)
+    assert page.locator(board + ' [data-stage="saved"]').count() == 1
+    assert page.locator(board + ' [data-stage="other"]').count() == 1
+    assert page.locator(board + ' [data-stage="offer"] [data-test="job-row"]').count() == 0
+    assert "None" in page.locator(board + ' [data-stage="offer"]').inner_text()
+    # the sooner next date comes first inside a column
+    applied = page.eval_on_selector_all(board + ' [data-stage="applied"] [data-test="job-row"]', "els => els.map(e => e.dataset.id)")
+    titles = page.eval_on_selector_all(board + ' [data-stage="applied"] [data-test="job-open"]', "els => els.map(e => e.innerText)")
+    assert titles == ["Driver", "Cook"], titles
+    # a board card opens the job
+    page.click(board + ' [data-stage="saved"] [data-test="job-open"]')
+    page.wait_for_selector('[data-test="job-detail"]')
+    # the view is remembered: the board is still on next time
+    page.click('[data-test="job-back"]')
+    page.wait_for_selector(board)
+    show_list(page)
+    assert page.locator(ROW).count() == 5
+    page.click('[data-test="jobs-view-board"]')
+    page.wait_for_selector(board)
+    page.reload()
+    wait_for_desk(page, started=True)
+    page.wait_for_selector(board)
+    assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_jobs_detail_sits_beside_the_list_on_a_wide_screen(page, app):
+    page.set_viewport_size({"width": 1400, "height": 900})
+    open_jobs(page, app)
+    page.evaluate("""() => Desk.store.batch('seed', () => {
+      Desk.store.put({type: 'job', title: 'Baker', stage: 'saved'});
+      Desk.store.put({type: 'job', title: 'Cook', stage: 'applied'}); });""")
+    show_list(page)
+    # open the first job by name, so this does not depend on which row Playwright picks first
+    page.locator(ROW, has_text="Baker").locator('[data-test="job-open"]').click()
+    page.wait_for_selector('[data-test="job-split"]')
+    # the list stays on the left, the job on the right, and the job opened is marked in the list
+    assert page.locator('[data-test="job-split"] .split-main ' + ROW).count() == 2
+    assert page.locator('[data-test="job-split"] .split-side [data-test="job-detail-title"]').inner_text() == "Baker"
+    assert page.locator('[data-test="job-split"] .split-main [data-test="job-open"][aria-current="true"]').count() == 1
+    assert_no_errors(page, allow=ALLOW_MISSING)
+    # on a phone it is the whole screen, as it always was. Dragging the window narrower redraws it.
+    page.set_viewport_size({"width": 390, "height": 780})
+    page.wait_for_function("() => !document.querySelector('[data-test=job-split]')")
+    assert page.locator('[data-test="job-detail"]').count() == 1
     assert_no_errors(page, allow=ALLOW_MISSING)
 
 

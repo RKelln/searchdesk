@@ -44,13 +44,9 @@ Desk.register({
     filterAll: 'All',
     stageLabel: 'Stage',
     stagesLabel: 'Move to another stage',
-    'stage.saved': 'Saved',
-    'stage.applied': 'Applied',
-    'stage.interview': 'Interview',
-    'stage.offer': 'Offer',
-    'stage.closed': 'Closed',
     open: 'Open',
     back: 'Back to your jobs',
+    closeJob: 'Close this job',
     edit: 'Edit',
     delete: 'Delete',
     save: 'Save',
@@ -101,15 +97,23 @@ Desk.register({
     noteAdd: 'Add to notes',
     noteAdded: 'Added to your notes.',
     noteNoRoom: 'The notes are full. Make some room, then try again.',
+    viewLabel: 'How to show your jobs',
+    viewList: 'List',
+    viewBoard: 'Board',
+    boardNone: 'None',
+    stageOther: 'Other',
+    showOlderClosed: 'Show {n} older closed jobs',
+    hideOlderClosed: 'Hide older closed jobs',
   },
   css: `
     .jobs-top { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
     .jobs-top h2 { margin: 0; }
+    .jobs-top-pane { justify-content: flex-end; }
     .jobs-filter { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1rem; }
     .jobs-filter legend { font-size: .9rem; color: var(--muted); }
     .jobs-filter button { min-height: 40px; padding: .35rem .9rem; border-radius: 999px; font-size: .95rem; }
     .jobs-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .75rem; }
-    .jobs-row { padding: .9rem 1rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .jobs-row { padding: .9rem 1rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); container-type: inline-size; }
     .jobs-row h3 { margin: 0; font-size: 1.15rem; }
     .jobs-row-open { display: flex; align-items: center; justify-content: space-between; gap: .5rem; width: 100%; padding: .25rem 0; margin: 0;
       text-align: left; font-size: inherit; font-weight: 700; color: var(--text); background: none; border: 0; border-radius: var(--radius-sm); }
@@ -126,11 +130,14 @@ Desk.register({
     .jobs-row .jobs-stages legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .jobs-stages button { min-width: 0; padding: .4rem .15rem; font-size: .85rem; border-radius: 0; margin-left: -1px; overflow-wrap: normal; word-break: keep-all; }
     @media (max-width: 400px) { .jobs-stages button { font-size: .78rem; letter-spacing: -.01em; } }
+    /* The same, but by the card's own width rather than the window's: in a list of cards side by side a narrow
+       card must still fit "Interview". The card is a query container (container-type on .jobs-row). */
+    @container (max-width: 22rem) { .jobs-row .jobs-stages button { font-size: .76rem; padding: .4rem .1rem; } }
     .jobs-stages button:first-of-type { border-radius: var(--radius-sm) 0 0 var(--radius-sm); margin-left: 0; }
     .jobs-stages button:last-of-type { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
     .jobs-stages button:hover, .jobs-stages button:focus-visible, .jobs-stages button[aria-pressed="true"] { position: relative; z-index: 1; }
     .jobs-form { display: grid; gap: .25rem; max-width: 36rem; }
-    .jobs-form label { margin-top: .6rem; }
+    .jobs-field { display: grid; gap: .35rem; align-content: start; margin-top: .7rem; min-width: 0; }
     .jobs-problem { color: var(--danger); font-weight: 600; margin: 0; }
     .jobs-problem:not(:empty) { padding: .6rem .8rem; border-radius: var(--radius-sm); background: var(--danger-soft); }
     .jobs-form [aria-invalid="true"] { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
@@ -149,9 +156,45 @@ Desk.register({
     .jobs-drafts { margin: 0 0 1.5rem; }
     .jobs-drafts .jobs-row { border-style: dashed; border-color: var(--accent); background: var(--accent-soft); }
     .jobs-drafts .jobs-detail-buttons { margin-bottom: 0; }
+
+    /* ---- List or board ---- */
+    .jobs-view { display: inline-flex; gap: 0; margin: 0 0 1rem; }
+    .jobs-view button { min-height: 40px; padding: .35rem 1rem; border-radius: 0; margin-left: -1px; }
+    .jobs-view button:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); margin-left: 0; }
+    .jobs-view button:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .jobs-view button[aria-pressed="true"] { position: relative; z-index: 1; }
+
+    /* ---- The board: one column per stage ----
+       A phone stacks the columns, so there is nothing to scroll sideways. A wide screen puts them side by side
+       and gives each one the same share, whether there are five columns or six. */
+    .jobs-board { display: grid; gap: .75rem; grid-template-columns: minmax(0, 1fr); margin: 0 0 1rem; align-items: start; }
+    .jobs-col { min-width: 0; padding: .6rem; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); }
+    .jobs-col-head { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; margin: 0 0 .55rem; padding: 0 .3rem; }
+    .jobs-col-head h3 { margin: 0; font-size: .95rem; }
+    .jobs-col-count { flex: none; color: var(--muted); font-size: .85rem; font-weight: 700; }
+    .jobs-col-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .5rem; }
+    .jobs-col-empty { margin: 0; padding: .35rem .3rem; color: var(--muted); font-size: .9rem; }
+    .jobs-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); box-shadow: var(--shadow); }
+    .jobs-card[aria-current="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+    .jobs-card-open { display: block; width: 100%; padding: .6rem .7rem .2rem; text-align: left; font: inherit; font-weight: 650;
+      color: var(--text); background: none; border: 0; border-radius: var(--radius-sm); overflow-wrap: anywhere; }
+    .jobs-card-open:hover { color: var(--accent); background: var(--surface-2); }
+    .jobs-card-org { display: block; margin-top: .15rem; font-weight: 400; font-size: .85rem; color: var(--muted); }
+    .jobs-card .jobs-next { margin: .45rem .7rem .6rem; font-size: .8rem; }
+    .jobs-older { margin: .4rem .3rem 0; }
+    .jobs-older button { width: 100%; font-size: .85rem; }
+
+    @media (min-width: 1100px) {
+      .jobs-board { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+      /* Two fields to a row on a wide screen, so the whole form fits without a long scroll down. A field is
+         its own box (label and input together), so it never gets split across the two columns. */
+      .jobs-form { max-width: none; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.5rem; align-items: start; }
+      .jobs-field-wide, .jobs-form > .jobs-help, .jobs-form > .jobs-problem, .jobs-form > .jobs-detail-buttons { grid-column: 1 / -1; }
+    }
   `,
   logic: {
     STAGES: ['saved', 'applied', 'interview', 'offer', 'closed'],
+    CLOSED_KEEP: 30,   // a closed job stays off the board's Closed column for this many days
 
     // ---- dates (text only; no clock) ----
     isDate(s) {
@@ -236,6 +279,43 @@ Desk.register({
       const patch = { stage: stage };
       if (stage === 'applied' && !job.applied && this.isDate(today)) patch.applied = today;
       return patch;
+    },
+
+    // ---- the board: one column per stage ----
+    // -> [{stage, jobs}] for the five stages in that order, plus {stage: 'other'} only when a job needs one.
+    // Deleted jobs are left out. Does not change the list it is given.
+    boardColumns(jobs, today) {
+      const L = this;
+      const live = (Array.isArray(jobs) ? jobs : []).filter((j) => j && typeof j === 'object' && !j.deleted);
+      const cols = L.STAGES.map((stage) => ({ stage: stage, jobs: [] }));
+      const odd = [];
+      live.forEach((j) => {
+        const i = L.STAGES.indexOf(j.stage);
+        if (i < 0) odd.push(j); else cols[i].jobs.push(j);
+      });
+      cols.forEach((c) => { c.jobs = L.boardSort(c.jobs, today); });
+      if (odd.length) cols.push({ stage: 'other', jobs: L.boardSort(odd, today) });
+      return cols;
+    },
+    // Soonest next date first, then title. A job with no next date comes last. Returns a new list.
+    boardSort(jobs, today) {
+      const L = this;
+      return (Array.isArray(jobs) ? jobs : []).slice().sort((a, b) => {
+        const na = L.nextDate(a, today), nb = L.nextDate(b, today);
+        if (!na !== !nb) return na ? -1 : 1;
+        if (na && nb && na.date !== nb.date) return na.date < nb.date ? -1 : 1;
+        return String(a.title || '').localeCompare(String(b.title || ''));
+      });
+    },
+    // Closed jobs whose last change (updated) is more than CLOSED_KEEP days before `today`. -> [job].
+    // These are the ones the board keeps out of its Closed column until the person asks to see them.
+    olderClosed(jobs, today, keep) {
+      const days = keep === undefined ? this.CLOSED_KEEP : keep;
+      const n = (s) => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) / 86400000;
+      if (!this.isDate(today)) return [];
+      const cut = n(today) - days;
+      return (Array.isArray(jobs) ? jobs : []).filter((j) => j && typeof j === 'object' && !j.deleted && j.stage === 'closed' &&
+        typeof j.updated === 'string' && n(j.updated.slice(0, 10)) < cut);
     },
 
     // ---- the form ----
@@ -335,6 +415,7 @@ Desk.register({
     const h = ctx.h;
     const logic = this.logic;
     let filter = 'all';
+    let showOlder = false;
 
     const today = () => logic.dateKey(ctx.now());
     const stageName = (s) => ctx.t('stage.' + s);
@@ -400,31 +481,101 @@ Desk.register({
       ctx.ui.go('jobs');
     }
 
+    // ---- board or list ----
+    // Which one is remembered on this device. The first time, a board on a wide screen (every job at a glance)
+    // and a list on a phone, where one column under another would only make a longer scroll.
+    function currentView() {
+      const s = ctx.store.get('settings') || {};
+      const e = s.ext && typeof s.ext === 'object' ? s.ext : {};
+      const mine = e.jobs && typeof e.jobs === 'object' ? e.jobs : {};
+      if (mine.view === 'board' || mine.view === 'list') return mine.view;
+      return ctx.wide() ? 'board' : 'list';
+    }
+    function viewToggle(view, again) {
+      const box = h('fieldset', { class: 'jobs-view', 'data-test': 'jobs-view' }, h('legend', {}, ctx.t('viewLabel')));
+      ['list', 'board'].forEach((v) => {
+        box.append(h('button', { type: 'button', 'data-test': 'jobs-view-' + v, 'aria-pressed': view === v ? 'true' : 'false',
+          on: { click: () => { ctx.store.ext('settings', { view: v }); again(); } } },
+          ctx.t(v === 'list' ? 'viewList' : 'viewBoard')));
+      });
+      return box;
+    }
+
+    function cardList(shown, selected, inPane) {
+      const list = h('ul', { class: 'jobs-list cols cols-lg', 'data-test': 'job-list' });
+      shown.forEach((j) => {
+        const meta = [j.org, j.where].filter((x) => x).join(' · ');
+        list.append(h('li', { class: 'jobs-row', 'data-test': 'job-row', 'data-id': j.id },
+          h('h3', {}, h('button', { type: 'button', class: 'jobs-row-open', 'data-test': 'job-open',
+            'aria-current': j.id === selected ? 'true' : null, on: { click: () => ctx.ui.go('jobs/' + j.id) } }, j.title)),
+          meta ? h('p', { class: 'jobs-meta' }, meta) : null,
+          nextLine(j),
+          // In the two-pane view the stage buttons live in the open job on the right, so a row does not carry a
+          // second copy of the same control.
+          inPane ? null : stageButtons(j)));
+      });
+      return list;
+    }
+
+    // The board: one column per stage, each card a button that opens the job.
+    function board(all) {
+      const t = today();
+      const hidden = logic.olderClosed(all, t);
+      const hiddenIds = {};
+      hidden.forEach((j) => { hiddenIds[j.id] = true; });
+      const wrap = h('div', { class: 'jobs-board', 'data-test': 'job-board' });
+      logic.boardColumns(all, t).forEach((col) => {
+        if (filter !== 'all' && filter !== col.stage) return;
+        let jobs = col.jobs;
+        const closed = col.stage === 'closed';
+        const tucked = closed ? jobs.filter((j) => hiddenIds[j.id]) : [];
+        if (closed && !showOlder) jobs = jobs.filter((j) => !hiddenIds[j.id]);
+        wrap.append(h('section', { class: 'jobs-col', 'data-test': 'job-column', 'data-stage': col.stage },
+          h('div', { class: 'jobs-col-head' },
+            h('h3', {}, col.stage === 'other' ? ctx.t('stageOther') : stageName(col.stage)),
+            h('span', { class: 'jobs-col-count', 'data-test': 'job-column-count' }, String(jobs.length))),
+          jobs.length
+            ? h('ul', { class: 'jobs-col-list' }, jobs.map((j) => h('li', { class: 'jobs-card', 'data-test': 'job-row', 'data-id': j.id },
+                h('button', { type: 'button', class: 'jobs-card-open', 'data-test': 'job-open',
+                  on: { click: () => ctx.ui.go('jobs/' + j.id) } },
+                  j.title,
+                  [j.org, j.where].filter((x) => x).length
+                    ? h('span', { class: 'jobs-card-org' }, [j.org, j.where].filter((x) => x).join(' · ')) : null),
+                nextLine(j))))
+            : h('p', { class: 'jobs-col-empty' }, ctx.t('boardNone')),
+          closed && tucked.length
+            ? h('div', { class: 'jobs-older' }, h('button', { type: 'button', 'data-test': 'job-older-closed',
+                on: { click: () => { showOlder = !showOlder; ctx.ui.go('jobs'); } } },
+                ctx.t(showOlder ? 'hideOlderClosed' : 'showOlderClosed', { n: tucked.length })))
+            : null));
+      });
+      return wrap;
+    }
+
     // ---- list ----
-    function renderList(el) {
+    // `opts.inPane` is true when this list is the left pane of the two-pane view (a job is open beside it):
+    // then it is always a list, because five columns do not fit in a pane, and the view buttons are left out.
+    // `opts.keep` is the id of the job that is open, so it can be marked in the list.
+    function renderList(el, opts) {
+      const o = opts || {};
       const all = ctx.store.all('job');
       const counts = logic.stageCounts(all);
       const shown = logic.sortJobs(logic.filterByStage(all, filter), today());
+      const view = o.inPane ? 'list' : currentView();
+      const again = () => ctx.ui.go(o.keep ? 'jobs/' + o.keep : 'jobs');
+
       const filterBox = h('fieldset', { class: 'jobs-filter', 'data-test': 'stage-filter' }, h('legend', {}, ctx.t('filterLabel')));
       ['all'].concat(logic.STAGES).forEach((s) => {
         const name = s === 'all' ? ctx.t('filterAll') : stageName(s);
         filterBox.append(h('button', { type: 'button', 'data-test': 'stage-filter-' + s, 'aria-pressed': filter === s ? 'true' : 'false',
-          on: { click: () => { filter = s; ctx.ui.go('jobs'); } } },
+          on: { click: () => { filter = s; again(); } } },
           name + ' ' + counts[s]));
       });
-      const list = h('ul', { class: 'jobs-list', 'data-test': 'job-list' });
-      shown.forEach((j) => {
-        const meta = [j.org, j.where].filter((x) => x).join(' · ');
-        list.append(h('li', { class: 'jobs-row', 'data-test': 'job-row', 'data-id': j.id },
-          h('h3', {}, h('button', { type: 'button', class: 'jobs-row-open', 'data-test': 'job-open', on: { click: () => ctx.ui.go('jobs/' + j.id) } }, j.title)),
-          meta ? h('p', { class: 'jobs-meta' }, meta) : null,
-          nextLine(j),
-          stageButtons(j)));
-      });
+
       const drafts = logic.drafts(ctx.store.all('suggestion'));
       const lane = drafts.length ? h('section', { class: 'jobs-drafts', 'data-test': 'job-drafts' },
         h('h3', {}, ctx.t('draftsHeading')),
-        h('ul', { class: 'jobs-list' }, drafts.map((d) => {
+        h('ul', { class: 'jobs-list cols cols-lg' }, drafts.map((d) => {
           const t = d.target || {};
           return h('li', { class: 'jobs-row', 'data-test': 'job-draft-row', 'data-id': d.id },
             h('h3', {}, t.title || ctx.t('draftFrom')),
@@ -436,13 +587,19 @@ Desk.register({
                 ctx.ui.toast(ctx.t('draftPutAway'), { undo: true });
               } } }, ctx.t('notForMe'))));
         }))) : null;
+
+      const addButton = h('button', { type: 'button', class: 'primary', 'data-test': 'job-add', on: { click: () => ctx.ui.go('jobs/new') } }, ctx.t('add'));
       el.append(
-        h('div', { class: 'jobs-top' },
-          h('h2', {}, ctx.t('heading')),
-          h('button', { type: 'button', class: 'primary', 'data-test': 'job-add', on: { click: () => ctx.ui.go('jobs/new') } }, ctx.t('add'))),
+        // In the two-pane view the heading is already in the menu, but adding a job must still be one tap away.
+        o.inPane
+          ? h('div', { class: 'jobs-top jobs-top-pane' }, addButton)
+          : h('div', { class: 'jobs-top' }, h('h2', {}, ctx.t('heading')), addButton),
         lane || '',
+        o.inPane ? '' : viewToggle(view, again),
         filterBox,
-        shown.length ? list : h('p', { 'data-test': 'job-empty' }, ctx.t(all.length ? 'emptyFilter' : 'empty')));
+        shown.length === 0
+          ? h('p', { 'data-test': 'job-empty' }, ctx.t(all.length ? 'emptyFilter' : 'empty'))
+          : (view === 'board' ? board(all) : cardList(shown, o.keep, o.inPane)));
     }
 
     // ---- form ----
@@ -452,11 +609,14 @@ Desk.register({
       const iv = logic.splitInterview(j.interviewAt);
       const problem = h('p', { class: 'jobs-problem', role: 'alert', 'data-test': 'job-problem' });
       const inputs = {};
-      function field(key, label, attrs, tag) {
+      // One box per field: the label and its input travel together, so a two-column form never splits one.
+      // `wide` gives a field the whole row (the notes), `extra` puts help text under the input.
+      function field(key, label, attrs, tag, wide, extra) {
         const id = 'job-f-' + key;
         const input = h(tag || 'input', Object.assign({ id: id, name: key, 'data-test': 'job-' + key.toLowerCase() }, tag ? {} : { type: 'text' }, attrs || {}));
         inputs[key] = input;
-        return [h('label', { for: id }, ctx.t(label)), input];
+        return h('div', { class: wide ? 'jobs-field jobs-field-wide' : 'jobs-field' },
+          h('label', { for: id }, ctx.t(label)), input, extra || null);
       }
       const stage = h('select', { id: 'job-f-stage', name: 'stage', 'data-test': 'job-stage' },
         logic.STAGES.map((s) => h('option', { value: s }, stageName(s))));
@@ -466,17 +626,17 @@ Desk.register({
       const parts = [].concat(
         field('title', 'fTitle', { maxlength: '200', required: 'required' }),
         field('org', 'fOrg', { maxlength: '200' }),
-        field('link', 'fLink', { type: 'url', inputmode: 'url', maxlength: '2000' }),
-        [h('p', { class: 'jobs-help' }, ctx.t('fLinkHelp'))],
+        field('link', 'fLink', { type: 'url', inputmode: 'url', maxlength: '2000' }, null, false,
+          h('p', { class: 'jobs-help' }, ctx.t('fLinkHelp'))),
         field('where', 'fWhere', { maxlength: '200' }),
-        [h('label', { for: 'job-f-stage' }, ctx.t('stageLabel')), stage],
+        h('div', { class: 'jobs-field' }, h('label', { for: 'job-f-stage' }, ctx.t('stageLabel')), stage),
         field('applied', 'fApplied', { type: 'date' }),
         field('followUp', 'fFollowUp', { type: 'date' }),
         field('closes', 'fCloses', { type: 'date' }),
         field('interviewDate', 'fInterviewDate', { type: 'date' }),
         field('interviewTime', 'fInterviewTime', { type: 'time' }),
         field('nextStep', 'fNextStep', { maxlength: '300' }),
-        field('notes', 'fNotes', { rows: '4', maxlength: '5000' }, 'textarea'));
+        field('notes', 'fNotes', { rows: '4', maxlength: '5000' }, 'textarea', true));
       const initial = {
         title: j.title, org: j.org, link: j.link, where: j.where, applied: j.applied, followUp: j.followUp,
         closes: j.closes, interviewDate: iv.date, interviewTime: iv.time, nextStep: j.nextStep, notes: j.notes,
@@ -530,8 +690,10 @@ Desk.register({
       const asks = logic.lines(job.asks);
       if (asks.length) fact('dAsks', h('ul', {}, asks.map((a) => h('li', {}, a))), true);
       const meta = [job.org].filter((x) => x).join(' · ');
+      // On a wide screen the list is right there, so this closes the job instead of going back to it.
+      const backLabel = ctx.wide() ? ctx.t('closeJob') : ctx.t('back');
       el.append(
-        h('p', {}, h('button', { type: 'button', class: 'jobs-back', 'data-test': 'job-back', on: { click: () => ctx.ui.go('jobs') } }, ctx.t('back'))),
+        h('p', {}, h('button', { type: 'button', class: 'jobs-back', 'data-test': 'job-back', on: { click: () => ctx.ui.go('jobs') } }, backLabel)),
         h('div', { 'data-test': 'job-detail', 'data-id': job.id },
           h('h2', { 'data-test': 'job-detail-title' }, job.title),
           meta ? h('p', { class: 'jobs-meta' }, meta) : null,
@@ -567,7 +729,18 @@ Desk.register({
             h('button', { type: 'button', on: { click: () => ctx.ui.go('jobs') } }, ctx.t('back')));
           return;
         }
-        if (args[1] === 'edit') renderForm(el, job); else renderDetail(el, job);
+        if (args[1] === 'edit') { renderForm(el, job); return; }
+        // On a wide screen an open job sits beside the list, so going through jobs is one tap each way and the
+        // person never loses their place. On a phone it is the whole screen, as it always was.
+        if (ctx.wide()) {
+          const main = h('div', { class: 'split-main' });
+          const side = h('div', { class: 'split-side' });
+          renderList(main, { inPane: true, keep: job.id });
+          renderDetail(side, job);
+          el.append(h('div', { class: 'split', 'data-test': 'job-split' }, main, side));
+          return;
+        }
+        renderDetail(el, job);
       },
     });
   },

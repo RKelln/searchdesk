@@ -101,7 +101,7 @@ def test_posting_round_trip_to_a_saved_job(page, app):
     assert "Excel" in page.locator('[data-test="job-detail"]').inner_text()
     # the draft lane is gone from the list
     page.evaluate("() => { location.hash = '#jobs'; }")
-    page.wait_for_selector('[data-test="job-list"]')
+    page.wait_for_selector('[data-test="job-board"], [data-test="job-list"]')
     assert page.locator('[data-test="job-drafts"]').count() == 0
     assert_no_errors(page, allow=ALLOW_MISSING)
 

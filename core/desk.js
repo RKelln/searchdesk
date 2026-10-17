@@ -237,6 +237,13 @@ window.Desk = window.Desk || {};
       locale: localeCopy(),
       now: function () { return Desk.now(); },
       route: function () { return Desk.route(); },
+      // ctx.wide(): true when the window is wide enough for the layout kit's two-pane and dashboard layouts
+      // (the same 1100px as the "min-width: 1100px" rules in core/desk.css). A feature uses this to pick a
+      // different default on a big screen, for example a board instead of a list. It is a plain read of the
+      // window, so the shell does it and the feature never touches window.matchMedia itself.
+      wide: function () {
+        return isWide();
+      },
       fmt: FMT,
       profile: function () { return Desk.store.get('profile') || {}; },
       profileLines: function (p) { return Desk.prompt.profileLines(p === undefined ? (Desk.store.get('profile') || {}) : p); },
@@ -509,6 +516,12 @@ window.Desk = window.Desk || {};
   // Draw the current screen again (keeps focus and scroll). For core screens whose state is not in the store.
   Desk.redraw = function () { if (started) renderMain(true); };
 
+  // The same 1100px as the "min-width: 1100px" rules in core/desk.css, and what ctx.wide() gives a feature.
+  function isWide() {
+    try { return !!(doc && doc.defaultView && doc.defaultView.matchMedia && doc.defaultView.matchMedia('(min-width: 1100px)').matches); }
+    catch (e) { return false; }
+  }
+
   function onHashChange() {
     if (!started) return;
     var before = current.tab;
@@ -651,6 +664,18 @@ window.Desk = window.Desk || {};
     renderMain(false);
     Desk.store.subscribe(function () { updateBanner(); scheduleRender(); });
     window.addEventListener('hashchange', onHashChange);
+
+    // Dragging a window past the desktop breakpoint changes what a screen shows (a board instead of a list, a job
+    // beside its list instead of on its own), so the screen is drawn again when that flips. Only on the flip:
+    // resizing by other amounts is left alone, so a redraw never lands in the middle of someone typing.
+    var wasWide = isWide();
+    window.addEventListener('resize', function () {
+      if (!started) return;
+      var now = isWide();
+      if (now === wasWide) return;
+      wasWide = now;
+      onHashChange();
+    });
     Desk.started = true;
   };
 

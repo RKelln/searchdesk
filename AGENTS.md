@@ -59,6 +59,10 @@ For the person-facing steps (with an agent, or a free chat and a kit), see [`doc
 - Browser tests (needs `uv`): `uv run tests/e2e/run.py`. This arrives with task T1.7.
 - Screenshots for design work (needs `uv`): `uv run tools/screens.py` takes every screen on a phone and a computer,
   light and dark, writes `screens/index.html`, and flags sideways scroll, page errors and stray `null` text.
+  Add `--sizes wide` for layout work: at 1280 a layout can look tidy and still waste half a real desktop.
+- A feature does not have to write layout CSS. The layout kit in `docs/CONTRACT.md` gives a card grid (`cols`), a
+  list beside a detail pane (`split`), and a dashboard (`dash`) from class names alone, and `ctx.wide()` tells a
+  feature when the window is wide enough for them.
 - The made-up person's records in the shape a saved copy has: `node tools/demo-export.js` (add `--ids` for one line per
   record). Use it instead of asking a real person for their data.
 - In the browser, open the app and go to `#selftest`. It runs every loaded feature's check and the contract scan.

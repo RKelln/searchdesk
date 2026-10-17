@@ -97,4 +97,33 @@ Desk.check('home', (t, f) => {
   t.eq(L.dayOf('nope'), '', 'dayOf: junk is empty');
   t.eq(L.daysBetween('2026-10-30', '2026-11-02'), 3, 'daysBetween crosses a month');
   t.eq(L.today([job({ id: 'a', followUp: 'soon' })], NOW), [], 'a bad date is skipped');
+
+  // ---- the dashboard: the three groups, and the pipeline ----
+  const items = [
+    { kind: 'followUp', days: -2 },
+    { kind: 'followUp', days: 0 },
+    { kind: 'interview', days: 2 },
+    { kind: 'closes', days: 4 },
+    { kind: 'suggestions', days: null },
+    { kind: 'question', days: undefined },
+  ];
+  const g = L.groups(items);
+  t.eq(g.now.map((x) => x.days), [-2, 0], 'late and today go in "needs you now"');
+  t.eq(g.soon.map((x) => x.days), [2, 4], 'later this week goes in "coming up"');
+  t.eq(g.waiting.map((x) => x.kind), ['suggestions', 'question'], 'anything with no day waits on the person');
+  t.eq(g.now.length + g.soon.length + g.waiting.length, items.length, 'every item lands in exactly one group');
+  t.eq(L.groups(items).now[0], items[0], 'grouping keeps the order the items came in');
+  t.eq(L.groups([]), { now: [], soon: [], waiting: [] }, 'no items gives three empty groups');
+  t.eq(L.groups(null).soon.length, 0, 'nothing at all is still three empty groups');
+
+  const pipe = L.pipeline([
+    { type: 'job', stage: 'saved' }, { type: 'job', stage: 'saved' },
+    { type: 'job', stage: 'interview' },
+    { type: 'job', stage: 'weird' },
+    { type: 'job', stage: 'saved', deleted: true },
+    { type: 'event-mark', stage: 'saved' },
+  ]);
+  t.eq(pipe.rows.map((r) => [r.stage, r.count]), [['saved', 2], ['applied', 0], ['interview', 1], ['offer', 0], ['closed', 0]], 'the five stages in order with their counts');
+  t.eq(pipe.top, 2, 'top is the biggest count, for drawing a bar to scale');
+  t.eq(L.pipeline([]).top, 0, 'no jobs gives nothing to draw');
 });
