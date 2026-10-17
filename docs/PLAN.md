@@ -581,3 +581,20 @@ can follow a day later if it must).
   `searchdesk-YYYY-MM-DD.json` (`core/io.js`), but AGENTS.md, DESIGN.md and `.gitignore` say `searchdesk-backup-*.json`.
   A real person's export dropped in the folder would not be ignored by git. Fix the docs to the real name, or the name to
   the docs, and make `.gitignore` match both.
+- 2026-10-17, agent support for five tools, added after the Mode A trial (no task number; asked for by the maintainer).
+  `AGENTS.md` already worked everywhere, so the work was commands, skills and settings. Commands are written once in
+  `tools/commands/` and skills in `tools/skills/`; `uv run tools/agent-files.py` copies them to `.opencode/commands/`
+  (OpenCode), `.claude/commands/` (Claude Code), `.pi/prompts/` (Pi), `.agents/skills/<name>/SKILL.md` (Codex, Antigravity,
+  Pi and OpenCode all read this one folder) and `.claude/skills/` (Claude Code). `opencode.jsonc` sets no model on purpose
+  (the free models come and go): it allows the checks and the everyday work, asks before `core/`, `locale/` and `data/`,
+  and denies `git push`. `AGENTS.md` gained "For a small or free model" and a line saying whoever runs the model may keep
+  what you send it; `BUILDING.md` gained a free-options section and a table of how to type a command per tool. Two tools get
+  a command as a skill rather than a command: Codex custom prompts are deprecated and live in `~/.codex/prompts`, which a
+  repository cannot share, and Antigravity workflow files stop working on 19 October 2026. Symlinks were tried first and
+  rejected: git writes them as plain text files on a Windows checkout, so a broken command would still appear in the menu
+  and do the wrong thing. `tests/unit/agent-files.test.js` fails when a copy is stale. Unit: 353. Python: 25. Source e2e: 362.
+- 2026-10-17, CI now runs every `checks/<id>.check.js` before the build. It ran the unit tests and the build only, so a
+  feature could land with a failing check and stay green until someone opened `#selftest` by hand.
+- 2026-10-17, fixes the second item found in the Mode A trial (the export name): `.gitignore` ignores `searchdesk-*.json`,
+  `AGENTS.md` and `DESIGN.md` name the file `Desk.io.filename` names, and a new test in `tests/unit/io.test.js` fails unless
+  the name the code produces is one git actually ignores and both docs name it. `PLAN.md` item (2) above is now done.
