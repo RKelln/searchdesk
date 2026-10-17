@@ -48,8 +48,9 @@ Desk.register({
 The file does nothing at load time except call `Desk.register`. Nothing touches the DOM until `mount` runs. That is
 what lets the check runner load the file with no page, and test `logic`.
 
-To add a feature: put the file in `features/`, add its id to the list in `features/list.js`, and write
-`checks/<id>.check.js`.
+To add a feature: put the file in `features/`, add its id to `Desk.features` in `features/list.js`, and write
+`checks/<id>.check.js`. If the id is also in `Desk.planned` (ideas not built yet), delete that line, so the feature is
+not listed twice.
 
 ## 2. What `ctx` gives a feature
 
