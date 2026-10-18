@@ -5,7 +5,7 @@ const test = require('node:test');
 const assert = require('node:assert');
 const { load } = require('./_load');
 
-const { allowed, read, types } = load('core/prefs.js').prefs;
+const { allowed, read, coerce, types } = load('core/prefs.js').prefs;
 
 const choice = (opts, def) => ({ key: 'size', type: 'choice', options: opts, def: def });
 const OPTIONS = [{ value: 'normal', label: 'Normal' }, { value: 'big', label: 'Bigger' }];
@@ -74,4 +74,24 @@ test('read: a numeric default is handed back as the number', () => {
   const d = choice([{ value: 14 }, { value: 21 }], 21);
   assert.strictEqual(read(d, { size: 14 }), 14);
   assert.strictEqual(read(d, { size: 'nope' }), 21);
+});
+
+test('coerce: what a select hands back is the option it meant', () => {
+  // A <select> always gives a string. Without this, a choice whose values are numbers can never be saved:
+  // allowed() says no to its own options and the control quietly does nothing.
+  const nums = choice([{ value: 14 }, { value: 21 }, { value: 30 }], 21);
+  assert.strictEqual(coerce(nums, '14'), 14);
+  assert.strictEqual(coerce(nums, '30'), 30);
+  assert.strictEqual(coerce(nums, 14), 14, 'a number that is right is left alone');
+  assert.strictEqual(allowed(nums, coerce(nums, '14')), true, 'and it is now allowed');
+
+  const words = choice(OPTIONS, 'normal');
+  assert.strictEqual(coerce(words, 'big'), 'big');
+  assert.strictEqual(coerce(words, 'Big'), 'Big', 'no case-folding: that would invent an option');
+  assert.strictEqual(coerce(words, 'nope'), 'nope', 'something nobody offers is handed back unchanged');
+  assert.equal(allowed(words, coerce(words, 'nope')), false, 'and save() will then refuse it');
+
+  assert.strictEqual(coerce(toggle, 'true'), 'true', 'a toggle has no options to match against');
+  assert.strictEqual(coerce(null, 'x'), 'x', 'no preference, nothing to do');
+  assert.strictEqual(coerce({ type: 'choice' }, 'x'), 'x', 'a choice with no options matches nothing');
 });

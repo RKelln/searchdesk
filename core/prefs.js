@@ -53,7 +53,18 @@ window.Desk = window.Desk || {};
     return def.def;
   }
 
-  Desk.prefs = { allowed: allowed, read: read, types: function () { return Object.keys(TYPES); } };
+  // A <select> hands back a string, whatever its options are. So "14" and 14 have to be the same choice, or a
+  // choice whose values are numbers can never save anything: allowed() would refuse its own options. Anything
+  // that is not one of the options comes back as it went in, and save() then refuses it.
+  function coerce(def, raw) {
+    if (!def || def.type !== 'choice' || !Array.isArray(def.options)) return raw;
+    for (var i = 0; i < def.options.length; i++) {
+      if (String(def.options[i].value) === String(raw)) return def.options[i].value;
+    }
+    return raw;
+  }
+
+  Desk.prefs = { allowed: allowed, read: read, coerce: coerce, types: function () { return Object.keys(TYPES); } };
 
   // ---- The part that needs a page. ---------------------------------------------------------------------
 
@@ -126,7 +137,7 @@ window.Desk = window.Desk || {};
       }
       // h() sets a select's value as a property, after the options are in, so the control shows what is saved.
       return H('select', { id: test, 'data-test': test, value: value,
-        on: { change: function (e) { save(d, e.target.value); } } },
+        on: { change: function (e) { save(d, coerce(d, e.target.value)); } } },
         d.options.map(function (o) { return H('option', { value: String(o.value) }, o.label); }));
     }
 
@@ -176,12 +187,7 @@ window.Desk = window.Desk || {};
     pref.set = function (key, value) {
       var d = byKey[key];
       if (!d) return false;
-      // A select hands back a string, so '21' and 21 are the same choice.
-      if (d.type === 'choice' && d.options.some(function (o) { return String(o.value) === value; })) {
-        var real = d.options.filter(function (o) { return String(o.value) === value; })[0].value;
-        return save(d, real);
-      }
-      return save(d, value);
+      return save(d, coerce(d, value));
     };
     pref.note = function (text) { note = typeof text === 'string' ? text : ''; return undefined; };
     return pref;

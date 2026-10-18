@@ -244,6 +244,10 @@ window.Desk = window.Desk || {};
       h: Desk.h,
       t: Desk.makeT(def.strings && typeof def.strings === 'object' ? def.strings : {}),
       ui: Desk.ui,
+      // ctx.redraw(): draw this screen again and keep the keyboard where it was. ui.go() is for moving to another
+      // screen and deliberately drops the focus; a text box that filters as you type needs the other one, or
+      // the box is taken off you after the first letter.
+      redraw: function () { Desk.redraw(); },
       has: has,
       locale: localeCopy(),
       now: function () { return Desk.now(); },

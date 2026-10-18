@@ -42,6 +42,11 @@ Desk.register({
     emptyFilter: 'No jobs in this group.',
     filterLabel: 'Show jobs by stage',
     filterAll: 'All',
+    searchLabel: 'Find a job',
+    searchHint: 'Type any words from the job',
+    lateBadge: 'Late',
+    lateWhy: 'You were due {days} days ago and nothing has happened since.',
+    lateAfterLabel: 'Mark a job as late after this many days',
     stageLabel: 'Stage',
     stagesLabel: 'Move to another stage',
     open: 'Open',
@@ -104,6 +109,9 @@ Desk.register({
     stageOther: 'Other',
     showOlderClosed: 'Show {n} older closed jobs',
     hideOlderClosed: 'Hide older closed jobs',
+    lateWeeks2: '2 weeks',
+    lateWeeks3: '3 weeks',
+    lateMonth1: '1 month',
   },
   css: `
     .jobs-top { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
@@ -138,6 +146,15 @@ Desk.register({
     .jobs-stages button:hover, .jobs-stages button:focus-visible, .jobs-stages button[aria-pressed="true"] { position: relative; z-index: 1; }
     .jobs-form { display: grid; gap: .25rem; max-width: 36rem; }
     .jobs-field { display: grid; gap: .35rem; align-content: start; margin-top: .7rem; min-width: 0; }
+    /* Find a job. The box is wide enough to read a word in it and no wider. */
+    .jobs-search { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .6rem; margin: 0 0 .75rem; }
+    .jobs-search-label { font-weight: 600; }
+    .jobs-search-input { flex: 1 1 14rem; max-width: 22rem; }
+    .jobs-search-hint { flex: 1 1 100%; margin: 0; font-size: .9em; }
+    /* Late. A colour plus the word, never colour alone. */
+    .jobs-late { display: inline-block; margin-top: .3rem; padding: .05rem .4rem; border: 1px solid var(--warn-edge);
+      border-radius: var(--radius-sm); background: var(--warn-soft); color: var(--text); font-size: .78rem;
+      font-weight: 700; }
     .jobs-problem { color: var(--danger); font-weight: 600; margin: 0; }
     .jobs-problem:not(:empty) { padding: .6rem .8rem; border-radius: var(--radius-sm); background: var(--danger-soft); }
     .jobs-form [aria-invalid="true"] { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
@@ -195,6 +212,7 @@ Desk.register({
   logic: {
     STAGES: ['saved', 'applied', 'interview', 'offer', 'closed'],
     CLOSED_KEEP: 30,   // a closed job stays off the board's Closed column for this many days
+    LATE_AFTER: 21,  // a follow-up this many days past and the job is marked late. The person can change it.
 
     // ---- dates (text only; no clock) ----
     isDate(s) {
@@ -279,6 +297,46 @@ Desk.register({
       const patch = { stage: stage };
       if (stage === 'applied' && !job.applied && this.isDate(today)) patch.applied = today;
       return patch;
+    },
+
+    // ---- finding a job by words ----
+    // The words a search looks in. Notes are in there on purpose: someone remembers "the one with the assessment
+    // in it" long after they remember which employer it was.
+    searchText(job) {
+      if (!job) return '';
+      return [job.title, job.org, job.where, job.notes].filter(Boolean).join(' ').toLowerCase();
+    },
+    // Does this job match what someone typed? Every word has to be found, so "cook toronto" finds a Cook job in
+    // Toronto. Empty words match everything. Case does not matter.
+    matches(job, query) {
+      const q = String(query === undefined || query === null ? '' : query).trim().toLowerCase();
+      if (!q) return true;
+      const hay = this.searchText(job);
+      return q.split(/\s+/).every((w) => hay.indexOf(w) >= 0);
+    },
+    filterByText(jobs, query) {
+      const list = Array.isArray(jobs) ? jobs : [];
+      if (!String(query || '').trim()) return list.slice();
+      return list.filter((j) => this.matches(j, query));
+    },
+
+    // ---- late: still open, and the date you set has gone past ----
+    // Whole days a YYYY-MM-DD date is before `today`. null when either is not a real date.
+    daysBefore(dateStr, today) {
+      if (!this.isDate(dateStr) || !this.isDate(today)) return null;
+      const n = (s) => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) / 86400000;
+      return n(today) - n(dateStr);
+    },
+    // Is this job late? It has to be still open, and the next date has to be one the person set themselves
+    // (a follow-up) rather than one that arrives on its own (an interview, a closing date). A job with no date
+    // cannot be late, and neither can one whose date is only just past.
+    isLate(job, today, after) {
+      if (!job || job.deleted || job.stage === 'closed') return false;
+      const nd = this.nextDate(job, today);
+      if (!nd || nd.kind !== 'followUp') return false;
+      const days = this.daysBefore(String(nd.date).slice(0, 10), today);
+      const want = typeof after === 'number' ? after : this.LATE_AFTER;
+      return days !== null && days >= want;
     },
 
     // ---- the board: one column per stage ----
@@ -484,6 +542,8 @@ Desk.register({
     // ---- board or list ----
     // Which one is remembered on this device. The first time, a board on a wide screen (every job at a glance)
     // and a list on a phone, where one column under another would only make a longer scroll.
+    // This one is not a ctx.pref: its default depends on the width of the window, and a preference's default is
+    // one fixed value. It is the only setting in this feature written by hand.
     function currentView() {
       const s = ctx.store.get('settings') || {};
       const e = s.ext && typeof s.ext === 'object' ? s.ext : {};
@@ -491,6 +551,47 @@ Desk.register({
       if (mine.view === 'board' || mine.view === 'list') return mine.view;
       return ctx.wide() ? 'board' : 'list';
     }
+    // How late a follow-up has to be before a job is marked. A preference, so it lives on the Data screen and
+    // travels in the backup file like the rest of this person's settings.
+    const lateAfter = () => ctx.pref('lateAfter');
+    // ---- finding a job ----
+    // What someone has typed, kept here because the screen is drawn again after every store change and anything
+    // left inside render would be lost mid-word.
+    let search = '';
+    // The box has an id, and that is what lets the shell put the keyboard and the cursor back after a redraw
+    // (it matches the focused element by id). So this is one line: redraw without moving, which is what ui.go()
+    // is not -- ui.go() is for changing screen and on purpose drops the focus.
+    function searchBox() {
+      const input = h('input', {
+        type: 'search', id: 'jobs-search', class: 'jobs-search-input', 'data-test': 'job-search',
+        value: search, autocomplete: 'off', spellcheck: 'false',
+        'aria-label': ctx.t('searchLabel'),
+        on: { input: (e) => { search = e.target.value; ctx.redraw(); } },
+      });
+      return h('div', { class: 'jobs-search' },
+        h('label', { for: 'jobs-search', class: 'jobs-search-label' }, ctx.t('searchLabel')),
+        input,
+        h('p', { class: 'muted jobs-search-hint' }, ctx.t('searchHint')));
+    }
+    // The badge on a card or a row. The words are on it, and the whole sentence is there for anyone who cannot
+    // see the badge.
+    function lateBadge(j, today) {
+      if (!logic.isLate(j, today, lateAfter())) return null;
+      const days = logic.daysBefore(String(logic.nextDate(j, today).date).slice(0, 10), today);
+      return h('span', { class: 'jobs-late', 'data-test': 'job-late',
+        title: ctx.t('lateWhy', { days: days }) }, ctx.t('lateBadge'));
+    }
+
+    // How late a follow-up has to be before a job is marked. Declared once, and it draws itself on the Data
+    // screen: a labelled choice, saved, and checked against the three numbers below.
+    ctx.pref({
+      key: 'lateAfter', type: 'choice', label: ctx.t('lateAfterLabel'), def: logic.LATE_AFTER,
+      options: [
+        { value: 14, label: ctx.t('lateWeeks2') },
+        { value: 21, label: ctx.t('lateWeeks3') },
+        { value: 30, label: ctx.t('lateMonth1') },
+      ],
+    });
     function viewToggle(view, again) {
       const box = h('fieldset', { class: 'jobs-view', 'data-test': 'jobs-view' }, h('legend', {}, ctx.t('viewLabel')));
       ['list', 'board'].forEach((v) => {
@@ -509,6 +610,7 @@ Desk.register({
           h('h3', {}, h('button', { type: 'button', class: 'jobs-row-open', 'data-test': 'job-open',
             'aria-current': j.id === selected ? 'true' : null, on: { click: () => ctx.ui.go('jobs/' + j.id) } }, j.title)),
           meta ? h('p', { class: 'jobs-meta' }, meta) : null,
+          lateBadge(j, today()),
           nextLine(j),
           // In the two-pane view the stage buttons live in the open job on the right, so a row does not carry a
           // second copy of the same control.
@@ -541,6 +643,7 @@ Desk.register({
                   j.title,
                   [j.org, j.where].filter((x) => x).length
                     ? h('span', { class: 'jobs-card-org' }, [j.org, j.where].filter((x) => x).join(' · ')) : null),
+                lateBadge(j, t),
                 nextLine(j))))
             : h('p', { class: 'jobs-col-empty' }, ctx.t('boardNone')),
           closed && tucked.length
@@ -560,7 +663,8 @@ Desk.register({
       const o = opts || {};
       const all = ctx.store.all('job');
       const counts = logic.stageCounts(all);
-      const shown = logic.sortJobs(logic.filterByStage(all, filter), today());
+      const searched = logic.filterByText(all, search);
+      const shown = logic.sortJobs(logic.filterByStage(searched, filter), today());
       const view = o.inPane ? 'list' : currentView();
       const again = () => ctx.ui.go(o.keep ? 'jobs/' + o.keep : 'jobs');
 
@@ -596,10 +700,11 @@ Desk.register({
           : h('div', { class: 'jobs-top' }, h('h2', {}, ctx.t('heading')), addButton),
         lane || '',
         o.inPane ? '' : viewToggle(view, again),
+        searchBox(),
         filterBox,
         shown.length === 0
           ? h('p', { 'data-test': 'job-empty' }, ctx.t(all.length ? 'emptyFilter' : 'empty'))
-          : (view === 'board' ? board(all) : cardList(shown, o.keep, o.inPane)));
+          : (view === 'board' ? board(searched) : cardList(shown, o.keep, o.inPane)));
     }
 
     // ---- form ----

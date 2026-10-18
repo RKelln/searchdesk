@@ -165,4 +165,49 @@ Desk.check('jobs', (t, f) => {
 
   t.ok(f.strings.viewList && f.strings.viewBoard && f.strings.viewLabel, 'the list-or-board buttons have their words');
   t.ok(f.strings.boardNone && f.strings.stageOther && f.strings.showOlderClosed, 'the board has its words');
+
+  // ---- finding a job by words ----
+  const words = bj({ id: 'w', title: 'Line Cook', org: 'Baker Cafe', where: 'Toronto', notes: 'Assessment on the first day' });
+  t.eq(L.searchText(words), 'line cook baker cafe toronto assessment on the first day', 'the words are the job, in one line');
+  t.eq(L.searchText({ title: 'Only Title' }), 'only title', 'missing fields are simply not there');
+  t.eq(L.searchText(null), '', 'no job is no words');
+  t.eq(L.matches(words, ''), true, 'an empty search matches everything');
+  t.eq(L.matches(words, '   '), true, 'so does whitespace');
+  t.eq(L.matches(words, 'cook'), true, 'one word found');
+  t.eq(L.matches(words, 'COOK'), true, 'case does not matter');
+  t.eq(L.matches(words, 'cook toronto'), true, 'every word found, in any order');
+  t.eq(L.matches(words, 'cook toronto bakery'), false, 'a word that is not there fails the whole search');
+  t.eq(L.matches(words, 'assessment'), true, 'the notes are searched too');
+  t.eq(L.matches(words, 'nonsense'), false, 'nothing found');
+  t.eq(L.filterByText([words, bj({ id: 'z', title: 'Other' })], 'cook').map((j) => j.id), ['w'], 'only the matching job is kept');
+  const kept = [words];
+  t.eq(L.filterByText(kept, ''), kept, 'an empty search keeps them all');
+  t.ok(L.filterByText(kept, '') !== kept, 'and gives back a new list, so nothing downstream edits it');
+  t.eq(L.filterByText(undefined, 'x'), [], 'a missing list is empty, not a crash');
+  t.eq(L.filterByText([words], 'cook').length, 1, 'one match out of one');
+
+  // ---- late ----
+  const late = bj({ id: 'l', stage: 'applied', followUp: '2026-09-01' });     // 45 days before D
+  const justLate = bj({ id: 'j', stage: 'applied', followUp: '2026-09-25' }); // exactly 21
+  const nearly = bj({ id: 'n', stage: 'applied', followUp: '2026-09-26' });  // 20
+  t.eq(L.daysBefore('2026-10-16', '2026-10-16'), 0, 'a date is 0 days before today');
+  t.eq(L.daysBefore('2026-09-25', '2026-10-16'), 21, '21 days');
+  t.eq(L.daysBefore('2026-10-17', '2026-10-16'), -1, 'a date after today is a negative number of days');
+  t.eq(L.daysBefore('nope', '2026-10-16'), null, 'a bad date is null, not NaN');
+  t.eq(L.daysBefore('2026-10-16', 'nope'), null, 'a bad today is null too');
+  t.eq(L.isLate(late, D), true, 'a follow-up 45 days past is late, with no number given');
+  t.eq(L.isLate(justLate, D), true, 'exactly at the threshold counts');
+  t.eq(L.isLate(nearly, D), false, 'one day short does not');
+  t.eq(L.isLate(nearly, D, 20), true, 'unless the person chose a shorter wait');
+  t.eq(L.isLate(late, D, 90), false, 'a longer wait hides it again');
+  t.eq(L.isLate(bj({ id: 'c', stage: 'closed', followUp: '2026-01-01' }), D), false, 'a closed job is never late');
+  t.eq(L.isLate(bj({ id: 'g', stage: 'applied' }), D), false, 'no date cannot be late');
+  t.eq(L.isLate(bj({ id: 'i', stage: 'applied', followUp: '2026-01-01', deleted: true }), D), false, 'a deleted job is not late');
+  t.eq(L.isLate(bj({ id: 'iv', stage: 'interview', interviewAt: '2026-01-01' }), D), false, 'an interview date is not the person being late');
+  t.eq(L.isLate(late, 'not a date'), false, 'a bad today marks nothing late');
+  t.eq(L.isLate(null, D), false, 'no job is not late');
+  t.eq(L.LATE_AFTER, 21, 'the default wait is three weeks');
+  t.ok(f.strings.lateBadge && f.strings.lateWhy && f.strings.lateAfterLabel, 'the late mark has its words');
+  t.ok(f.strings.lateWeeks2 && f.strings.lateWeeks3 && f.strings.lateMonth1, 'the three choices have their words');
+  t.ok(f.strings.searchLabel && f.strings.searchHint, 'the find-a-job box has its words');
 });
