@@ -1,60 +1,14 @@
-# Building a feature with a free chat
+# Building one of the ready features
 
-**Read this only if you cannot install a coding agent.** A locked-down work machine, a library computer, an IT
-policy, no administrator. In that case this page is what still works, and it is here so the project is not dead
-weight on exactly the kind of computer that needs it.
+Most people arrive with no idea of their own. That is normal, and it is what this page is for: **fourteen features
+are already written up**, each with a brief and a kit, each doing something real for someone looking for work. Pick
+one, build it, and you have built an actual feature of this app.
 
-If you *can* install an agent that reads and saves files, stop here and use [`BUILDING.md`](BUILDING.md). It is
-shorter, it covers your own ideas as well as the written-up ones, and the agent runs the checks, which is the part
-that matters most. A browser chat on a free tier is the weakest way to build a feature and this page would rather say
-so than dress it up.
+If you *do* have an idea of your own, you want [`BUILDING.md`](BUILDING.md) instead. That is the open-ended version
+and it starts by writing a brief from scratch.
 
-If your idea is not on the list below, this page cannot help: it needs a brief somebody already wrote. Go to
-[`BUILDING.md`](BUILDING.md).
-
-Building this way is copy and paste. A **kit** is one text file holding everything the chat needs: the rules, an
-example feature, and the brief for the one you picked. The chat reads it and gives you back one file, which you
-save into the folder. Nothing is installed and no account is needed beyond the chat itself.
-
-**What you give up.** A feature built this way has no check file, so nothing tests its logic — `#selftest` only
-confirms the file follows the rules, and the test is whether the feature does what the brief said when you use it.
-A free chat is also usually a smaller model than the agent would have used, and a kit is a long paste, which some
-free tiers will not accept in one go. If a step here fails twice, stop and use an agent instead.
-
-The kits are already in this repo at `docs/kits/<id>.txt`, one per feature, all written from
-`docs/features/<id>.md`. Do not edit a kit by hand: `python3 tools/kit.py` writes them again, and
-`python3 tools/kit.py --check` says if one is out of date.
-
-## What these features are
-
-They are not exercises, and nothing here is a toy.
-
-Every feature on this list is real work the project wants and has not built yet. The app knows: open the **Data**
-tab and the same list is there under "Ideas you could build", each one with its own brief. Building one means
-writing a file that does a real thing for a real person looking for work — the pay beside the target, the jobs as
-columns by stage, the date a reply was due.
-
-**Some of them will be in Search Desk in a later version.** That is the ordinary way this project grows: a feature
-gets written from its brief, lands in a release, and its brief moves to `docs/built/` and drops off this page. The
-page shrinking over time is the sign it is working, not a sign it is unfinished. `board` already went that way —
-it was its own feature, then became a choice inside Jobs.
-
-So you are doing the project's real work, in the project's real rules, one file at a time. If you take one home it
-still works; nothing here is a demonstration that gets deleted afterwards.
-
-**And the round trip is the point.** A brief in plain words, an AI writing a whole file from it, rules it has to
-follow, and a self-test that says whether it did — that is what building with AI looks like, and this route does it
-with nothing but a browser chat and a text editor. No install, no account beyond the chat, no terminal. It is the
-same brief and the same contract an agent in the folder gets, minus the agent, which is why the result is worth
-having.
-
-One thing to know if you take a feature away with you: if the project later ships its own version of the same idea,
-you will have two files with the same id. Rename yours — an id is yours to choose, and `features/<id>.js` has to
-match `checks/<id>.check.js`. Both then work side by side.
-
-## Pick a feature
-
-Each idea has a short brief in `docs/features/`, and each has a kit. Pick one:
+Nothing here is an exercise. Every one of these is work the project wants and has not built yet. The app lists the
+same set on its **Data** tab as "Ideas you could build".
 
 | Id | In plain words |
 | --- | --- |
@@ -73,12 +27,37 @@ Each idea has a short brief in `docs/features/`, and each has a kit. Pick one:
 | `stories` | Short stories from your work, ready for interview questions. |
 | `week` | How many you applied to, followed up and went to this week. No streaks and no scores. |
 
-Not sure? Open `docs/kits/index.html` in a browser for the same list with a **Copy this kit** button on each one.
-It works from a file with no server and no internet. The page needs nothing installed either.
+Not sure which to want? Ask an agent: it asks you one question about your search and then suggests a few.
 
-Want something that is not on that list? Write the brief first — see below.
+`docs/kits/index.html` is the same list with a **Copy this kit** button on each one, if you would rather browse in a
+browser than read this page.
 
-## Build it
+## What a kit is
+
+A kit is one text file with everything an AI needs to build that one feature: the rules it has to follow, a worked
+example, and the brief. They are in `docs/kits/<id>.txt`, written from `docs/features/<id>.md`. Do not edit a kit by
+hand — `python3 tools/kit.py` writes them all again, and `python3 tools/kit.py --check` says if one is out of date.
+
+A kit is not tied to a particular tool. Both routes below take the same file.
+
+## Build it with a coding harness
+
+If you have an agent that reads and writes files, paste the kit into it and it does the work: reads the brief,
+writes `features/<id>.js`, adds the id to `features/list.js`, runs the feature's check, and tells you what passed.
+
+```
+docs/kits/pay.txt        →  paste into your agent  →  features/pay.js, checked
+```
+
+That is the whole process. This is also how these features get built for real releases, which is why the briefs are
+written the way they are.
+
+## Build it with a browser chat, no installs
+
+**Use this when the machine will not let you install anything** — a locked-down work computer, a library machine, an
+IT policy. It is also a reasonable choice if you would rather not set an agent up at all.
+
+You need a browser chat and a plain text editor. Nothing else, and no account beyond the chat.
 
 1. Open `docs/kits/<id>.txt` for the feature you picked, for example `docs/kits/bigtext.txt`.
 2. Copy all of it. Use select all, then copy.
@@ -99,41 +78,29 @@ Want something that is not on that list? Write the brief first — see below.
 9. Now use the feature and see that it does what the brief said. This is the check you have without Node. When it
    works, open `features/list.js` again and delete the line for this id from `Desk.planned`, so it stops appearing
    under "Ideas you could build" on the Data screen.
-10. If `#selftest` shows a problem, copy the problem text. Paste it into the same chat and write: "Fix this. Reply with
-    the whole file again." Save the new file over the old one and reload. Repeat until it passes.
+10. If `#selftest` shows a problem, copy the problem text. Paste it into the same chat and write: "Fix this. Reply
+    with the whole file again." Save the new file over the old one and reload. Repeat until it passes.
 
-A feature built this way has no check file, because a kit asks for one file and only one. `#selftest` tells you the
-file follows the rules; it does not test the logic. Step 9 is the test the logic gets, and it is the check you have
-without Node. If you ever install Node, `node checks/run.js <id>` with a written check is stronger.
+**What this route gives up**, so you know what you are looking at. Nothing runs the logic: a feature built this way
+has no check file, so `#selftest` confirms the file follows the rules and step 9 is the only test of whether it works.
+A free-tier chat is usually a smaller model than a harness would use, and a kit is a long paste, which some free
+tiers will not take in one go. Step 6 is also done by hand — if the file does not load, the id in `features/list.js`
+is the first thing to check. If a step fails twice, stop, and if you can install an agent anywhere, use one.
 
-## Changing a feature that exists
+## Changing one that is built
 
-1. Open the kit for it.
-2. Paste the current file too, for example `features/jobs.js`.
-3. Say what you want in one plain sentence: "Make the date shown as day and month."
-4. Say: "Reply with the whole file again, nothing else."
-5. Save over the old file, reload, and open `#selftest`.
+1. With an agent: say what you want in one plain sentence. It reads the current file first, so there is nothing to
+   paste. Ask it to rerun that feature's check, then `#selftest`.
+2. With a browser chat: paste the kit and the current file (for example `features/jobs.js`), say what you want, and
+   say "Reply with the whole file again, nothing else." Save over the old one and reload.
 
 Keep a copy of the old file first. If the new one breaks, put the old one back.
 
 ## A feature of your own
 
-Nothing on the list is special. Any of it gets built the same way: a brief, then a feature file.
-
-Pick the **id** first. It is lowercase, with dashes, and short, because it becomes a file name: `recruiter`, not
-`track-which-recruiter-called`. The same id is used for `features/<id>.js` and `docs/kits/<id>.txt`.
-
-1. **Write the brief.** A brief is a plain text file in `docs/features/`. Nobody makes it but you and the chat.
-   Say what you want in plain words and answer the two or three questions it asks you. Then open
-   `docs/features/week.md`, copy all of it, paste that into the same chat, and say: "This is the shape of a brief.
-   Write the brief for what I described, for the id `recruiter`. Reply with the brief only, as one text file. Do not
-   write any code." Copy the reply and save it as `docs/features/<id>.md`. Check it: it must start with `# ` and have
-   no JavaScript in it. If the chat gave you a `.js` file instead, it built the feature rather than writing the brief.
-   Say "I wanted the brief, in words, not code. Reply with the brief only."
-2. **Make the kit.** `python3 tools/kit.py` writes `docs/kits/<id>.txt` for it, exactly as it does for ours. Path B
-   above needs that file. No Python? A kit is only three files in order: `docs/CONTRACT.md`, then
-   `docs/example-feature.js`, then your brief. Copy all three into one message.
-3. **Carry on.** Go to step 1 above, and start at the one that saves the file.
+If none of the fourteen is what you need, you do not need to force one. Say what you want and
+[`BUILDING.md`](BUILDING.md) starts from an empty page: it covers writing the brief yourself, and an agent does the
+rest. Writing a brief is not much work — the fourteen above are all one page each.
 
 ## What can go wrong
 
@@ -151,6 +118,14 @@ Pick the **id** first. It is lowercase, with dashes, and short, because it becom
 
 ## For agents and developers
 
-`BUILDING.md` is the route with an agent, and it is shorter. The rules are in [`AGENTS.md`](../AGENTS.md) and
-[`CONTRACT.md`](CONTRACT.md). `tools/kit.py` writes the kits and checks them; `docs/kits/index.html` is generated
-by the same tool, so neither goes stale on its own.
+`BUILDING.md` is the route for your own ideas. The rules are in [`AGENTS.md`](../AGENTS.md) and
+[`CONTRACT.md`](CONTRACT.md). `tools/kit.py` writes the kits and checks them, and `docs/kits/index.html` comes from
+the same tool, so neither goes stale on its own.
+
+**Some of these will be in a later version.** That is the ordinary way this project grows: a feature gets written
+from its brief, lands in a release, and its brief moves to `docs/built/` and drops off this page. The page shrinking
+is the sign it is working. `board` already went that way — it was its own feature, then became a choice inside Jobs.
+
+If you take one away with you and the project later ships its own version of the same idea, you will have two files
+with the same id. Rename yours: the id is yours to choose, and `features/<id>.js` has to match
+`checks/<id>.check.js`. Both then work side by side.

@@ -9,12 +9,12 @@ the place for this.
 Two ways in, and the difference is only where the idea comes from:
 
 - **You have an idea** and want to see it work. That is this page, and it is the main thing here.
-- **Someone has already written it up** — the ideas in the table below, each with a brief. Point your agent at the
-  brief and it builds the same way.
+- **You do not have one**, which is most people. Fourteen features are already written up and waiting — the table
+  below. Pick one; it is a real feature either way.
 
-**Cannot install an agent?** A locked-down work machine, a library computer, no administrator? Then nothing here
-will run, and [`KITS.md`](KITS.md) is what still works: the same written-up features, built by copy and paste into
-a browser chat. It is the weaker route and it says so, but it needs no install at all, which is why it exists.
+**Cannot install an agent?** A locked-down work machine, a library computer, no administrator? [`KITS.md`](KITS.md)
+has the fourteen with a kit you can paste into a browser chat, which needs nothing installed. It is the weaker route
+and it says so.
 
 ## Your own idea
 
@@ -37,8 +37,10 @@ pasting it into a browser chat. Ask the agent to rebuild the kits afterwards and
 
 ## Or build one that is already written up
 
-Each of these is real work the project wants and has not built yet. The app lists the same set on its **Data** tab
-as "Ideas you could build", and a few will be in a later version of Search Desk — [`KITS.md`](KITS.md) says more.
+Fourteen features are already written up, each with a brief in `docs/features/<id>.md`, and each doing something
+real. If you have no idea of your own — which is most people — pick one of these instead of inventing: the app
+lists the same set on its **Data** tab as "Ideas you could build", and a few will be in a later version of Search
+Desk.
 
 | Id | In plain words |
 | --- | --- |
@@ -57,10 +59,12 @@ as "Ideas you could build", and a few will be in a later version of Search Desk 
 | `stories` | Short stories from your work, ready for interview questions. |
 | `week` | How many you applied to, followed up and went to this week. No streaks and no scores. |
 
-The brief is `docs/features/<id>.md` and it is the same shape as the one your own idea gets, so everything below
-applies unchanged. Say: "build `week`" or "read `docs/features/week.md` and build that", and the agent reads the
-brief and builds it. Not sure which one to want? Ask — it will ask you one question about your search and then
-suggest a few.
+Say: "build `week`", or "read `docs/features/week.md` and build that". The agent reads the brief and builds it, and
+the brief is the same shape as the one your own idea gets, so everything above applies unchanged. Not sure which one
+to want? Say so and the agent will ask you one question about what would help, then offer a few one at a time.
+
+[`KITS.md`](KITS.md) is the same fourteen with a kit you can paste into anything — including the agent you are
+already in, if you would rather hand it a finished packet than a file name.
 
 ## Build it
 
