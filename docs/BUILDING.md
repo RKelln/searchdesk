@@ -77,18 +77,22 @@ the folder at `docs/kits/<id>.txt`. (They are made by `uv run tools/kit.py`. You
 1. Open `docs/kits/<id>.txt` for the feature you picked, for example `docs/kits/bigtext.txt`.
 2. Copy all of it. Use select all, then copy.
 3. Paste it into a new chat and send it.
-4. The chat gives back one file. Copy that file.
+4. The chat gives back one file, inside a box. **Copy the code inside the box, not the box marks.** If you copy the
+   three backticks as well, the file will not load, and the menu will show a stub instead of the feature.
 5. Save it as `features/<id>.js`, for example `features/bigtext.js`. Use lowercase. Save plain text, not a
    word-processor file.
 6. Open `features/list.js`. Find the line that starts with `Desk.features = [`. Add the id to the end of the list,
    inside the brackets, in quotes, with a comma before it:
    `..., 'recipe-custom', 'bigtext'];`
-   If the id is also in the `Desk.planned` list below it, delete that one line.
+   Leave the id in the `Desk.planned` list below it **for now**. That list is what gives a feature that will not load
+   its name and its one-line description; delete the line once the self-test is clean (step 9).
 7. Reload Search Desk in the browser.
 8. Open `#selftest` (add `#selftest` to the end of the address). It checks every part for the rules it has to follow.
    A part built this way has no check file, so its row says "No check file". **That is not a problem**, and it is not
    red: nothing red means the file follows the contract.
-9. Now use the feature and see that it does what the brief said. This is the check you have without Node.
+9. Now use the feature and see that it does what the brief said. This is the check you have without Node. When it
+   works, open `features/list.js` again and delete the line for this id from `Desk.planned`, so it stops appearing
+   under "Ideas you could build" on the Data screen.
 10. If `#selftest` shows a problem, copy the problem text. Paste it into the same chat and write: "Fix this. Reply with
    the whole file again." Save the new file over the old one and reload. Repeat until it passes.
 

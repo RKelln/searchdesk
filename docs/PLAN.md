@@ -287,6 +287,37 @@ can follow a day later if it must).
     self-test, or the 15 briefs should stop naming a command the person who followed the kit cannot run. Not decided
     yet; it changes what a green means, so it is the maintainer's call.
   - Still to trial: `pay`, and one more.
+- **Trial 2 of 3: `bigtext` again, done 2026-10-17, after `ctx.pref` (commit `70ad6c1`) and the Done-when fix.** Same
+  brief, same model family, **fresh conversation** so the model could not lean on its own earlier answer. Same 15
+  checks as trial 1: **15 of 15, unedited.** It used `ctx.pref` for both settings, wrote no control markup at all, and
+  came back 152 lines against trial 1's 202 and 58 for the reference version written by hand. The double-build bug
+  from trial 1 is gone, and so is the `value`-on-a-select bug, because the reply never wrote that: `ctx.pref` does it.
+  The contract scan is clean, `#selftest` shows the row as `none` ("No check file, 1 of 1 checks passed") and not one
+  row in the whole app is `fail` or `missing`. **So the facility did what it was built to do**: the storage half was
+  already fine, and the part that was expensive is now one line each.
+  - **The kit is not what failed this time; the copy-and-paste was.** The file arrived wrapped in ` ``` ` fences and
+    would not parse at all (`SyntaxError`). That is the normal shape of a chat reply, and step 4 said only "Copy that
+    file", which is exactly how you end up with the fences. Worth knowing, because the app handled it the way it is
+    meant to: `Desk.started` stayed true, every other tab worked, and `#selftest` reported "Did not load". Step 4 now
+    says to copy the code inside the box and not the box marks.
+  - **That failure also showed a small gap.** A feature that will not load can only be named by `Desk.planned`, so once
+    the line there was deleted the stub was labelled `bigtext` rather than "Bigger text" — a workshop participant who
+    just built the feature would see a nameless stub. BUILDING.md step 6 now says to leave the `Desk.planned` line
+    until the self-test is clean, and step 9 says to delete it then.
+  - **Dark mode has now been guessed wrong twice, and the contract never said.** Both replies invented `.dark`,
+    `html.dark`, `[data-theme="dark"]` and `[data-color-scheme="dark"]`, none of which exist; only the
+    `prefers-color-scheme` media query they also wrote does any work. CONTRACT.md now says dark mode follows the
+    device, that there is no `.dark` class and no `data-theme` attribute, and gives the one-class-plus-one-media-query
+    shape to use instead — checked against `core/desk.css`, which really has only `@media (prefers-color-scheme: dark)`.
+  - The reply's contrast values are worth keeping: `--line` goes from 1.25:1 to 4.06:1 in light mode, where the app's
+    own default fails the 3:1 that WCAG AA wants of a border. It picked better numbers than the brief asked for.
+  - One judgement call the brief did not ask for: it adds `@media (max-width: 360px) { font-size: 140% }`, so at 320px
+    "Biggest" is 140%, not 150%. The brief's criterion (nothing scrolls sideways at 320) passes, but the label is not
+    quite true at that width. Left alone rather than pinned down, since a chat that cannot fit 150% on a small phone
+    reducing it is a reasonable answer.
+  - Trial 1's reply and trial 2's are kept at `/tmp/opencode/t63-trial2/` for comparison. Still to trial: `pay` (whose
+    choices come from data rather than a fixed list), and one more. **Trial 2 says nothing about a weak model**, which
+    is the case AGENTS.md is written for.
 
 ## P1 (by Nov 16)
 

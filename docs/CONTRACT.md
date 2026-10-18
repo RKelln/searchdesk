@@ -223,6 +223,24 @@ mode works by itself. Shared classes: `card` (a white box with a border), `chip`
 `aria-pressed="true"` shows as picked. To see your feature on a phone and a computer, in light and dark, run
 `uv run tools/screens.py --only <screen>` and open `screens/index.html`.
 
+**If your feature changes one of those variables**, so a person can make the page stronger or larger, then dark mode
+is your problem too — and here is the whole of what you need to know. Dark mode follows the device, through
+`prefers-color-scheme` in `core/desk.css`. **There is no `.dark` class and no `data-theme` attribute** — do not invent
+one, and do not write rules for one. Put the change under a class of your own on the page, and give the dark values in
+a media query:
+
+```css
+html.mine-bigger { font-size: 140%; }
+html.mine-contrast { --muted: #505050; }
+@media (prefers-color-scheme: dark) {
+  html.mine-contrast { --muted: #c5cbd3; }   /* the same rule, with dark values */
+}
+```
+
+One class on `document.documentElement` (`classList` and `document` are not banned words) and one media query is the
+whole job. Check the numbers if you can: WCAG AA wants 4.5:1 against the page background for body text and 3:1 for a
+line or a border, and the app's own defaults do not always reach that, which is usually why the setting exists.
+
 ### The layout kit: a desktop layout with no CSS of your own
 
 A feature does not have to invent a layout for a big screen. These class names are all the app has, and they are
