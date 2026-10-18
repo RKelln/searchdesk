@@ -267,6 +267,26 @@ can follow a day later if it must).
   `features/<id>.js`, add it to `list.js`, open `#selftest`, and if it fails copy the problem back to the chat.
 - [ ] **T6.3 Trial the kits** (P0). Give two or three kits (`bigtext`, `pay`, one more) to a free chat; record whether the
   file passes `#selftest` unedited. Fix the kit wording for what breaks. Maintainer runs the chat; the agent records.
+  - **Trial 1 of 3: `bigtext`, done 2026-10-17.** One reply, no editing. It **loads and the contract scan is clean**,
+    and it met 9 of the brief's 10 acceptance criteria unedited, including the ones worth doubting: it applies at once
+    with no reload, survives a reload, nothing scrolls sideways at Biggest on a 320px phone, choosing Normal with
+    contrast off leaves the page byte-for-byte as it was, an unrecognised saved value is treated as Normal, and the
+    contrast is genuinely darker in light mode and lighter in dark mode (it guessed `prefers-color-scheme` and also
+    guarded the override correctly with `:not([data-theme="light"])`).
+  - **What it got wrong, and it is not the reply's fault: `h('select', { value })` did nothing.** The brief asks for a
+    control that shows the saved choice; the reply wrote the obvious `value`, and a select's value is a property, not an
+    attribute, so every browser showed the first option. Fixed in `core/h.js` (commit `6dcbd93`), documented in
+    CONTRACT.md. Worth noting what the chat got *right* here: it also built the select twice and left a
+    `selects[0].remove()` guard that can never fire, which is dead code and harmless only because the Data screen
+    redraws between human interactions.
+  - **Packaging defect that hit every kit, not just this one.** All 15 briefs open their Done-when with
+    "`node checks/run.js <id>` passes", and all 15 kits embed those briefs — but a kit asks for exactly one file and
+    the runner needs two (`checks/<id>.check.js` as well). So no kit can meet its own acceptance criterion. The
+    browser path survives it: `#selftest` shows "No check file" as *not red*, deliberately, so the feature loads and
+    the scan still runs. `checks/run.js` disagrees with that and hard-stops. Either the runner should match the
+    self-test, or the 15 briefs should stop naming a command the person who followed the kit cannot run. Not decided
+    yet; it changes what a green means, so it is the maintainer's call.
+  - Still to trial: `pay`, and one more.
 
 ## P1 (by Nov 16)
 
