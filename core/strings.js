@@ -19,6 +19,10 @@ window.Desk = window.Desk || {};
     notSaving: 'This browser is not saving. Save a copy before you close it.',
     // shell (T1.5)
     appName: 'Search Desk',
+    // A build may be for one place (the locale pack says which). Then the name says so, in the window title and in
+    // the menu. Two format strings, because a language may not put the place in brackets.
+    appTitle: '{app} ({place})',
+    appPlace: '({place})',
     menuLabel: 'Main menu',
     skipToContent: 'Skip to the main part',
     tabAi: 'AI helper',

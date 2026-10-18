@@ -182,6 +182,10 @@ dd { margin: 0 0 .5rem; }
    and a soft shadow at the edge shows there is more. ---- */
 .app { min-height: 100vh; min-height: 100dvh; }
 .brand { display: none; }
+/* The place this build is for, in brackets and smaller than the name, so the name is still the name. It gets a
+   line of its own rather than sitting after the name: the menu is 15rem wide, and "Search Desk (Toronto)" does
+   not fit on one line, and a place name broken across two lines reads as a mistake. */
+.brand-place { flex: 0 0 100%; font-size: .74em; font-weight: 700; letter-spacing: 0; color: var(--muted); white-space: nowrap; }
 .tabs {
   position: fixed;
   left: 0; right: 0; bottom: 0;
@@ -304,7 +308,8 @@ dialog.confirm::backdrop { background: rgba(0, 0, 0, .45); }
     background: var(--surface);
     box-shadow: none;
   }
-  .brand { display: flex; align-items: center; gap: .6rem; padding: .25rem .75rem 1.25rem; font-size: 1.15rem; font-weight: 800; letter-spacing: -.01em; color: var(--text); }
+  .brand { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; padding: .25rem .75rem 1.25rem; font-size: 1.15rem; font-weight: 800; letter-spacing: -.01em; color: var(--text); }
+  .brand .brand-place { margin-top: -.15rem; }
   .brand::before { content: ""; width: 1.6rem; height: 1.6rem; flex: none; border-radius: .45rem; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .25); }
   .tab { flex: 0 0 auto; justify-content: flex-start; min-height: 2.75rem; padding: .5rem .75rem; text-align: left; font-size: 1rem; font-weight: 550; color: var(--text); }
   .tab.active { font-weight: 700; }

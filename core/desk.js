@@ -204,6 +204,12 @@ window.Desk = window.Desk || {};
     }
     return localeCache;
   }
+  // The place this build is for: the locale pack's own name, or '' when there is no pack (or it has no name).
+  // Read from the pack rather than assumed, so a second pack only has to say `name` and the shell follows.
+  function placeName() {
+    var L = localeCopy();
+    return (L && typeof L.name === 'string' && L.name.trim()) ? L.name.trim() : '';
+  }
   // Desk.now() is a Date. Tests and demos may fix it with Desk.setNow(dateOrMs) and clear it with Desk.setNow(null).
   Desk.now = function () { return fixedNow === null ? new Date() : new Date(fixedNow); };
   Desk.setNow = function (v) { fixedNow = v === null || v === undefined ? null : new Date(v).getTime(); };
@@ -417,7 +423,12 @@ window.Desk = window.Desk || {};
 
   function renderNav(tabs) {
     els.nav.textContent = '';
-    els.nav.appendChild(H('div', { class: 'brand', 'aria-hidden': 'true' }, T('appName')));
+    // The place this build is for, if the locale pack says which. Empty in a build with no pack, and then the
+    // name is just the name. The brand is aria-hidden, so this is decoration; the window title says the same
+    // thing and is what a screen reader and a bookmark both use.
+    var place = placeName();
+    els.nav.appendChild(H('div', { class: 'brand', 'aria-hidden': 'true' }, T('appName'),
+      place ? H('span', { class: 'brand-place' }, T('appPlace', { place: place })) : null));
     tabs.forEach(function (t) {
       if (t.hidden) return;
       var a = doc.createElement('a');
@@ -681,6 +692,10 @@ window.Desk = window.Desk || {};
       wasWide = now;
       onHashChange();
     });
+    // The window title names the place when this build is for one, so the browser tab, a bookmark and a screen
+    // reader all say so. A build with no locale pack keeps the plain name.
+    var place = placeName();
+    doc.title = place ? T('appTitle', { app: T('appName'), place: place }) : T('appName');
     Desk.started = true;
   };
 
