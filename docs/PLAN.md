@@ -267,8 +267,9 @@ can follow a day later if it must).
   `docs/example-feature.js`, then that brief. Commit the output so people need no tools. A unit or build check fails when
   a kit is out of date. `docs/BUILDING.md` path B says: copy the kit, paste into a free chat, save the reply as
   `features/<id>.js`, add it to `list.js`, open `#selftest`, and if it fails copy the problem back to the chat.
-- [ ] **T6.3 Trial the kits** (P0). Give two or three kits (`bigtext`, `pay`, one more) to a free chat; record whether the
+- [x] **T6.3 Trial the kits** (P0). Give two or three kits (`bigtext`, `pay`, one more) to a free chat; record whether the
   file passes `#selftest` unedited. Fix the kit wording for what breaks. Maintainer runs the chat; the agent records.
+  **Done 2026-10-17. Three kits run — `bigtext`, `pay`, `print` — and the kit wording was fixed for what broke.**
   - **Trial 1 of 3: `bigtext`, done 2026-10-17.** One reply, no editing. It **loads and the contract scan is clean**,
     and it met 9 of the brief's 10 acceptance criteria unedited, including the ones worth doubting: it applies at once
     with no reload, survives a reload, nothing scrolls sideways at Biggest on a 320px phone, choosing Normal with
@@ -408,11 +409,23 @@ can follow a day later if it must).
   misses are the ones you have to read for.
   - A static scan for a declared string key that never appears again in its own file would catch the dead ones, but
     `interview` and `closes` in trial 5 are reached dynamically through `ctx.t(item.kind)` and would be flagged too.
-    So it needs a way to say "these are reached some other way", which means a decision, not a grep. Not built;
-    worth deciding before the workshop rather than after.
+    So it needs a way to say "these are reached some other way", which means a decision, not a grep.
+    **Decided 2026-10-17: not building it.** A scan that flags two live strings would teach people to ignore it, and
+    the false positives are the whole cost. There is no cheap way to let a key say "I am reached some other way"
+    without asking every feature to declare it, which is more work than the three dead strings in one reply were.
+    Those were found by reading the file, which is what a person is for.
   - The collision is the more interesting one and no scan will find it: two features can each be correct alone and
     wrong together, and nothing in a per-feature check can see the other file. That is an argument for reading a reply
     against the *other* briefs it lands next to, which is cheap and is what found it here.
+- **Who runs a kit at the workshop is an agent with file tools, not a web chat, and that settles the packaging defect
+  above.** A chat can be told to return one file and can only return one, so the defect is real for it. An agent can
+  write both, and the brief's own Done-when already names `checks/<id>.check.js`, so nobody following a kit as a
+  harness agent gets stuck on it. Three kits run is enough to call this done.
+  - **It still bites anyone using a kit the other way**, which is what the kit is *for* in BUILDING.md, so the defect is
+    recorded rather than closed. And one line of kit text is now wrong for the agent path: PART 1 says "Reply with
+    exactly one JavaScript file, in one code block, and nothing else", which is a chat's instruction and an agent's
+    instruction to write one file and stop. Worth a sentence in PART 1 that covers both — write both files if you have
+    tools, reply with one if you do not — rather than two kits that drift apart.
 
 ## P1 (by Nov 16)
 
