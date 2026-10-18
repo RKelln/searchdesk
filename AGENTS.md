@@ -49,9 +49,11 @@ Read [`docs/CONTRACT.md`](docs/CONTRACT.md). It has the `ctx` API, the slots, `h
    `docs/kits/<id>.txt`, is the one exception: `uv run tools/kit.py` writes that from the brief. Never write a kit by
    hand.
 
-For the person-facing steps, see [`docs/BUILDING.md`](docs/BUILDING.md) with an agent that reads and writes files,
-and [`docs/KITS.md`](docs/KITS.md) for the copy-and-paste route through a browser chat, which needs nothing
-installed. The kits in `docs/kits/` belong to the second one.
+For the person-facing steps: [`docs/BUILDING.md`](docs/BUILDING.md) for an idea of their own, and
+[`docs/BRIEFS.md`](docs/BRIEFS.md) for one of the fourteen briefs already written up. Both need an agent that reads
+and writes files. [`docs/KITS.md`](docs/KITS.md) is the same fourteen as paste packets for a browser chat, for a
+machine that will not let anyone install one. The briefs in `docs/features/` are what an agent reads; the kits in
+`docs/kits/` are the same text packed for a chat.
 
 ## Running tests and checks
 

@@ -1,14 +1,15 @@
-# Building one of the ready features
+# Building one with nothing installed
 
-Most people arrive with no idea of their own. That is normal, and it is what this page is for: **fourteen features
-are already written up**, each with a brief and a kit, each doing something real for someone looking for work. Pick
-one, build it, and you have built an actual feature of this app.
+This page is for a machine that will not let you install anything: a locked-down work computer, a library machine, an
+IT policy, no administrator. You need a browser chat and a plain text editor. Nothing else, and no account beyond the
+chat.
 
-If you *do* have an idea of your own, you want [`BUILDING.md`](BUILDING.md) instead. That is the open-ended version
-and it starts by writing a brief from scratch.
+**If you can install a coding agent, stop reading.** [`BRIEFS.md`](BRIEFS.md) has the same fourteen features, each
+with the same brief, and an agent does the work: nothing is copied, no list is edited by hand, and the feature's own
+check runs. This page exists so the project is not unusable on exactly the kind of computer that cannot run an agent.
 
-Nothing here is an exercise. Every one of these is work the project wants and has not built yet. The app lists the
-same set on its **Data** tab as "Ideas you could build".
+The fourteen are the project's real planned work, not practice material. Most will be in a later version of Search
+Desk. The feature you build here is the same feature, built by hand because that is what this machine allows.
 
 | Id | In plain words |
 | --- | --- |
@@ -27,37 +28,26 @@ same set on its **Data** tab as "Ideas you could build".
 | `stories` | Short stories from your work, ready for interview questions. |
 | `week` | How many you applied to, followed up and went to this week. No streaks and no scores. |
 
-Not sure which to want? Ask an agent: it asks you one question about your search and then suggests a few.
+The app lists the same set on its **Data** tab as "Ideas you could build". Not sure which to want? Say what your job
+search is like and ask the chat which of these would help. The whole brief for any of them is one page in
+`docs/features/<id>.md` if you want to read before you choose.
 
 `docs/kits/index.html` is the same list with a **Copy this kit** button on each one, if you would rather browse in a
 browser than read this page.
 
 ## What a kit is
 
-A kit is one text file with everything an AI needs to build that one feature: the rules it has to follow, a worked
-example, and the brief. They are in `docs/kits/<id>.txt`, written from `docs/features/<id>.md`. Do not edit a kit by
-hand — `python3 tools/kit.py` writes them all again, and `python3 tools/kit.py --check` says if one is out of date.
+A kit is one text file with everything a browser chat needs to build that one feature: the instructions, the rules
+the file has to follow, a worked example, and the brief. They are in `docs/kits/<id>.txt`, written from
+`docs/features/<id>.md`. Do not edit a kit by hand: `python3 tools/kit.py` writes them all again, and
+`python3 tools/kit.py --check` says if one is out of date.
 
-A kit is not tied to a particular tool. Both routes below take the same file.
+A kit is not tied to a particular chat. Any of them takes the same file.
 
-## Build it with a coding harness
+The brief is the canonical copy. The kit is that brief packed for something that cannot open a file. That is the only
+difference between this page and [`BRIEFS.md`](BRIEFS.md).
 
-If you have an agent that reads and writes files, paste the kit into it and it does the work: reads the brief,
-writes `features/<id>.js`, adds the id to `features/list.js`, runs the feature's check, and tells you what passed.
-
-```
-docs/kits/pay.txt        →  paste into your agent  →  features/pay.js, checked
-```
-
-That is the whole process. This is also how these features get built for real releases, which is why the briefs are
-written the way they are.
-
-## Build it with a browser chat, no installs
-
-**Use this when the machine will not let you install anything** — a locked-down work computer, a library machine, an
-IT policy. It is also a reasonable choice if you would rather not set an agent up at all.
-
-You need a browser chat and a plain text editor. Nothing else, and no account beyond the chat.
+## Build it
 
 1. Open `docs/kits/<id>.txt` for the feature you picked, for example `docs/kits/bigtext.txt`.
 2. Copy all of it. Use select all, then copy.
@@ -83,9 +73,10 @@ You need a browser chat and a plain text editor. Nothing else, and no account be
 
 **What this route gives up**, so you know what you are looking at. Nothing runs the logic: a feature built this way
 has no check file, so `#selftest` confirms the file follows the rules and step 9 is the only test of whether it works.
-A free-tier chat is usually a smaller model than a harness would use, and a kit is a long paste, which some free
-tiers will not take in one go. Step 6 is also done by hand — if the file does not load, the id in `features/list.js`
-is the first thing to check. If a step fails twice, stop, and if you can install an agent anywhere, use one.
+A free-tier chat is usually a smaller model than an agent would use, and a kit is a long paste, which some free
+tiers will not take in one go. Step 6 is also done by hand: if the file does not load, the id in `features/list.js`
+is the first thing to check. If a step fails twice, stop, and if you can install an agent anywhere, use one. That is
+[`BRIEFS.md`](BRIEFS.md), and it is the same fourteen.
 
 ## Changing one that is built
 
@@ -100,7 +91,8 @@ Keep a copy of the old file first. If the new one breaks, put the old one back.
 
 If none of the fourteen is what you need, you do not need to force one. Say what you want and
 [`BUILDING.md`](BUILDING.md) starts from an empty page: it covers writing the brief yourself, and an agent does the
-rest. Writing a brief is not much work — the fourteen above are all one page each.
+rest. Writing a brief is not much work; the fourteen above are all one page each. The agent can turn your brief into
+a kit afterwards, which is how every kit on this page was made.
 
 ## What can go wrong
 
@@ -118,13 +110,14 @@ rest. Writing a brief is not much work — the fourteen above are all one page e
 
 ## For agents and developers
 
-`BUILDING.md` is the route for your own ideas. The rules are in [`AGENTS.md`](../AGENTS.md) and
-[`CONTRACT.md`](CONTRACT.md). `tools/kit.py` writes the kits and checks them, and `docs/kits/index.html` comes from
-the same tool, so neither goes stale on its own.
+The rules are in [`AGENTS.md`](../AGENTS.md) and [`CONTRACT.md`](CONTRACT.md). `tools/kit.py` writes the kits and
+checks them, and `docs/kits/index.html` comes from the same tool, so neither goes stale on its own. The same fourteen
+with an agent, and the mechanics for an idea of your own, are in [`BRIEFS.md`](BRIEFS.md) and
+[`BUILDING.md`](BUILDING.md).
 
 **Some of these will be in a later version.** That is the ordinary way this project grows: a feature gets written
 from its brief, lands in a release, and its brief moves to `docs/built/` and drops off this page. The page shrinking
-is the sign it is working. `board` already went that way — it was its own feature, then became a choice inside Jobs.
+is the sign it is working. `board` already went that way: it was its own feature, then became a choice inside Jobs.
 
 If you take one away with you and the project later ships its own version of the same idea, you will have two files
 with the same id. Rename yours: the id is yours to choose, and `features/<id>.js` has to match

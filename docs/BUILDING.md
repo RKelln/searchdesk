@@ -6,19 +6,13 @@ need to know how to code. You need an agent that can read and save files, and a 
 Building is a computer job. A feature is one file. You save it in a folder, then reload the page. A phone is not
 the place for this.
 
-Two ways in, and the difference is only where the idea comes from:
+If you do not have an idea of your own, which is most people, [`BRIEFS.md`](BRIEFS.md) has fourteen features already
+written up: pick one there and build it the same way. If the machine will not let you install an agent at all,
+[`KITS.md`](KITS.md) is the same fourteen as text files you paste into a browser chat.
 
-- **You have an idea** and want to see it work. That is this page, and it is the main thing here.
-- **You do not have one**, which is most people. Fourteen features are already written up and waiting — the table
-  below. Pick one; it is a real feature either way.
+## Say what you want
 
-**Cannot install an agent?** A locked-down work machine, a library computer, no administrator? [`KITS.md`](KITS.md)
-has the fourteen with a kit you can paste into a browser chat, which needs nothing installed. It is the weaker route
-and it says so.
-
-## Your own idea
-
-Nothing the app does is off limits. The features below were all somebody's idea once.
+Nothing the app does is off limits. Every feature in the app was somebody's idea once.
 
 Pick the **id** first. It is lowercase, with dashes, and short, because it becomes a file name: `recruiter`, not
 `track-which-recruiter-called`. The same id is used for `features/<id>.js` and `checks/<id>.check.js`.
@@ -32,44 +26,14 @@ differences between a feature that works and one that nearly works are in the de
 
 Then it writes a **brief** to `docs/features/<id>.md` in plain words, builds the file from it, runs the checks, and
 tells you what passed. The brief is the important part. It is what makes the result match what you wanted, it is
-what you check the result against, and it is what lets somebody with no agent build the same feature later by
-pasting it into a browser chat. Ask the agent to rebuild the kits afterwards and it writes one for your brief too.
-
-## Or build one that is already written up
-
-Fourteen features are already written up, each with a brief in `docs/features/<id>.md`, and each doing something
-real. If you have no idea of your own — which is most people — pick one of these instead of inventing: the app
-lists the same set on its **Data** tab as "Ideas you could build", and a few will be in a later version of Search
-Desk.
-
-| Id | In plain words |
-| --- | --- |
-| `bigtext` | Larger text and stronger contrast, remembered on this device. |
-| `calendar` | Put an interview or a starred event into your phone's calendar. |
-| `checklist` | What a posting must tell you in Ontario, and whether this one does. |
-| `contacts` | A short note about people you met, linked to an event or a job. |
-| `pay` | The pay each posting gives, beside the pay you are aiming for. |
-| `print` | A page you can print or save as a PDF: this week's jobs, dates and events. |
-| `recipe-followup` | Drafts a short follow-up or thank-you note for a job. You copy it yourself. |
-| `recipe-sites` | Suggests job sites and organisations for your kind of work, as suggestions. |
-| `recipe-weekly` | Sends your open jobs and suggests the next step for each, as suggestions. |
-| `reply-clock` | After an interview, shows the date the employer should have told you the result by. |
-| `resumes` | Which version of your resume you sent where. |
-| `sites` | Keep the job sites you use in one place, with a note about each. |
-| `stories` | Short stories from your work, ready for interview questions. |
-| `week` | How many you applied to, followed up and went to this week. No streaks and no scores. |
-
-Say: "build `week`", or "read `docs/features/week.md` and build that". The agent reads the brief and builds it, and
-the brief is the same shape as the one your own idea gets, so everything above applies unchanged. Not sure which one
-to want? Say so and the agent will ask you one question about what would help, then offer a few one at a time.
-
-[`KITS.md`](KITS.md) is the same fourteen with a kit you can paste into anything — including the agent you are
-already in, if you would rather hand it a finished packet than a file name.
+what you check the result against, and it is what lets somebody with no agent build the same feature later: the kits
+in [`KITS.md`](KITS.md) are briefs packed for a browser chat. Ask the agent to rebuild the kits afterwards and it
+writes one for your brief too.
 
 ## Build it
 
 1. Open your agent in the Search Desk folder.
-2. Tell it what you want, from either section above. Most agents find the instructions on their own, because
+2. Tell it what you want, from the section above. Most agents find the instructions on their own, because
    `AGENTS.md` is in the folder. If one does not, say: "Read AGENTS.md, then help me add a feature."
 3. The agent writes the brief if there is not one, builds the file, adds it to `features/list.js`, and runs the
    checks. It tells you what passed.
@@ -104,8 +68,8 @@ provider, and most can be pointed at a different one.
 | A free provider with an account | Sign in to a provider you already have an account for, and point your agent at it. | Easiest if you already have an account. Check that the free tier includes a model an agent can call — a browser chat and an API key are not always the same thing. |
 | A model on your own computer | Install [Ollama](https://ollama.com), run `ollama pull qwen3:8b`, and point your agent at it. | No account, no cost, and it works with no internet. Needs a computer with memory to spare. |
 
-All three need an agent you can install. If the machine will not let you install one, none of them apply and
-[`KITS.md`](KITS.md) is the fallback — weaker, but it needs nothing.
+All three need an agent you can install. If the machine will not let you install one, none of them apply:
+[`KITS.md`](KITS.md) is the route that needs nothing installed, and it says what it gives up.
 
 If you do not have an agent, [OpenCode](https://opencode.ai) is the one to start with, and the reason is the free
 models rather than the program: it can call a provider that costs nothing, and most of the free models above are
@@ -145,4 +109,5 @@ so `git diff` shows what changed and `git checkout -- features/<id>.js` puts it 
 ## For agents and developers
 
 The rules are in [`AGENTS.md`](../AGENTS.md) and [`CONTRACT.md`](CONTRACT.md). Checks:
-`node checks/run.js <id>` and `node --test tests/unit/*.test.js`. The free-chat route is in [`KITS.md`](KITS.md).
+`node checks/run.js <id>` and `node --test tests/unit/*.test.js`. The fourteen already written up are in
+[`BRIEFS.md`](BRIEFS.md), and the route with nothing installed is in [`KITS.md`](KITS.md).

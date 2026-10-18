@@ -797,3 +797,18 @@ can follow a day later if it must).
 - 2026-10-17, same work: the sidebar's white stopping at the fold in full-page pictures is a picture artefact, not a bug.
   `.app` is `display: flex; align-items: flex-start` on a wide screen, so the sticky sidebar is exactly one viewport tall,
   which is right. Fixed in `tools/screens.py` for full-page shots only. See commit `f9bca63`.
+- 2026-10-18, the person-facing docs are three pages, one per situation, because two pages were carrying three
+  readers. `BUILDING.md` is an idea of your own with an agent, `BRIEFS.md` is one of the fourteen already written up
+  with an agent, and `KITS.md` is the same fourteen as paste packets for a machine that will not install one. The cut
+  before this was by tool (agent page, chat page), so a person with no idea of their own had to read a page about
+  somebody else's idea first, and `KITS.md` kept flipping between "the kits are the product" and "the kits are the
+  fallback" because it was answering both readers at once. The rule is now where the idea comes from (yours, or
+  already written up), and then what the agent can see (a folder, or only what you paste).
+  `BUILDING.md` no longer carries the table of fourteen. That duplicate was how `board` survived in it after the
+  brief moved to `docs/built/`, and `tests/unit/docs.test.js` now asserts that page offers no ids at all: the menus
+  are `BRIEFS.md` and `KITS.md`, set-equal to `docs/features/`, and each of the three pages has to name the other
+  two. Verified by putting a `pay` row back into `BUILDING.md`: it fails with "docs/BUILDING.md offers feature ids".
+  The kit is described as what it is, the brief packed for something that cannot open a file, rather than as a
+  fallback for somebody without an agent: an agent in the folder reads the brief, and nothing is pasted.
+  `AGENTS.md`, `README.md` and `tools/skills/add-feature.md` with its generated copies say the same thing now.
+  Unit: 375. Kits: 14 up to date. Agent files: 22 up to date.
