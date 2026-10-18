@@ -64,6 +64,10 @@ it. Nothing has to be installed: a browser is enough.
 Use this if you have any coding agent that can read and save files. It does not have to be a paid one: see "Free
 ways to get help from AI" below.
 
+If you do not have one, [OpenCode](https://opencode.ai) is the one to start with, and the reason is the free
+models rather than the program: it can call a provider that costs nothing, and most of the free models in the
+table below are reachable only through an agent like it. Anything else that reads and writes files will do.
+
 1. Open your agent in the Search Desk folder.
 2. Tell it what you want. Most find the instructions on their own, because `AGENTS.md` is in the folder. If it
    does not, say: "Read AGENTS.md, then help me add a feature."
@@ -84,9 +88,9 @@ skill and use that name. This repo ships them under names, not syntax:
 | take pictures of the screens | Every screen, for design work. |
 
 Each one is written once, in `tools/commands/` and `tools/skills/`, and copied into the folders your tool reads
-them from. So the wording you type is yours to discover; what the instruction says is the same for everyone.
-`AGENTS.md` names where the copies go if you want to look, and `python3 tools/agent-files.py --check` says if any
-copy is out of date.
+them from. So the wording you type is yours to discover; what the instruction says is the same for everyone. In
+OpenCode, for instance, `/check` and `/new-feature` are the same two rows above. `AGENTS.md` names where the copies
+go if you want to look, and `python3 tools/agent-files.py --check` says if any copy is out of date.
 
 ## Path B: a free chat with a kit
 
@@ -130,19 +134,20 @@ provider, and most can be pointed at a different one.
 
 | Way | What you do | Good to know |
 | --- | --- | --- |
-| Your agent's free model | Most agents ship with, or can be connected to, a model that costs nothing. Names vary; free ones are often marked Free or end in `-free`. | It reads and saves files, so it can build a whole feature. Check which model you are on before you start. |
-| A free provider with an account | Sign in to a provider you already have an account for, and point your agent at it. | Easiest if you already have an account with one of them. |
+| A free model in OpenCode | Run `/connect` once, then `/models`, and pick a model marked Free. Most are named with `-free` at the end. | It reads and saves files, so it can build a whole feature. This is the row worth starting from: free models are the exception, and OpenCode is where you get one without an account. |
+| A free provider with an account | Sign in to a provider you already have an account for, and point your agent at it. | Easiest if you already have an account. Check that the free tier includes a model an agent can call — a browser chat and an API key are not always the same thing. |
 | A model on your own computer | Install [Ollama](https://ollama.com), run `ollama pull qwen3:8b`, and point your agent at it. | No account, no cost, and it works with no internet. Needs a computer with memory to spare. |
-| A free chat in your browser | Path B above, with a kit from `docs/kits/`. | Nothing to install. You copy and paste. |
+| A free chat in your browser | Path B above, with a kit from `docs/kits/`. | Nothing to install. You copy and paste. The one route that always works, which is why the kits exist. |
 
 Two things to know about free models, whatever agent is running them:
 
 - **They miss more than paid ones.** The rules in `AGENTS.md`, under "For a small or free model", are written for them.
   Keep the feature small, and believe the checks instead of your own eyes.
 - **Some of them keep what you send them.** Each provider's terms say whether your words are used to improve the
-  model, and whether they are kept at all. Look before you send anything real: a backup file holds a person's name,
-  their jobs and their notes. If your agent can show you which provider and model it is using, that is the place to
-  check.
+  model, and whether they are kept at all. OpenCode publishes which is which at
+  [opencode.ai/v2/docs/console/models](https://opencode.ai/v2/docs/console/models/), and other providers say the
+  same in their own terms. Look before you send anything real: a backup file holds a person's name, their jobs and
+  their notes.
 
 ## Changing a feature that exists
 
