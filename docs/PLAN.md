@@ -349,6 +349,30 @@ can follow a day later if it must).
     caught what the feature missed.
   - **So `pay` has still not been trialled.** Trials 1 and 2 (bigtext, ChatGPT) are valid: that chat took the whole
     40k. Gemini's does not. Worth knowing before reading anything into the model comparison.
+- **Trial 4, 2026-10-17, Gemini on `pay`, after the kit was reordered — and a much better reply.** 225 lines,
+  `id: 'pay'`, contract scan clean, and it met **19 of 20** checks measured in a browser. Kept at
+  `/tmp/opencode/pay-trial/gemini-pay-reply.js`.
+  - The logic is nearly all right. `cleanAmount` takes `24`, `24.50`, `$24`, `65,000`, `''` and refuses `abc`, all as
+    the brief says. `describe` gives `$20 to $24 an hour`, `$20 an hour`, `$65,000 a year` and `''`. `compare` is
+    right for below, inside, an empty side and two different units — **and never returns `'above'` at all.** The rule
+    is written inverted (`aimLow > postedTop` where it should be `aimTop < postedLow`), and because the `inside`
+    branch above already excludes the case, the branch is *dead* rather than wrong. A wrong-but-reachable answer would
+    have been noticed by eye; a dead one looks fine in the code. The string and the render branch both exist.
+  - **The brief's own check list catches it in one line.** Written from "Checks to write" in pay.md, against this
+    reply: 20 passed, 1 failed, and the failure names the rule. That is the argument for the check step: a kit asks for
+    one file, so the chat cannot write the check that would catch its own bug, but the brief names it and an agent
+    writes it in a minute. Keep both lists in the briefs for this reason.
+  - **One real interface fault, and the house style says otherwise.** Saving pay ends in `ctx.ui.go(ctx.route().tab)`,
+    which is `#jobs` — so you are thrown out of the job you were reading, the boxes vanish and the summary is not on
+    screen (only a toast, gone in 10 seconds). Saving the job itself ends at `ctx.ui.go('jobs/' + saved.id)`
+    (features/jobs.js:770) and keeps your place. Measured, both ways, side by side.
+  - No `data-test` names at all, which for this brief is not a miss: unlike sites.md, pay.md lists none, so there was
+    nothing to use. Worth adding the list to the briefs that lack one, since tests need hooks.
+- **What the trials say together.** A reply that arrives whole is good: clean scan, right feature, most of the logic,
+  the interface words taken from the brief. The two failures that matter are both invisible without work — one is a
+  dead branch in logic, one is where the screen goes after Save — and both are what the existing machinery is for:
+  `logic` plus a check, and a browser. **The kit path can only ever prove a file loads.** Everything past that is the
+  agent's step, and that is the honest shape of path B.
 
 ## P1 (by Nov 16)
 
