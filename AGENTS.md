@@ -76,12 +76,15 @@ For the person-facing steps (with an agent, or a free chat and a kit), see [`doc
   green. `gone()` and `noRepo()` in `tests/unit/_load.js` are the two helpers. Nothing app-level is skipped: the
   app is `core/`, `locale/`, `data/`, `features/`, `checks/` and `index.html`, and every check over those runs
   wherever the copy is.
-- The words you type as a slash command live in `tools/commands/<name>.md`, and the skills live in
-  `tools/skills/<name>.md`. Those are the only two places to edit them. `uv run tools/agent-files.py` copies them where
-  each tool looks: commands into `.opencode/commands/` (OpenCode), `.claude/commands/` (Claude Code) and
-  `.pi/prompts/` (Pi), and every command and skill into `.agents/skills/<name>/SKILL.md` (Codex, Antigravity, Pi and
-  OpenCode) and `.claude/skills/<name>/SKILL.md` (Claude Code). `uv run tools/agent-files.py --check` says if a copy is
-  stale, and `tests/unit/agent-files.test.js` fails when one is, so do not edit a copy by hand.
+- **These files are written once and copied, so nothing here names a tool.** The words you type to invoke a command
+  live in `tools/commands/<name>.md` and the skills in `tools/skills/<name>.md`, and those are the only two places to
+  edit them. `python3 tools/agent-files.py` copies each into the folders the supported agents read, so a person in
+  any of them types that tool's own syntax for the same words: a slash command in some, a mention in others, a skill
+  by hand in the rest. `tools/agent-files.py --check` says if a copy is stale, and `tests/unit/agent-files.test.js`
+  fails when one is, so do not edit a copy by hand.
+- Write instructions the way `AGENTS.md` and `docs/CONTRACT.md` are written: "read this file and do that", not "run
+  `/add-feature` in your tool". A command name is portable; the syntax to reach it is not, and it is the one thing
+  that changes between agents. Where a reader needs the syntax, it belongs in that tool's own docs, not here.
 
 Run the checks before you say a feature is done, and tell the person what passed.
 

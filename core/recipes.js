@@ -8,7 +8,7 @@
 //   data(ctx, opts)           -> the values for the placeholders: {profile, items: {header, kinds: {L: rows}}, ...}
 //                             rows are {id, cols}; opts = {options: {<optionId>: value}, args: [route parts after the id]}
 //   options                   [{id, label, choices: [{value, label}], default}] shown as selects, passed in opts.options
-//                             (`default` may be a function of the ctx below, e.g. one value in workshop mode)
+//                             (`default` may be a function of the ctx below, e.g. one value in practice mode)
 //   inputs                    (T3.5) text boxes the person fills in before the question is built:
 //                             [{id, label, help, multiline, max, inputmode}]. Passed to needs(ctx, opts) and data(ctx, opts)
 //                             as opts.inputs = {<inputId>: text} (cut at `max` characters). Kept in memory only.
@@ -26,7 +26,7 @@
 //                             `records` are other records to save (they need their own ids); `text` replaces the
 //                             result line; `render(el)` adds something to the result (for example a choose step).
 //   where                     plain words for "added to <where>" in the result line (optional)
-//   ctx is read-only: {store: {all, get}, profile(), profileLines(), prompt, locale, now(), workshop() (true on a workshop copy), fmt, t, route}.
+//   ctx is read-only: {store: {all, get}, profile(), profileLines(), prompt, locale, now(), workshop() (true in practice mode), fmt, t, route}.
 //   options[].default may be a function of that ctx.
 // Core fills the suggestion records: type, id `s_<code>_<alias>` (or `s_<code>_<hash of title and url>`), recipe,
 // code (the bare code, like the prompt record), status 'new', source 'ai'. An id that exists is never written again.
@@ -388,7 +388,7 @@ window.Desk = window.Desk || {};
     return s.account === 'none' ? T('aiAccountNone') : s.account === 'needed' ? T('aiAccountNeeded') : s.account === 'optional' ? T('aiAccountOptional') : '';
   }
 
-  // An option's default may be a function of the recipe ctx (for example, different in workshop mode).
+  // An option's default may be a function of the recipe ctx (for example, different in practice mode).
   function optDefault(o) { return typeof o.default === 'function' ? o.default(recipeCtx()) : o.default; }
   function optsFor(def) {
     var vals = optionValues[def.id] || {}, out = {};

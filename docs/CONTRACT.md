@@ -8,21 +8,25 @@ frameworks and no build step. Every file is a plain script.
 
 ## 1. A feature is one file
 
+Every example on this page is the same made-up feature, `example` — short notes — which is also the whole of
+`docs/example-feature.js`. It is not a real feature and its id is not one you would build, on purpose: a kit that
+showed a worked example of a feature someone had actually been asked to build would be two features at once.
+
 ```js
-// features/sites.js
+// features/example.js
 Desk.register({
-  id: 'sites',                       // matches the file name; lowercase, a-z and hyphens
-  name: 'Job sites',                 // plain words, shown to people
-  purpose: 'Keep the job sites you use in one place.',
-  types: ['site'],                   // record types this feature owns (may be empty)
-  uses: ['calendar'],                // optional: other features it adds a nicety to when present
-  strings: { addSite: 'Add a site', /* ... */ },
-  css: `.sites-list { /* ... */ }`,
+  id: 'example',                     // matches the file name; lowercase, a-z and hyphens
+  name: 'Notes',                     // plain words, shown to people
+  purpose: 'Keep short notes about your job search.',
+  types: ['note'],                   // record types this feature owns (may be empty)
+  uses: [],                          // optional: other features it adds a nicety to when present
+  strings: { addNote: 'Add a note', /* ... */ },
+  css: `.example-list { /* ... */ }`,
   logic: {                           // pure functions only: no DOM, no Desk globals, no time or random
-    sortSites(sites) { /* ... */ },
+    sortNotes(notes) { /* ... */ },
   },
   mount(ctx) {                       // called once at start; register slots here
-    ctx.slot('tab', { id: 'sites', label: ctx.t('tabLabel'), render: (el) => { /* ... */ } });
+    ctx.slot('tab', { id: 'example', label: ctx.t('tabLabel'), render: (el) => { /* ... */ } });
   },
 });
 ```
@@ -346,10 +350,10 @@ tidy at 1280 and still waste half a real desktop.
 ## 6. Checks
 
 ```js
-// checks/sites.check.js
-Desk.check('sites', (t, f) => {          // f = the registered feature
-  t.ok(f.logic.sortSites([]).length === 0, 'an empty list stays empty');
-  t.eq(f.logic.sortSites([{name:'b'},{name:'a'}])[0].name, 'a', 'sites sort by name');
+// checks/example.check.js
+Desk.check('example', (t, f) => {       // f = the registered feature
+  t.eq(f.logic.sortNotes([]), [], 'an empty list stays empty');
+  t.eq(f.logic.sortNotes([{title:'b',updated:'1'},{title:'a',updated:'2'}])[0].title, 'a', 'newest first');
 });
 ```
 

@@ -816,7 +816,7 @@ Each item has a task in `PLAN.md`. "Mac" means a test Mac in Chrome, then Safari
 |---|---|---|---|
 | V1 | `file://` in Chrome: classic scripts from subfolders, runtime script injection, `onerror` for a missing file, localStorage across reloads, a `fetch` to Togather, clipboard write and read, a blob download, file-picker import, `crypto.randomUUID` | Mac | core |
 | V2 | The CSP `<meta>` on `file://` (folder copy) and when hosted (built file) | Mac plus hosted | security |
-| V3 | A coding agent in a folder copy a host has set up (first: Claude Code, desktop app) honours its permission settings (allow for `features/` and `checks/`, ask for the rest) and runs `bash checks/check.sh <id>` with no prompt | Mac | host folder |
+| V3 | A coding agent in a folder copy a host has set up honours its permission settings (allow for `features/` and `checks/`, ask for the rest) and runs `bash checks/check.sh <id>` with no prompt. At least two agents from different families, since they differ in how they read a permission setting | Mac | host folder |
 | V4 | `osascript -l JavaScript checks/run.js` on macOS 14 (JSC features used by core) | Mac | checks |
 | V5 | The pipe-line answer format on free Claude, plus Gemini and ChatGPT if possible: parse rate, quota kept, invented aliases, fix-it round trip (each run spends real chat-service usage) | trial kit | chat route |
 | V6 | The size of a real events question against what each free service accepts in one paste | trial kit | chat route |

@@ -46,4 +46,9 @@ No package install, external API key, CLI login, or service setup is needed for 
 
 ## Discovery in other harnesses
 
-The canonical skill is this file, stored with its scripts and fixtures. Any harness can follow it by reading the path explicitly. Automatic discovery is harness-specific: a Claude project skill can link here from `.claude/skills/interview-harness/SKILL.md`; Codex can use a link from `.agents/skills/interview-harness/SKILL.md` where writable; other harnesses can install/link their supported skill directory. Do not duplicate the instructions or silently install into a user's home directory. This task's `.agents` directory may be read-only; a manual path invocation is sufficient.
+The canonical skill is this file, stored with its scripts and fixtures. Any agent can follow it by reading the
+path explicitly, and that is enough — a skill directory is a convenience, not a requirement. To have it found
+automatically, add a link or a copy in whatever skill folder your own agent reads, and nothing else in this repo
+changes: this runbook names no tool. Two rules for that. Do not duplicate the instructions, or a change here and
+there drifts apart. And do not install anything into a user's home directory. This task's `.agents` directory may
+be read-only; reading the path by hand is a normal way to run it.

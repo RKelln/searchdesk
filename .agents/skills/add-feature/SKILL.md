@@ -5,8 +5,8 @@ description: Use when someone wants to add or change a Search Desk feature, or h
 
 # Add or change a Search Desk feature
 
-This file is written once, in `tools/skills/`, and copied into each tool's own folder. So it works in Claude Code,
-OpenCode, Codex, Antigravity and Pi. Any other agent that reads `AGENTS.md` can follow it too.
+This file is written once, in `tools/skills/`, and copied into whichever folder the agent you are running reads
+skills from. Any agent that reads `AGENTS.md` can follow it too, with no copy at all.
 
 This is a thin wrapper. The rules live in the docs; read them, do not copy them.
 

@@ -61,40 +61,32 @@ it. Nothing has to be installed: a browser is enough.
 
 ## Path A: an agent in the folder
 
-Use this if you have OpenCode, Claude Code, Codex or a similar agent that can read and save files. It does not have to
-be a paid one: see "Free ways to get help from AI" below.
+Use this if you have any coding agent that can read and save files. It does not have to be a paid one: see "Free
+ways to get help from AI" below.
 
-1. Open the agent in the Search Desk folder.
-2. Tell it what you want. In OpenCode or Claude Code the `add-feature` skill starts by itself. With other agents, say:
-   "Read AGENTS.md, then help me add a feature."
+1. Open your agent in the Search Desk folder.
+2. Tell it what you want. Most find the instructions on their own, because `AGENTS.md` is in the folder. If it
+   does not, say: "Read AGENTS.md, then help me add a feature."
 3. If you do not know what to build, say so. It will ask you one question, then offer ideas one at a time.
 4. The agent writes the file, adds it to `features/list.js`, and runs the checks. It tells you what passed.
 5. Reload the page and open `#selftest`. That is the final check.
 
-In OpenCode or Claude Code you can type these instead of asking in words:
+**Your agent's own way of invoking it.** Every coding agent has one, and they all differ — a slash command, a
+mention, a `$name`, a skill you type by hand. Rather than guess, look for what your tool calls a command or a
+skill and use that name. This repo ships them under names, not syntax:
 
-| Type | What it does |
+| Ask the agent to | It does |
 | --- | --- |
-| `/new-feature` and what you want | The same as the skill. |
-| `/check` and a feature id | Runs that one feature's check. |
-| `/everything` | Runs every check in the repo. |
-| `/kit` | Rebuilds the free-chat kits. |
-| `/screens` | Pictures of every screen, for design work. |
+| add a feature | The same as the `add-feature` skill: brief, build, check, tell you what passed. |
+| check a feature | That one feature's check. Give it the id. |
+| run every check | Every check in the repo. |
+| rebuild the kits | The free-chat kits in `docs/kits/`. |
+| take pictures of the screens | Every screen, for design work. |
 
-They work in both because each one is written once, in `tools/commands/`, and copied into each tool's own folder.
-
-### Which tools get them
-
-| Tool | Where to type a command | `add-feature` skill |
-| --- | --- | --- |
-| OpenCode | `/check` | `@add-feature`, or just ask |
-| Claude Code | `/check` | `/add-feature` |
-| Pi | `/check` | `/skill:add-feature` |
-| Codex | `$check` (no commands left; Codex retired its own) | `$add-feature` |
-| Antigravity | `/check` (its workflow files stop working on 19 October 2026) | `/add-feature` |
-
-Codex and Antigravity get the commands as skills instead of commands, because each has dropped or is about to drop its
-own command files. Every tool reads the same two folders in this repo: `.agents/skills/` and `AGENTS.md`.
+Each one is written once, in `tools/commands/` and `tools/skills/`, and copied into the folders your tool reads
+them from. So the wording you type is yours to discover; what the instruction says is the same for everyone.
+`AGENTS.md` names where the copies go if you want to look, and `python3 tools/agent-files.py --check` says if any
+copy is out of date.
 
 ## Path B: a free chat with a kit
 
@@ -132,22 +124,25 @@ several files, say: "Give me one file only. Put everything in `features/<id>.js`
 
 ## Free ways to get help from AI
 
-Path A does not have to cost money. All of these are free:
+Path A does not have to cost money. What matters is not which agent you use but which **model** is answering: an
+agent is the program that reads and writes your files, and the model is what thinks. Every agent can call a
+provider, and most can be pointed at a different one.
 
 | Way | What you do | Good to know |
 | --- | --- | --- |
-| A free model in OpenCode | Run `/connect` once, then `/models`, and pick a model marked Free. Most are named with `-free` at the end. | It reads and saves files, so it can build a whole feature. |
-| GitHub Copilot Free | Run `/connect`, choose Copilot, and sign in with GitHub. | Easiest if you already have a GitHub account. |
-| A model on your own computer | Install [Ollama](https://ollama.com), run `ollama pull qwen3:8b`, and leave OpenCode open. | No account, no cost, and it works with no internet. Needs a computer with memory to spare. |
+| Your agent's free model | Most agents ship with, or can be connected to, a model that costs nothing. Names vary; free ones are often marked Free or end in `-free`. | It reads and saves files, so it can build a whole feature. Check which model you are on before you start. |
+| A free provider with an account | Sign in to a provider you already have an account for, and point your agent at it. | Easiest if you already have an account with one of them. |
+| A model on your own computer | Install [Ollama](https://ollama.com), run `ollama pull qwen3:8b`, and point your agent at it. | No account, no cost, and it works with no internet. Needs a computer with memory to spare. |
 | A free chat in your browser | Path B above, with a kit from `docs/kits/`. | Nothing to install. You copy and paste. |
 
-Two things to know about free models:
+Two things to know about free models, whatever agent is running them:
 
 - **They miss more than paid ones.** The rules in `AGENTS.md`, under "For a small or free model", are written for them.
   Keep the feature small, and believe the checks instead of your own eyes.
-- **Some of them keep what you send them.** [The list of free models](https://opencode.ai/v2/docs/console/models/)
-  says which ones keep nothing and which ones may use your words to improve the model. Look before you send anything
-  real: a backup file holds a person's name, their jobs and their notes.
+- **Some of them keep what you send them.** Each provider's terms say whether your words are used to improve the
+  model, and whether they are kept at all. Look before you send anything real: a backup file holds a person's name,
+  their jobs and their notes. If your agent can show you which provider and model it is using, that is the place to
+  check.
 
 ## Changing a feature that exists
 

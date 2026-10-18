@@ -6,7 +6,7 @@
 > workshop sentence, i.e. v4 byte for byte, which is what was tested); `--normal` (or `export-prompt.js` without
 > `--workshop`) gives what a normal copy of the app copies (5 questions, no workshop sentence; not harness-tested). The validation note is [docs/coach-prompt.md](../../docs/coach-prompt.md). Model names in
 > [models.json](models.json) and the remarks about "this session" describe the environment the harness was built in
-> (a Codex-style coding harness with Luna and Sol models); use equivalent models in yours and record what you used.
+> (a coding agent CLI with two models it calls); use equivalent models in yours and record what you used.
 > Rosa (the harness person, `fixtures/rosa-v3.md`) and Amira (the app's example person, `docs/inputs/example-person.md`, the accounts-payable clerk) are different made-up people (see "Fixtures" in [SKILL.md](SKILL.md)).
 
 **Fresh session:** read [SKILL.md](SKILL.md) first. It is the portable runbook for models, paths, isolation, trial selection, stopping rules and evidence. The files below are its supporting procedures.
