@@ -12,6 +12,33 @@ The kits are already in this repo at `docs/kits/<id>.txt`, one per feature, all 
 `docs/features/<id>.md`. Do not edit a kit by hand: `python3 tools/kit.py` writes them again, and
 `python3 tools/kit.py --check` says if one is out of date.
 
+## What these features are
+
+They are not exercises, and nothing here is a toy.
+
+Every feature on this list is real work the project wants and has not built yet. The app knows: open the **Data**
+tab and the same list is there under "Ideas you could build", each one with its own brief. Building one means
+writing a file that does a real thing for a real person looking for work — the pay beside the target, the jobs as
+columns by stage, the date a reply was due.
+
+**Some of them will be in Search Desk in a later version.** That is the ordinary way this project grows: a feature
+gets written from its brief, lands in a release, and its brief moves to `docs/built/` and drops off this page. The
+page shrinking over time is the sign it is working, not a sign it is unfinished. `board` already went that way —
+it was its own feature, then became a choice inside Jobs.
+
+So you are doing the project's real work, in the project's real rules, one file at a time. If you take one home it
+still works; nothing here is a demonstration that gets deleted afterwards.
+
+**And the round trip is the point.** A brief in plain words, an AI writing a whole file from it, rules it has to
+follow, and a self-test that says whether it did — that is what building with AI looks like, and this route does it
+with nothing but a browser chat and a text editor. No install, no account beyond the chat, no terminal. It is the
+same brief and the same contract an agent in the folder gets, minus the agent, which is why the result is worth
+having.
+
+One thing to know if you take a feature away with you: if the project later ships its own version of the same idea,
+you will have two files with the same id. Rename yours — an id is yours to choose, and `features/<id>.js` has to
+match `checks/<id>.check.js`. Both then work side by side.
+
 ## Pick a feature
 
 Each idea has a short brief in `docs/features/`, and each has a kit. Pick one:

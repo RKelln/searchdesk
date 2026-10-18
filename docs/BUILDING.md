@@ -30,7 +30,11 @@ Each idea has a short brief in `docs/features/`. Pick one. Not sure? Ask your ag
 | `stories` | Short stories from your work, ready for interview questions. |
 | `week` | How many you applied to, followed up and went to this week. No streaks and no scores. |
 
-The brief is `docs/features/<id>.md`. Want one that is not on that list? See "Your own idea" below. A brief is the
+The brief is `docs/features/<id>.md`. Every one of these is real work the project wants and has not built yet —
+the app lists the same set on its **Data** tab as "Ideas you could build", and a few will be in a later version of
+Search Desk. [`KITS.md`](KITS.md) says more about that, and it is worth reading whether you use an agent or not.
+
+Want one that is not on that list? See "Your own idea" below. A brief is the
 record of what to build, so it is written down whether you use an agent or not — that is what lets the same feature
 be built again later by someone else, or by a chat with no agent at all.
 
