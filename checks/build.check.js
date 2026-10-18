@@ -5,14 +5,21 @@ Desk.check('build', (t, f) => {
   t.ok(typeof f.mount === 'function', 'it has a mount function');
 
   // It is a card made of words, so the words are the whole of it. Every one has to be there.
-  const KEYS = ['slotTitle', 'lead', 'stepsHeading', 'step1', 'step2', 'step3', 'step4',
-    'freeHeading', 'free', 'kitHeading', 'kit', 'note'];
+  const KEYS = ['summary', 'lead', 'stepsHeading', 'step1', 'step2', 'step3', 'step4',
+    'freeHeading', 'free', 'linksHeading', 'opencode', 'opencodeUrl', 'ollama', 'ollamaUrl',
+    'kitHeading', 'kit', 'note'];
   KEYS.forEach((k) => {
     t.ok(typeof f.strings[k] === 'string' && f.strings[k].length > 0, 'string ' + k + ' is there and has words');
   });
 
   // Plain words, at about grade 6. A step you cannot read in one breath is a wall of text.
   t.eq(L.tooLong(f.strings, 200), [], 'no string runs past 200 characters');
+
+  // "Never invent a link." h() drops anything that is not https/http/mailto/tel, so a mistyped address would
+  // quietly render as plain words and read as a missing link rather than a broken one. Check the shape here.
+  ['opencodeUrl', 'ollamaUrl'].forEach((k) => {
+    t.ok(/^https:\/\/[^/\s]+\.[a-z]{2,}(\/|$)/i.test(f.strings[k]), k + ' is an https address h() will keep');
+  });
 
   // The steps are in the order a person does them, and none is a duplicate of another.
   const steps = L.steps((k) => f.strings[k]);
