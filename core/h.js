@@ -33,6 +33,7 @@ window.Desk = window.Desk || {};
       throw new Error('h(): this tag is not allowed: ' + tag);
     }
     var el = doc.createElement(tag);
+    var selectValue; // a value waiting for a select's options to exist (see below)
     var children = Array.prototype.slice.call(arguments, 2);
     // A non-plain second argument (string, node, array) is a child, so h('p', 'text') works.
     if (attrs !== null && attrs !== undefined &&
@@ -52,6 +53,10 @@ window.Desk = window.Desk || {};
           return;
         }
         if (/^on/i.test(name) || BAD_ATTRS.test(name)) return; // handlers only through on: {}
+        // A select's value is a property, not an attribute. <select value="big"> is not a thing: every browser
+        // ignores it and shows the first option, so a control built to show a saved choice would quietly
+        // disagree with it. Hold it until the options are in, or there is nothing to select.
+        if (name === 'value' && String(tag).toLowerCase() === 'select') { selectValue = String(v); return; }
         if (typeof v === 'function' || typeof v === 'object') return;
         if (name === 'href') {
           var href = safeHref(v);
@@ -73,6 +78,12 @@ window.Desk = window.Desk || {};
       });
     }
     addChildren(el, children, doc);
+    if (selectValue !== undefined) {
+      el.value = selectValue;
+      // Nothing matched, which happens when a saved value has gone stale. Go back to the first option rather than
+      // showing a blank control: the rest of the app treats an unrecognised value as the default, not as nothing.
+      if (el.value !== selectValue && el.options.length) el.selectedIndex = 0;
+    }
     return el;
   }
 

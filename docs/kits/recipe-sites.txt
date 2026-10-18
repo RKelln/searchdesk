@@ -157,6 +157,9 @@ first one there.
 - `href` must be `https:`, `http:`, `mailto:` or `tel:` (a phone number: digits, `+`, `-`, spaces, brackets); anything else is dropped. Links get `rel="noopener noreferrer"` and
   open in a new tab.
 - `on: { click: fn }` attaches handlers. `class`, `aria-*`, `data-*` and form attributes pass through.
+- On a `<select>`, `value` picks the option to show, so a control can show what the person chose. `<option value>` is
+  the attribute it always was. If the value matches no option — a saved choice that has gone stale — the select shows
+  its first option rather than a blank control.
 
 ```js
 h('a', { href: job.link }, 'Open the posting')
