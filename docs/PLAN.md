@@ -368,11 +368,51 @@ can follow a day later if it must).
     (features/jobs.js:770) and keeps your place. Measured, both ways, side by side.
   - No `data-test` names at all, which for this brief is not a miss: unlike sites.md, pay.md lists none, so there was
     nothing to use. Worth adding the list to the briefs that lack one, since tests need hooks.
+- **Trial 5, 2026-10-17, Gemini on `print` — the first reply whose logic is entirely right.** 256 lines, `id: 'print'`,
+  contract scan clean, and it met every Done-when in the brief that is about the screen. The check written from the
+  brief's own "Checks to write" list passes **72 of 72**. `todayKey`, `isDay`, `dayOf` and `daysFrom` are all right,
+  including the two the brief warns about by name, and `weekDates`, `lateJobs` and `starredThisWeek` do what it says.
+  Kept at `wip/print-reply.js` with its check at `wip/print.check.js`.
+  - **The check caught nothing, and the first run failed on my own mistake, which is worth recording.** I expected the
+    starred events in the order I had written them down. The brief says "by start, then title", and an event that is
+    on now started on the 15th, so it sorts before one that starts on the 18th: the feature was right and the test was
+    wrong. Writing a check is the same discipline as writing a feature.
+  - **The brief's two date warnings are real hazards and the reply cleared both.** It used the local getters for
+    `todayKey` and `Date.UTC` for `daysFrom`. Proved the test is load-bearing by breaking `todayKey` into
+    `toISOString().slice(0, 10)`, and the check fails — and in this repo's own zone (`America/Toronto`) it fails
+    without needing `TZ` set at all, because a 23:30 local evening is already the next day in UTC. Under `TZ=UTC`
+    the correct feature still passes 72/72, so the test is not failing for the wrong reason. Worth running both ways:
+    in a UTC run a UTC answer looks right.
+  - **Three faults, all in the words rather than the logic, and all of the kind only a person notices.**
+    - `jobTitle`, `eventTitle` and `dateLabel` are declared in `strings` and never used: three strings a translator
+      would translate for nothing. (`interview` and `closes` look dead to a grep and are not — they are reached
+      through `ctx.t(item.kind)`.)
+    - It called the page "Your week", which is the name `week.md` gives its Home block. Two different screens, the
+      same heading, once both features exist.
+    - With nothing to show it says so four times: each of the three sections draws its own empty line, and then
+      "Nothing this week." is added on top. The brief asks for that last one and says nothing about the other three.
+  - No `data-test` names, and here that is expected rather than a miss: this trial ran against `print.md` as it was
+    before the hooks went in, so there was nothing for the reply to use. It is the trial that shows why the briefs
+    needed them.
 - **What the trials say together.** A reply that arrives whole is good: clean scan, right feature, most of the logic,
   the interface words taken from the brief. The two failures that matter are both invisible without work — one is a
   dead branch in logic, one is where the screen goes after Save — and both are what the existing machinery is for:
   `logic` plus a check, and a browser. **The kit path can only ever prove a file loads.** Everything past that is the
   agent's step, and that is the honest shape of path B.
+- **And a check is not the same as a good feature, which trial 5 is the evidence for.** Its check passed 72 of 72 and
+  three faults stood: three strings declared and never used, a heading that collides with another feature's, and a page
+  that says it is empty four times. **All three are in the words, and the words are the one layer nothing checks.**
+  That matters more here than it would elsewhere, because the strings are the layer a translator touches (principle 5
+  in AGENTS.md): a dead string is a string somebody translates for nothing, and a heading that collides is one nobody
+  can fix without reading the other feature. The faults a check catches are the ones you can write down; the ones it
+  misses are the ones you have to read for.
+  - A static scan for a declared string key that never appears again in its own file would catch the dead ones, but
+    `interview` and `closes` in trial 5 are reached dynamically through `ctx.t(item.kind)` and would be flagged too.
+    So it needs a way to say "these are reached some other way", which means a decision, not a grep. Not built;
+    worth deciding before the workshop rather than after.
+  - The collision is the more interesting one and no scan will find it: two features can each be correct alone and
+    wrong together, and nothing in a per-feature check can see the other file. That is an argument for reading a reply
+    against the *other* briefs it lands next to, which is cheap and is what found it here.
 
 ## P1 (by Nov 16)
 
