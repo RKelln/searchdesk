@@ -49,7 +49,9 @@ Read [`docs/CONTRACT.md`](docs/CONTRACT.md). It has the `ctx` API, the slots, `h
    `docs/kits/<id>.txt`, is the one exception: `uv run tools/kit.py` writes that from the brief. Never write a kit by
    hand.
 
-For the person-facing steps (with an agent, or a free chat and a kit), see [`docs/BUILDING.md`](docs/BUILDING.md).
+For the person-facing steps, see [`docs/BUILDING.md`](docs/BUILDING.md) with an agent that reads and writes files,
+and [`docs/KITS.md`](docs/KITS.md) for the copy-and-paste route through a browser chat, which needs nothing
+installed. The kits in `docs/kits/` belong to the second one.
 
 ## Running tests and checks
 

@@ -120,7 +120,8 @@ Start with these:
   (`docs/example-feature.js`).
 - [`docs/DESIGN.md`](docs/DESIGN.md) and [`docs/PLAN.md`](docs/PLAN.md): the design and the task list.
 - [`docs/RECIPES.md`](docs/RECIPES.md): how the instructions sent to AI are made and changed.
-- [`docs/BUILDING.md`](docs/BUILDING.md): how to build a feature with an agent or a free chat.
+- [`docs/BUILDING.md`](docs/BUILDING.md): how to build a feature with a coding agent.
+- [`docs/KITS.md`](docs/KITS.md): the same thing with a free chat and no agent installed.
 - [`docs/features/`](docs/features/): a short brief for each feature not built yet.
 - [`reference/`](reference/): reference builds of some of those features, with their checks and tests. They are
   not loaded by the app.
