@@ -1,16 +1,25 @@
 # Building a feature with a free chat
 
-This page is for building a Search Desk feature with **no agent installed** — a browser chat and a text editor,
-nothing else — **from a feature that is already written up**. If you have a coding agent that reads and saves files,
-do not use this page; [`BUILDING.md`](BUILDING.md) is shorter and better, and it covers your own ideas as well as
-these.
+**Read this only if you cannot install a coding agent.** A locked-down work machine, a library computer, an IT
+policy, no administrator. In that case this page is what still works, and it is here so the project is not dead
+weight on exactly the kind of computer that needs it.
 
-If your idea is not on the list below, go to [`BUILDING.md`](BUILDING.md). This page assumes somebody has already
-done the thinking: there is a brief, and all that is left is turning it into a file.
+If you *can* install an agent that reads and saves files, stop here and use [`BUILDING.md`](BUILDING.md). It is
+shorter, it covers your own ideas as well as the written-up ones, and the agent runs the checks, which is the part
+that matters most. A browser chat on a free tier is the weakest way to build a feature and this page would rather say
+so than dress it up.
+
+If your idea is not on the list below, this page cannot help: it needs a brief somebody already wrote. Go to
+[`BUILDING.md`](BUILDING.md).
 
 Building this way is copy and paste. A **kit** is one text file holding everything the chat needs: the rules, an
 example feature, and the brief for the one you picked. The chat reads it and gives you back one file, which you
 save into the folder. Nothing is installed and no account is needed beyond the chat itself.
+
+**What you give up.** A feature built this way has no check file, so nothing tests its logic — `#selftest` only
+confirms the file follows the rules, and the test is whether the feature does what the brief said when you use it.
+A free chat is also usually a smaller model than the agent would have used, and a kit is a long paste, which some
+free tiers will not accept in one go. If a step here fails twice, stop and use an agent instead.
 
 The kits are already in this repo at `docs/kits/<id>.txt`, one per feature, all written from
 `docs/features/<id>.md`. Do not edit a kit by hand: `python3 tools/kit.py` writes them again, and

@@ -10,10 +10,11 @@ Two ways in, and the difference is only where the idea comes from:
 
 - **You have an idea** and want to see it work. That is this page, and it is the main thing here.
 - **Someone has already written it up** — the ideas in the table below, each with a brief. Point your agent at the
-  brief, or copy it into a browser chat with no agent at all: [`KITS.md`](KITS.md) is that route.
+  brief and it builds the same way.
 
-No agent installed at all? Everything on this page still works by copy and paste, with more steps.
-[`KITS.md`](KITS.md) has them.
+**Cannot install an agent?** A locked-down work machine, a library computer, no administrator? Then nothing here
+will run, and [`KITS.md`](KITS.md) is what still works: the same written-up features, built by copy and paste into
+a browser chat. It is the weaker route and it says so, but it needs no install at all, which is why it exists.
 
 ## Your own idea
 
@@ -98,7 +99,9 @@ provider, and most can be pointed at a different one.
 | A free model in OpenCode | Run `/connect` once, then `/models`, and pick a model marked Free. Most are named with `-free` at the end. | It reads and saves files, so it can build a whole feature. This is the row worth starting from: free models are the exception, and OpenCode is where you get one without an account. |
 | A free provider with an account | Sign in to a provider you already have an account for, and point your agent at it. | Easiest if you already have an account. Check that the free tier includes a model an agent can call — a browser chat and an API key are not always the same thing. |
 | A model on your own computer | Install [Ollama](https://ollama.com), run `ollama pull qwen3:8b`, and point your agent at it. | No account, no cost, and it works with no internet. Needs a computer with memory to spare. |
-| No agent at all | [`KITS.md`](KITS.md): copy a kit into a browser chat. | Nothing to install. The one route that always works, which is why the kits exist. |
+
+All three need an agent you can install. If the machine will not let you install one, none of them apply and
+[`KITS.md`](KITS.md) is the fallback — weaker, but it needs nothing.
 
 If you do not have an agent, [OpenCode](https://opencode.ai) is the one to start with, and the reason is the free
 models rather than the program: it can call a provider that costs nothing, and most of the free models above are
