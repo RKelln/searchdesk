@@ -40,6 +40,39 @@ def jobs(page):
                          "org: j.org, link: j.link, followUp: j.followUp, interviewAt: j.interviewAt, applied: j.applied}))")
 
 
+def open_with_example(page, app):
+    """Add the made-up person on the Data screen, then open the Jobs screen. The default viewport (1280px) is
+    wide, so the Jobs screen opens on the board."""
+    page.goto(app.url + "#data")
+    wait_for_desk(page, started=True)
+    page.wait_for_selector('[data-test="example-try"]')
+    page.click('[data-test="example-try"]')
+    page.wait_for_selector('[data-test="example-remove"]')
+    page.click('[data-test="nav-jobs"]')
+    page.wait_for_selector('[data-screen="jobs"]')
+    page.wait_for_selector('[data-test="job-board"]')
+
+
+def visible_job_ids(page):
+    """The data-id of every job row on screen, sorted. A board card is also a job-row."""
+    return sorted(page.eval_on_selector_all(ROW, "els => els.map(e => e.dataset.id)"))
+
+
+def set_follow_up(page, title, offset):
+    """Move one made-up job's followUp date `offset` whole days from the app's own today (with `put`, not `patch`)."""
+    page.evaluate("""(args) => {
+      const [title, offset] = args;
+      const d = new Date();
+      d.setDate(d.getDate() + offset);
+      const p = (n) => (n < 10 ? '0' : '') + n;
+      const date = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+      const job = Desk.store.all('job').find((j) => j.title === title);
+      Desk.store.put(Object.assign({}, job, { followUp: date }));
+    }""", [title, offset])
+    page.wait_for_function("(t) => { const j = Desk.store.all('job').find((x) => x.title === t); "
+                           "return !!j && !!j.followUp; }", arg=title)
+
+
 def test_jobs_add_edit_stage_delete_undo(page, app):
     open_jobs(page, app)
     assert page.locator('[data-test="job-empty"]').count() == 1
@@ -215,4 +248,75 @@ def test_jobs_selftest_is_green(page, app):
     page.wait_for_function("document.querySelector('[data-test=\"selftest-summary\"]')"
                            " && document.querySelector('[data-test=\"selftest-summary\"]').dataset.status !== 'running'")
     assert page.locator('[data-test="selftest-row-jobs"]').get_attribute("data-status") == "pass"
+    assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_jobs_search_filters_board_and_list(page, app):
+    open_with_example(page, app)
+    assert len(visible_job_ids(page)) == 6
+    # a word in a title matches the two clerk jobs on the board
+    page.fill('[data-test="job-search"]', "clerk")
+    page.wait_for_function("() => document.querySelectorAll('[data-test=job-row]').length === 2")
+    assert visible_job_ids(page) == ["job_amira_ap_clerk", "job_amira_northgate"]
+    # every word has to match: "clerk" (a title) AND "northgate" (a company)
+    page.fill('[data-test="job-search"]', "clerk northgate")
+    page.wait_for_function("() => document.querySelectorAll('[data-test=job-row]').length === 1")
+    assert visible_job_ids(page) == ["job_amira_northgate"]
+    # clearing the box brings every job back
+    page.fill('[data-test="job-search"]', "")
+    page.wait_for_function("() => document.querySelectorAll('[data-test=job-row]').length === 6")
+    assert len(visible_job_ids(page)) == 6
+    # the list filters by the same words
+    show_list(page)
+    assert len(visible_job_ids(page)) == 6
+    page.fill('[data-test="job-search"]', "kingsway")
+    page.wait_for_function("() => document.querySelectorAll('[data-test=job-row]').length === 1")
+    assert visible_job_ids(page) == ["job_amira_kingsway"]
+    assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_jobs_search_box_keeps_the_keyboard_while_you_type(page, app):
+    """Typing must not lose the box. `ui.go()` draws the screen again but deliberately drops the focus, which is
+    right for a button and means a box that filters as you type is taken off you after the first letter.
+    `page.fill()` cannot catch this -- it fires one `input` event, not one per key -- so this test types."""
+    open_with_example(page, app)
+    box = page.locator('[data-test="job-search"]')
+    box.click()
+    box.press_sequentially("clerk", delay=40)
+    page.wait_for_function("() => document.querySelectorAll('[data-test=job-row]').length === 2")
+    assert box.input_value() == "clerk", "the text survives the screen being drawn again"
+    assert page.evaluate("() => document.activeElement && document.activeElement.dataset.test") == "job-search", \
+        "and the box still has the keyboard, or typing would stop after one letter"
+    # Editing in the middle must not throw the caret to the end.
+    page.evaluate("""() => { const i = document.querySelector('[data-test="job-search"]');
+                             i.focus(); i.setSelectionRange(2, 2); }""")
+    page.keyboard.type("X")
+    page.wait_for_function("() => document.querySelector('[data-test=\"job-search\"]').value === 'clXerk'")
+    assert box.input_value() == "clXerk", "the caret stays where it was put"
+    assert_no_errors(page, allow=ALLOW_MISSING)
+
+
+def test_jobs_late_mark_respects_stage_and_threshold(page, app):
+    open_with_example(page, app)
+    # nothing is late to start with: the made-up person's follow-ups are all inside the default 21 days
+    assert page.locator('[data-test="job-late"]').count() == 0
+    # an open job whose follow-up is lateAfter (21) days in the past is marked late
+    set_follow_up(page, "Administrative Assistant", -22)
+    page.wait_for_selector('[data-test="job-late"]')
+    assert page.locator('[data-test="job-row"][data-id="job_amira_lakeview"] [data-test="job-late"]').count() == 1
+    assert page.locator('[data-test="job-late"]').count() == 1
+    # a closed job is never late, whatever its follow-up date
+    set_follow_up(page, "Data Entry Clerk", -22)
+    page.wait_for_function("() => document.querySelectorAll('[data-test=job-row]').length === 6")
+    assert page.locator('[data-test="job-row"][data-id="job_amira_northgate"] [data-test="job-late"]').count() == 0
+    assert page.locator('[data-test="job-late"]').count() == 1
+    # the threshold is a preference on the Data screen: 22 days past is no longer late at 30
+    page.click('[data-test="nav-data"]')
+    page.wait_for_selector('[data-screen="data"]')
+    page.select_option('[data-test="pref-lateAfter"]', "30")
+    page.wait_for_function("() => { const s = Desk.store.get('settings'); return s && s.ext && s.ext.jobs "
+                           "&& s.ext.jobs.lateAfter === 30; }")
+    page.click('[data-test="nav-jobs"]')
+    page.wait_for_selector('[data-test="job-board"]')
+    assert page.locator('[data-test="job-late"]').count() == 0
     assert_no_errors(page, allow=ALLOW_MISSING)
