@@ -6,12 +6,12 @@
 //   2. This interview's context, which the cap does not count: "Candidate profile:" (the shared profile fields and
 //      any stories) and "Job posting:" (the job's facts and its posting text cut to 4,000 characters). Never notes.
 //
-// SOURCE OF THE INSTRUCTIONS: interviewer prompt v4, 2026-10-16, canonical file
-//   events/W04-ai-job-search/prompts/interviewer.txt in the workshop repository (1,481 characters including the final
-//   newline; SHA-256 6c0fe9aa2f1079089c15e8713c95d5419f8b550670519c850872dd15114ed10c). From now on THIS FILE is
-//   the canonical copy (docs/coach-prompt.md explains the validation). With the default options the filled
-//   instructions are that file byte for byte; tests/unit/golden/coach-v4.txt keeps the expected text and
-//   tests/unit/coach.test.js compares them. Change a word, rerun the interview harness (tools/interview-harness/).
+// SOURCE OF THE INSTRUCTIONS: interviewer prompt v4, 2026-10-16 (1,481 characters including the final newline;
+//   SHA-256 6c0fe9aa2f1079089c15e8713c95d5419f8b550670519c850872dd15114ed10c). From now on THIS FILE is the canonical
+//   copy; docs/coach-prompt.md is the design record behind the wording and what was traded for the character budget.
+//   With the default options the filled instructions are that text byte for byte; tests/unit/golden/coach-v4.txt
+//   keeps the expected text and tests/unit/coach.test.js compares them. Change a word, rerun the interview harness
+//   (tools/interview-harness/).
 //
 // HOW THE OPTIONS FIT: v4 has only 19 characters spare, so every option replaces words inside v4's own sentences.
 //   workshop:  " Workshops: fictional person only, never my own details." is in the instructions ONLY on a workshop copy

@@ -1,8 +1,13 @@
-# Maintainer to-do (Ryan)
+# Maintainer to-do
 
-Things only you can do, in rough order of urgency for the Mon Oct 19, 2pm tag. Tick them here as you go.
+Things only the maintainer can do, in rough order of urgency. Tick them here as you go.
 
-## Before the workshop (P0)
+The things that need a person's judgement on content — is this wording right, does this rule match the regulation —
+are here. The things that need a machine are not: they are the verify list in [`DESIGN.md` section
+15](DESIGN.md), V1 to V11, and they are checked by running them. A host who wants to know whether a folder copy works
+on a shared computer should read that list rather than this file.
+
+## Before the next release (P0)
 
 - [ ] **Review the help copy** in `locale/toronto.js` (the 9 entries are listed in full in the T2.4 notes). Check:
   - the paraphrased wording;
@@ -14,35 +19,31 @@ Things only you can do, in rough order of urgency for the Mon Oct 19, 2pm tag. T
   - the URL for the City of Toronto Newcomer Services Kiosks.
 - [ ] **Check the posting rules** against the text of O. Reg. 476/24 (V10): pay range, AI screening, open-now, and
   `replyDays: 45`.
-- [ ] **Review the coach instructions** once the integration lands (`features/recipe-coach.js`, `docs/coach-prompt.md`).
-  The talk marks them as a review item until you accept v4 and its options.
 - [ ] **Accept or change the made-up person's data** in `data/example.js` after T2.6 (from `docs/inputs/example-person.md`).
-- [ ] **Mac test, V1–V4** (the workshop Macs: managed macOS 14, Chrome, no Python, Node or git):
-  - V1: open from `file://`, then check loading, saving across reloads, clipboard, download, file import and the
-    Togather fetch;
-  - V4: `bash checks/check.sh example` runs through `osascript`. This is untested JXA code.
-  - V3: the agent permission settings in a workshop folder.
-- [ ] **Chat-route trials (V5–V6):** a full round trip on the workshop's Claude seat (copy a question, paste the
-  answer), for events, posting and coach.
-- [ ] **Phone check (V8):** the hosted copy on a real phone, including copy, app switch, paste and Undo.
+- [ ] **Review the coach instructions** in `features/recipe-coach.js` and `docs/coach-prompt.md`. The wording is a
+  review item until you accept v4 and its options; what is tested and what is not is written down in
+  `docs/coach-prompt.md`.
+- [ ] Open the hosted copy on a laptop and a phone.
+- [ ] **Decide the cut list** if time is short. The plan's order: the service worker, your own AI tasks (T3.8),
+  `recipe-posting`, and reference features beyond `sites`.
+
+## Deploy
+
 - [x] **DNS** for `searchdesk.ryankelln.com` to GitHub Pages (T4.2). Done 2026-10-16; it resolves to GitHub.
 - [x] **First deploy:** live 2026-10-16 at https://searchdesk.ryankelln.com.
 - [x] **Enforce HTTPS** is on (2026-10-16).
-- [ ] Open the site on a laptop and a phone.
-- [ ] **Decide the cut list** on Sunday night if time is short. The plan's order: the service worker, your own AI
-  tasks (T3.8), `recipe-posting`, and reference features beyond `sites`.
 
 ## Soon after (P1)
 
 - [ ] **Verify the services entries** in the locale: the `account` labels (V9) and `prefill` URLs (V7).
 - [ ] **Togather:** tell me when production exists, so the locale can switch from staging.
-- [ ] **One timed human rehearsal** of the coach round (10 minutes, without facilitator help), as in
-  `docs/coach-prompt.md`.
 
 ## Decided (for the record)
 
 - 2026-10-16: use Togather staging (`staging.toronto.togather.foundation`); there is no production yet.
 - 2026-10-16: `tel:` links are allowed (digits only).
-- 2026-10-16: coach: the line "Workshops: fictional person only" appears only in workshop mode. Workshop mode keeps v4
+- 2026-10-17: the line "Workshops: fictional person only" appears only in practice mode. Practice mode keeps v4
   exactly (3 questions); everyone else gets 5 questions by default (not yet harness-tested).
-- 2026-10-16: two separate made-up people with different names: Rosa (the interview harness, rich background) and Amira (the app's example).
+- 2026-10-17: two separate made-up people with different names: the interview harness candidate (rich background,
+  in `tools/interview-harness/`) and Amira (the app's example, in `data/example.js`). They exist for different
+  reasons: one exercises the prompt, the other shows the app.

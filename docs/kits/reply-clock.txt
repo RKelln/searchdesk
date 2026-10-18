@@ -388,8 +388,10 @@ Desk.check('sites', (t, f) => {          // f = the registered feature
 - **`AGENTS.md`** is the primary rule. For most agents most of the time it is enough.
 - **The self-test** catches what slips through, wherever the app runs and whoever wrote the code. It scans each
   feature's source for the banned words in rule 3.
-- **In a workshop folder,** edits under `features/` and `checks/` are pre-approved. Edits to `core/`, `locale/` and
-  `data/` ask first. Core may need a fix nobody expected, so the person can still say yes, but "I am about to change
+- **In a folder copy a host has set up,** edits under `features/` and `checks/` are pre-approved and edits to
+  `core/`, `locale/` and `data/` ask first. `opencode.jsonc` in this repo is one such setup, and the rule is
+  general: the app's own suggestion settings should make the everyday work silent and the shared code ask. Core
+  may need a fix nobody expected, so the person can still say yes, but "I am about to change
   the app's core" is a visible moment.
 
 ## 8. A complete example

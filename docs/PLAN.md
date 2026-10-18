@@ -2,8 +2,8 @@
 
 > Written 2026-10-16 for implementing agents (Sonnet or similar) working one task at a time. Design: `DESIGN.md`
 > (section numbers below are its). Priorities: **P0** = the first release, tag `2026.10.19`, cut by **Mon Oct 19,
-> 2pm** (a workshop uses it that evening); **P1** = by Nov 16; **P2** = later. Anything specific to one workshop
-> (installing on its machines, its brief) lives with that workshop, not here.
+> 2pm**; **P1** = by Nov 16; **P2** = later. Anything specific to one host or one session — installing it on that
+> host's machines, its facilitator brief — lives with that host, not here.
 
 ## How to work on this repo (read before any task)
 
@@ -20,9 +20,11 @@
 7. **Test before you say done:** `node --test tests/unit/*.test.js`, then `uv run tests/e2e/run.py` once e2e exists (T1.7).
    Paste the summary line into your report. If something cannot be tested on Linux, add it to DESIGN section 15 and
    say so.
-8. **Mac pitfalls to keep in mind** (the first workshop runs on managed macOS 14 Macs in Chrome): no Python, Node
-   or git on them; scripts must be bash 3.2 and BSD-tool safe (`sed -i ''`, no `date -d`, no `timeout`, `shasum -a 256`);
-   Finder drops `.DS_Store` files into folders (ignore them); filenames are case-insensitive.
+8. **Mac pitfalls to keep in mind** (shared computers are often managed macOS Macs in Chrome): `python3` and `git`
+   may be stubs that open an installer dialog, and `node` may be missing — so scripts must be bash 3.2 and
+   BSD-tool safe (`sed -i ''`, no `date -d`, no `timeout`, `shasum -a 256`); `osascript -l JavaScript` runs
+   JavaScript with no browser and no Node; Finder drops `.DS_Store` files into folders (ignore them); filenames are
+   case-insensitive. Test what is actually there rather than assuming either way.
 9. **Commit per task**, message `T<id>: <what>`, and tick the box here in the same commit.
 
 ## Timeline for P0

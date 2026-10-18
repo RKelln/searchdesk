@@ -44,7 +44,7 @@ The id is `<id>`." It writes the brief, builds the file, runs the checks, and wr
 and a feature that someone with no agent can build from later, which is the point of writing the brief down.
 
 **With no agent (Path B), do it by hand.** It is more work, and it is the only way on a computer that has no agent on
-it — some workshop computers have no Python, Node or git.
+it. Nothing has to be installed: a browser is enough.
 
 1. **Write the brief.** A brief is a plain text file in `docs/features/`. Nobody makes it but you and an AI you ask.
    In a free AI chat, say what you want in plain words and answer the two or three questions it asks you. Then open
@@ -56,8 +56,8 @@ it — some workshop computers have no Python, Node or git.
 2. **Make the kit.** `uv run tools/kit.py` (or `python3 tools/kit.py`) writes `docs/kits/<id>.txt` for it, exactly as
    it does for ours. Path B needs that file. No Python? A kit is only three files in order: `docs/CONTRACT.md`, then
    `docs/example-feature.js`, then your brief. Copy all three into one message.
-3. **Carry on.** You now have exactly what every other feature has. Go to Path B above and start at the step that saves
-   the file.
+3. **Carry on.** You now have exactly what every other feature has. Go to **Path B** below and start at step 5, the
+   one that saves the file.
 
 ## Path A: an agent in the folder
 

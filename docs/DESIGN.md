@@ -344,10 +344,12 @@ every loaded feature, plus the contract scan and the core's own checks.
 
 - **`AGENTS.md`** is the primary rule, and for most agents most of the time it is enough.
 - **The self-test** catches what slips through, everywhere the app runs, whoever wrote the code.
-- **In a workshop folder:** agent permission settings pre-approve edits under `features/` and `checks/`, and leave
-  edits to `core/`, `locale/` and `data/` on **ask**, not deny. Core may need a fix nobody anticipated, so the
-  person (or the facilitator) can still say yes. The prompt makes "I am about to change the app's core" a visible
-  moment instead of a silent one (verify that the agent honours the settings).
+- **In a folder copy a host has set up:** agent permission settings pre-approve edits under `features/` and `checks/`,
+  and leave edits to `core/`, `locale/` and `data/` on **ask**, not deny. Core may need a fix nobody anticipated, so
+  the person (or whoever is helping) can still say yes. The prompt makes "I am about to change the app's core" a
+  visible moment instead of a silent one (verify that the agent honours the settings). `opencode.jsonc` is this
+  repo's own version of that setup, so the rule is checkable rather than aspirational: allow `features/*`, `checks/*`
+  and `docs/*`, ask for `core/*`, `locale/*`, `data/*` and `index.html`, deny `git push *`.
 
 ## 8. Features
 
@@ -814,7 +816,7 @@ Each item has a task in `PLAN.md`. "Mac" means a test Mac in Chrome, then Safari
 |---|---|---|---|
 | V1 | `file://` in Chrome: classic scripts from subfolders, runtime script injection, `onerror` for a missing file, localStorage across reloads, a `fetch` to Togather, clipboard write and read, a blob download, file-picker import, `crypto.randomUUID` | Mac | core |
 | V2 | The CSP `<meta>` on `file://` (folder copy) and when hosted (built file) | Mac plus hosted | security |
-| V3 | A coding agent in a workshop folder (first: Claude Code, desktop app) honours its permission settings (allow for `features/` and `checks/`, ask for the rest) and runs `bash checks/check.sh <id>` with no prompt | Mac | workshop |
+| V3 | A coding agent in a folder copy a host has set up (first: Claude Code, desktop app) honours its permission settings (allow for `features/` and `checks/`, ask for the rest) and runs `bash checks/check.sh <id>` with no prompt | Mac | host folder |
 | V4 | `osascript -l JavaScript checks/run.js` on macOS 14 (JSC features used by core) | Mac | checks |
 | V5 | The pipe-line answer format on free Claude, plus Gemini and ChatGPT if possible: parse rate, quota kept, invented aliases, fix-it round trip (each run spends real chat-service usage) | trial kit | chat route |
 | V6 | The size of a real events question against what each free service accepts in one paste | trial kit | chat route |
