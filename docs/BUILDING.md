@@ -50,6 +50,10 @@ Just ask. Say: "I want to add a feature that is not in the list. I want <what yo
 two or three short questions, writes the brief, builds the file, runs the checks, and tells you what passed. Do not
 ask it to write the feature from one vague sentence; the brief is what makes the result match what you wanted.
 
+The brief is the part that outlasts you. It means somebody with no agent at all can build the same feature later by
+pasting it into a browser chat, which is what `docs/kits/` is for. Ask the agent to rebuild the kits afterwards and
+it writes one for your new brief too — the one step here that only makes sense once the brief exists.
+
 ## Build it
 
 1. Open your agent in the Search Desk folder.
@@ -68,7 +72,7 @@ skill and use that name. This repo ships them under names, not syntax:
 | add a feature | The same as the `add-feature` skill: brief, build, check, tell you what passed. |
 | check a feature | That one feature's check. Give it the id. |
 | run every check | Every check in the repo. |
-| rebuild the kits | The free-chat kits in `docs/kits/`. |
+| rebuild the kits | Rewrites `docs/kits/` from the briefs. Only useful once you have written a new one. |
 | take pictures of the screens | Every screen, for design work. |
 
 Each one is written once, in `tools/commands/` and `tools/skills/`, and copied into the folders your tool reads
@@ -127,5 +131,4 @@ so `git diff` shows what changed and `git checkout -- features/<id>.js` puts it 
 ## For agents and developers
 
 The rules are in [`AGENTS.md`](../AGENTS.md) and [`CONTRACT.md`](CONTRACT.md). Checks:
-`node checks/run.js <id>` and `node --test tests/unit/*.test.js`. The free-chat route, its kits, and writing a
-brief by hand are in [`KITS.md`](KITS.md).
+`node checks/run.js <id>` and `node --test tests/unit/*.test.js`. The free-chat route is in [`KITS.md`](KITS.md).
