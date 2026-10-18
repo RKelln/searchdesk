@@ -1,22 +1,107 @@
-======================================================================
-PART 1 OF 4: WHAT TO DO
-======================================================================
+# PART 1 OF 4: WHAT TO DO
 
 You are building one feature file for Search Desk, a job-search helper that runs in a web browser.
 
 Reply with exactly one JavaScript file, in one code block, and nothing else.
 No words before the code block. No words after it.
 
-THE BRIEF AT THE END IS WHAT YOU BUILD. Its id is the id you must use. Read it first.
-The contract below and the example after it show the shape of such a file: the rules to follow and the shape to
+THE BRIEF IN PART 2 IS WHAT YOU BUILD. Its id is the id you must use. Read it first.
+The contract in part 3 and the example in part 4 show the shape of such a file: the rules to follow and the shape to
 copy. The example is not what you are building -- it is a different feature, made up, kept as a model. Do not build
 it, and do not build anything the example shows instead of your brief.
-Follow the contract below. Do not use any of the banned words in it.
+Follow the contract. Do not use any of the banned words in it.
 
 
-======================================================================
-PART 2 OF 4: THE CONTRACT (docs/CONTRACT.md)
-======================================================================
+# PART 2 OF 4: THE BRIEF: WHAT TO BUILD (docs/features/calendar.md)
+
+# Add to calendar  (id: calendar, size: S)
+In plain words: Put an interview or a starred event into your phone's calendar.
+Why someone wants it: A date written in a tracker is easy to miss. In the calendar it gets a reminder.
+
+Done when:
+- [ ] An agent in the folder adds `checks/calendar.check.js`, and `node checks/run.js calendar` passes.
+- [ ] A job's detail view has an "Add the interview to my calendar" button. A job with an `interviewAt` saves a file
+      named like `interview-<job title>.ics`. A job without one shows a toast: "This job has no interview date yet."
+- [ ] Every event row has an "Add to my calendar" button that saves a `.ics` file for that event.
+- [ ] The file opens in the Calendar app on a phone or computer (try it by hand; this part is not a check).
+- [ ] A date with no time becomes an all-day entry. A date with a time becomes a timed entry that lasts 1 hour when
+      there is no end time.
+- [ ] The title, place and link are in the entry. A job entry has the organisation in the title.
+- [ ] Commas, semicolons, backslashes and line breaks in the text are escaped, so a title like `Cook, line; day 2`
+      does not break the file.
+- [ ] Saving the same job twice gives the same entry id (`UID`), so a calendar can replace it, not double it.
+
+Data: none. Reads `job` records (`title`, `org`, `interviewAt`, `where`, `link`) and the event object the slot gives.
+Record types: none. Set `types: []` and `uses: []`.
+Slots: `job.actions`, `event.actions`   Soft uses: none.
+
+Slot details:
+- Each slot entry needs an `id` and a `label`: the words on the button, from your strings (`ctx.t('jobButton')`). Use the ids
+  `calendar-job` and `calendar-event`, so the buttons get the test names `action-calendar-job` and `action-calendar-event`.
+- `job.actions` runs as `run(job)` with the job record. It shows on every job, even one with no interview date.
+- `event.actions` runs as `run(event)` with a copy of the event. The fields are `id`, `title`, `start`, `end`, `venue`,
+  `address`, `url`, `tier`, `tags`. `end` is `''` when there is none, and `venue` and `address` may be empty. The place
+  is `venue` and `address` joined with ", " (leave out the empty one). There is no `where` on an event.
+- A job's fields are `title`, `org`, `where`, `link` and `interviewAt`. The link is `link` (not `url`).
+- The `job.actions` button text is `ctx.t('jobButton')`, and the toast for no date is `ctx.t('noInterview')`.
+  Both strings must be in `strings`.
+ctx calls: `ctx.slot`, `ctx.download`, `ctx.ui.toast`, `ctx.now()` (for the file's stamp), `ctx.t`, `ctx.fmt` if you show the date in
+the toast.
+Dates: `interviewAt` and event `start`/`end` are `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM`, local wall-clock time with no
+zone. Write them as floating local times (`DTSTART:20261022T183000`, all-day: `DTSTART;VALUE=DATE:20261022`), with no
+`Z` and no zone, so the entry stays at that wall-clock time.
+
+Timed and all-day rules:
+- A timed start with no end, or an end that is not later than the start, ends 1 hour later. The hour can cross midnight.
+- A timed start with a later end time uses that end.
+- A date-only start is all day. Its end is the day after the last day (the end date if one is given, else the start date).
+- `DTSTAMP` is the one line that needs a `Z`. It is the time the file was made, in UTC, from `ctx.now()`
+  (for example `DTSTAMP:20261016T120000Z`). Every other date has no `Z`.
+- The check passes the time in. `logic` has no clock, so `icsFor` gets `now` as a Date and reads its UTC parts.
+  Do the date sums with `Date.UTC` only, so no time zone can move an entry.
+- If `start` is not a real date or time, `icsFor` returns `null`. `mount` then shows the `badDate` string.
+
+Entry details:
+- The job's title is `Interview: <job title> at <org>`. Leave out " at <org>" when the job has no org. Make it with a
+  `logic` helper and the prefix string `interviewPrefix` (passed in from `ctx.t`).
+- The event's title is the event's `title`.
+- `LOCATION` is the place, escaped. `URL` is the link, with no escaping and no line breaks. Leave out `LOCATION` and
+  `URL` when they are empty.
+- `UID` is `job-<id>@searchdesk` for a job and `event-<id>@searchdesk` for an event (an event has no type, so the
+  prefix is `event-`). `uidFor(item)` takes the record or event and uses its `id` and `type`.
+- Folding (`foldLine`): count characters, not bytes. A line over 75 characters is cut at 75, and each next piece is 74
+  characters with one space in front.
+
+File name:
+- `fileName(text)` keeps letters, digits and dashes. Every other run of characters (spaces, commas, dots,
+  accents) becomes one dash, and dashes at the ends are removed. It keeps the case, cuts to 75 characters and adds
+  `.ics`. So `interview Line cook` gives `interview-Line-cook.ics`, and `Cook, line / day 2` gives `Cook-line-day-2.ics`.
+  Use it for jobs with `fileName('interview ' + job.title)`.
+- If the name is empty after this, use `event.ics`.
+
+Saving the file: `ctx.download(name, text, type)` saves a text file and returns `true` or `false`. Use
+`ctx.download(fileName(...), icsText, 'text/calendar')`. The name may use only letters, digits, dash, dot and
+underscore (up to 80 characters) and the type must be `text/calendar`, `text/plain`, `text/csv` or `application/json`;
+otherwise it returns `false`, so show a plain toast when it does. Do not build a `Blob` or a link yourself.
+
+Checks to write (in `logic`). Use these names: `escapeText`, `foldLine`, `fileName`, `uidFor`, `icsFor`, `jobTitle`.
+Strings the build needs (all in `strings`): `jobButton`, `eventButton`, `noInterview`, `saved`, `notSaved`, `badDate`,
+`interviewPrefix`. If `ctx.download` returns `false`, show `notSaved`.
+- `icsFor({uid, title, start, end, where, url, now})` returns the text of a calendar file (or `null`, see above). It starts with
+  `BEGIN:VCALENDAR`, ends with `END:VCALENDAR` and a line break, and uses `\r\n` between lines.
+- A date-only start gives `DTSTART;VALUE=DATE:`; a date with a time gives `DTSTART:` without a `Z`.
+- With no end, a timed entry ends 1 hour later; an all-day entry ends the next day.
+- `escapeText('a,b;c\\d\ne')` gives `a\,b\;c\\d\ne` (the line break becomes the two characters `\n`).
+- Lines longer than 75 characters are folded (next line starts with one space).
+- `fileName('Cook, line / day 2')` has only letters, numbers and hyphens, and ends in `.ics`.
+- `uidFor(job)` is the same every time for the same job.
+
+Out of scope: asking for reminders ahead of time (`VALARM`); repeat events; time zones; sending to Google or Outlook.
+Ideas for after: add the follow-up date as an all-day entry; "Add all my starred events" in one file; a reminder
+the day before.
+
+
+# PART 3 OF 4: THE CONTRACT (docs/CONTRACT.md)
 
 # The feature contract
 
@@ -402,176 +487,19 @@ Desk.check('example', (t, f) => {       // f = the registered feature
 
 ## 8. A complete example
 
-This feature keeps short notes. It uses every part of the contract. Its source is `docs/example-feature.js` and its
-check is `docs/example-feature.check.js`; the copies below are identical to those files. Run it with:
+One whole feature, using every part of the contract: `docs/example-feature.js`, with its check in
+`docs/example-feature.check.js`. It keeps short notes.
+
+It is deliberately not printed here. A kit pastes this file *and* the example into one chat, so a second copy would
+be a third of the message for nothing -- and a kit that a free chat cuts short is worse than a kit that is merely
+long. Read the two files beside this page instead, or run the example's check:
 
 ```
 node checks/run.js example
 ```
 
-`checks/run.js` uses the two files in `docs/` when the id is `example`. For any other id it uses `features/<id>.js`
-and `checks/<id>.check.js`. You can also pass paths: `node checks/run.js <id> <featureFile> <checkFile>`.
 
-### The feature
-
-```js
-// features/example.js  (a complete example feature: short notes)
-Desk.register({
-  id: 'example',
-  name: 'Notes',
-  purpose: 'Keep short notes about your job search.',
-  types: ['note'],
-  strings: {
-    tabLabel: 'Notes',
-    heading: 'Your notes',
-    titleLabel: 'Title',
-    textLabel: 'Note',
-    add: 'Add note',
-    remove: 'Remove',
-    removed: 'Note removed.',
-    added: 'Note added.',
-    empty: 'No notes yet. Add your first one above.',
-    needTitle: 'Please give your note a title.',
-    searchLabel: 'Find a note',
-  },
-  css: `
-    .example-form { display: grid; gap: 0.5rem; margin-bottom: 1rem; }
-    .example-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; }
-    .example-note { padding: 0.75rem; border: 1px solid currentColor; border-radius: 0.5rem; }
-    .example-problem { font-weight: bold; }
-  `,
-  logic: {
-    // Newest first. Notes with the same time are put in title order.
-    sortNotes(notes) {
-      return notes.slice().sort((a, b) => {
-        if (a.updated !== b.updated) return a.updated < b.updated ? 1 : -1;
-        return String(a.title).localeCompare(String(b.title));
-      });
-    },
-    // Tidy what the person typed. Returns { ok: true, note } or { ok: false, problem },
-    // where problem is a string key for ctx.t().
-    cleanNote(input) {
-      const title = String(input.title || '').trim();
-      const text = String(input.text || '').trim();
-      if (!title) return { ok: false, problem: 'needTitle' };
-      return { ok: true, note: { type: 'note', title: title, text: text } };
-    },
-    // Notes whose title or text contains the words typed, ignoring capital letters.
-    findNotes(notes, query) {
-      const q = String(query || '').trim().toLowerCase();
-      if (!q) return notes;
-      return notes.filter((n) => (n.title + ' ' + n.text).toLowerCase().indexOf(q) !== -1);
-    },
-  },
-  mount(ctx) {
-    const h = ctx.h;
-    const logic = this.logic;
-    ctx.slot('tab', {
-      id: 'example',
-      label: ctx.t('tabLabel'),
-      order: 90,
-      render(el) {
-        let query = '';
-        const problem = h('p', { class: 'example-problem', role: 'alert' });
-        const title = h('input', { type: 'text', id: 'example-title' });
-        const text = h('textarea', { id: 'example-text', rows: '3' });
-        const list = h('ul', { class: 'example-list' });
-
-        function draw() {
-          const notes = logic.findNotes(logic.sortNotes(ctx.store.all('note')), query);
-          list.textContent = '';
-          if (notes.length === 0) list.append(h('li', {}, ctx.t('empty')));
-          notes.forEach((n) => {
-            list.append(h('li', { class: 'example-note' },
-              h('strong', {}, n.title),
-              h('p', {}, n.text),
-              h('button', { type: 'button', on: { click: () => {
-                ctx.store.batch('Remove note', () => ctx.store.remove(n.id));
-                ctx.ui.toast(ctx.t('removed'));
-                draw();
-              } } }, ctx.t('remove'))));
-          });
-        }
-
-        el.append(
-          h('h2', {}, ctx.t('heading')),
-          h('form', { class: 'example-form', on: { submit: (e) => {
-            e.preventDefault();
-            const result = logic.cleanNote({ title: title.value, text: text.value });
-            problem.textContent = result.ok ? '' : ctx.t(result.problem);
-            if (!result.ok) return;
-            ctx.store.put(result.note);
-            title.value = '';
-            text.value = '';
-            ctx.ui.toast(ctx.t('added'));
-            draw();
-          } } },
-            h('label', { for: 'example-title' }, ctx.t('titleLabel')), title,
-            h('label', { for: 'example-text' }, ctx.t('textLabel')), text,
-            problem,
-            h('button', { type: 'submit' }, ctx.t('add'))),
-          h('label', { for: 'example-search' }, ctx.t('searchLabel')),
-          h('input', { type: 'search', id: 'example-search', on: { input: (e) => {
-            query = e.target.value;
-            draw();
-          } } }),
-          list);
-        draw();
-      },
-    });
-  },
-});
-```
-
-### Its check
-
-```js
-// checks/example.check.js  (the check for the example feature)
-Desk.check('example', (t, f) => {
-  const L = f.logic;
-
-  t.eq(f.id, 'example', 'the feature has its id');
-  t.eq(f.types, ['note'], 'it owns the note type');
-  t.ok(typeof f.mount === 'function', 'it has a mount function');
-
-  t.eq(L.sortNotes([]), [], 'an empty list stays empty');
-  const sorted = L.sortNotes([
-    { title: 'b', updated: '2026-10-01T10:00:00Z' },
-    { title: 'a', updated: '2026-10-02T10:00:00Z' },
-    { title: 'c', updated: '2026-10-01T10:00:00Z' },
-  ]);
-  t.eq(sorted.map((n) => n.title), ['a', 'b', 'c'], 'newest first, then by title');
-
-  const input = [{ title: 'z', updated: '1' }, { title: 'y', updated: '2' }];
-  L.sortNotes(input);
-  t.eq(input[0].title, 'z', 'sorting does not change the list it was given');
-
-  t.eq(L.cleanNote({ title: '   ', text: 'x' }), { ok: false, problem: 'needTitle' }, 'a blank title is refused');
-  t.eq(L.cleanNote({ title: ' Call back ', text: ' soon ' }),
-    { ok: true, note: { type: 'note', title: 'Call back', text: 'soon' } }, 'spaces are trimmed');
-  t.ok(L.cleanNote({ title: 'ok' }).ok, 'the text may be left out');
-  t.ok(f.strings[L.cleanNote({ title: '' }).problem], 'the problem is a real string key');
-
-  const notes = [{ title: 'Library', text: 'Ask about coaching' }, { title: 'Bus', text: 'Route 25' }];
-  t.eq(L.findNotes(notes, 'LIBRARY').length, 1, 'find ignores capital letters');
-  t.eq(L.findNotes(notes, 'route').map((n) => n.title), ['Bus'], 'find looks in the text too');
-  t.eq(L.findNotes(notes, '  ').length, 2, 'an empty search shows everything');
-});
-```
-
-Things to copy from it:
-
-- `logic` holds the thinking (sorting, tidying, finding). It has no DOM, no `Desk`, no clock.
-- `logic` returns a string key for a problem (`needTitle`), and `mount` turns it into words with `ctx.t`.
-- Every word a person sees is in `strings`, in plain short words.
-- All elements come from `h()`. Text goes in as children, never as HTML.
-- Only the `note` type is written, because that is the only type in `types`.
-- Changes that touch records go through `ctx.store`, and removal is one `batch` so it can be undone.
-
-
-======================================================================
-PART 3 OF 4: THE EXAMPLE FEATURE (docs/example-feature.js)
-======================================================================
+# PART 4 OF 4: THE EXAMPLE FEATURE (docs/example-feature.js)
 
 // features/example.js  (a complete example feature: short notes)
 Desk.register({
@@ -679,94 +607,3 @@ Desk.register({
     });
   },
 });
-
-
-======================================================================
-PART 4 OF 4: THE BRIEF FOR YOUR FEATURE (docs/features/calendar.md)
-======================================================================
-
-# Add to calendar  (id: calendar, size: S)
-In plain words: Put an interview or a starred event into your phone's calendar.
-Why someone wants it: A date written in a tracker is easy to miss. In the calendar it gets a reminder.
-
-Done when:
-- [ ] An agent in the folder adds `checks/calendar.check.js`, and `node checks/run.js calendar` passes.
-- [ ] A job's detail view has an "Add the interview to my calendar" button. A job with an `interviewAt` saves a file
-      named like `interview-<job title>.ics`. A job without one shows a toast: "This job has no interview date yet."
-- [ ] Every event row has an "Add to my calendar" button that saves a `.ics` file for that event.
-- [ ] The file opens in the Calendar app on a phone or computer (try it by hand; this part is not a check).
-- [ ] A date with no time becomes an all-day entry. A date with a time becomes a timed entry that lasts 1 hour when
-      there is no end time.
-- [ ] The title, place and link are in the entry. A job entry has the organisation in the title.
-- [ ] Commas, semicolons, backslashes and line breaks in the text are escaped, so a title like `Cook, line; day 2`
-      does not break the file.
-- [ ] Saving the same job twice gives the same entry id (`UID`), so a calendar can replace it, not double it.
-
-Data: none. Reads `job` records (`title`, `org`, `interviewAt`, `where`, `link`) and the event object the slot gives.
-Record types: none. Set `types: []` and `uses: []`.
-Slots: `job.actions`, `event.actions`   Soft uses: none.
-
-Slot details:
-- Each slot entry needs an `id` and a `label`: the words on the button, from your strings (`ctx.t('jobButton')`). Use the ids
-  `calendar-job` and `calendar-event`, so the buttons get the test names `action-calendar-job` and `action-calendar-event`.
-- `job.actions` runs as `run(job)` with the job record. It shows on every job, even one with no interview date.
-- `event.actions` runs as `run(event)` with a copy of the event. The fields are `id`, `title`, `start`, `end`, `venue`,
-  `address`, `url`, `tier`, `tags`. `end` is `''` when there is none, and `venue` and `address` may be empty. The place
-  is `venue` and `address` joined with ", " (leave out the empty one). There is no `where` on an event.
-- A job's fields are `title`, `org`, `where`, `link` and `interviewAt`. The link is `link` (not `url`).
-- The `job.actions` button text is `ctx.t('jobButton')`, and the toast for no date is `ctx.t('noInterview')`.
-  Both strings must be in `strings`.
-ctx calls: `ctx.slot`, `ctx.download`, `ctx.ui.toast`, `ctx.now()` (for the file's stamp), `ctx.t`, `ctx.fmt` if you show the date in
-the toast.
-Dates: `interviewAt` and event `start`/`end` are `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM`, local wall-clock time with no
-zone. Write them as floating local times (`DTSTART:20261022T183000`, all-day: `DTSTART;VALUE=DATE:20261022`), with no
-`Z` and no zone, so the entry stays at that wall-clock time.
-
-Timed and all-day rules:
-- A timed start with no end, or an end that is not later than the start, ends 1 hour later. The hour can cross midnight.
-- A timed start with a later end time uses that end.
-- A date-only start is all day. Its end is the day after the last day (the end date if one is given, else the start date).
-- `DTSTAMP` is the one line that needs a `Z`. It is the time the file was made, in UTC, from `ctx.now()`
-  (for example `DTSTAMP:20261016T120000Z`). Every other date has no `Z`.
-- The check passes the time in. `logic` has no clock, so `icsFor` gets `now` as a Date and reads its UTC parts.
-  Do the date sums with `Date.UTC` only, so no time zone can move an entry.
-- If `start` is not a real date or time, `icsFor` returns `null`. `mount` then shows the `badDate` string.
-
-Entry details:
-- The job's title is `Interview: <job title> at <org>`. Leave out " at <org>" when the job has no org. Make it with a
-  `logic` helper and the prefix string `interviewPrefix` (passed in from `ctx.t`).
-- The event's title is the event's `title`.
-- `LOCATION` is the place, escaped. `URL` is the link, with no escaping and no line breaks. Leave out `LOCATION` and
-  `URL` when they are empty.
-- `UID` is `job-<id>@searchdesk` for a job and `event-<id>@searchdesk` for an event (an event has no type, so the
-  prefix is `event-`). `uidFor(item)` takes the record or event and uses its `id` and `type`.
-- Folding (`foldLine`): count characters, not bytes. A line over 75 characters is cut at 75, and each next piece is 74
-  characters with one space in front.
-
-File name:
-- `fileName(text)` keeps letters, digits and dashes. Every other run of characters (spaces, commas, dots,
-  accents) becomes one dash, and dashes at the ends are removed. It keeps the case, cuts to 75 characters and adds
-  `.ics`. So `interview Line cook` gives `interview-Line-cook.ics`, and `Cook, line / day 2` gives `Cook-line-day-2.ics`.
-  Use it for jobs with `fileName('interview ' + job.title)`.
-- If the name is empty after this, use `event.ics`.
-
-Saving the file: `ctx.download(name, text, type)` saves a text file and returns `true` or `false`. Use
-`ctx.download(fileName(...), icsText, 'text/calendar')`. The name may use only letters, digits, dash, dot and
-underscore (up to 80 characters) and the type must be `text/calendar`, `text/plain`, `text/csv` or `application/json`;
-otherwise it returns `false`, so show a plain toast when it does. Do not build a `Blob` or a link yourself.
-
-Checks to write (in `logic`). Use these names: `escapeText`, `foldLine`, `fileName`, `uidFor`, `icsFor`, `jobTitle`.
-Strings the build needs (all in `strings`): `jobButton`, `eventButton`, `noInterview`, `saved`, `notSaved`, `badDate`,
-`interviewPrefix`. If `ctx.download` returns `false`, show `notSaved`.
-- `icsFor({uid, title, start, end, where, url, now})` returns the text of a calendar file (or `null`, see above). It starts with
-  `BEGIN:VCALENDAR`, ends with `END:VCALENDAR` and a line break, and uses `\r\n` between lines.
-- A date-only start gives `DTSTART;VALUE=DATE:`; a date with a time gives `DTSTART:` without a `Z`.
-- With no end, a timed entry ends 1 hour later; an all-day entry ends the next day.
-- `escapeText('a,b;c\\d\ne')` gives `a\,b\;c\\d\ne` (the line break becomes the two characters `\n`).
-- Lines longer than 75 characters are folded (next line starts with one space).
-- `fileName('Cook, line / day 2')` has only letters, numbers and hyphens, and ends in `.ics`.
-- `uidFor(job)` is the same every time for the same job.
-
-Out of scope: asking for reminders ahead of time (`VALARM`); repeat events; time zones; sending to Google or Outlook.
-Ideas for after: add the follow-up date as an all-day entry; "Add all my starred events" in one file; a reminder
-the day before.

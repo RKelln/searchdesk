@@ -1,22 +1,60 @@
-======================================================================
-PART 1 OF 4: WHAT TO DO
-======================================================================
+# PART 1 OF 4: WHAT TO DO
 
 You are building one feature file for Search Desk, a job-search helper that runs in a web browser.
 
 Reply with exactly one JavaScript file, in one code block, and nothing else.
 No words before the code block. No words after it.
 
-THE BRIEF AT THE END IS WHAT YOU BUILD. Its id is the id you must use. Read it first.
-The contract below and the example after it show the shape of such a file: the rules to follow and the shape to
+THE BRIEF IN PART 2 IS WHAT YOU BUILD. Its id is the id you must use. Read it first.
+The contract in part 3 and the example in part 4 show the shape of such a file: the rules to follow and the shape to
 copy. The example is not what you are building -- it is a different feature, made up, kept as a model. Do not build
 it, and do not build anything the example shows instead of your brief.
-Follow the contract below. Do not use any of the banned words in it.
+Follow the contract. Do not use any of the banned words in it.
 
 
-======================================================================
-PART 2 OF 4: THE CONTRACT (docs/CONTRACT.md)
-======================================================================
+# PART 2 OF 4: THE BRIEF: WHAT TO BUILD (docs/features/week.md)
+
+# This week  (id: week, size: S)
+In plain words: How many you applied to, followed up and went to this week. No streaks and no scores.
+Why someone wants it: Job searching feels endless. A small plain count of what you did this week shows that you are
+moving, without pressure.
+
+Done when:
+- [ ] An agent in the folder adds `checks/week.check.js`, and `node checks/run.js week` passes.
+- [ ] Home shows a "Your week" block with three counts for the last 7 days (today and the 6 days before): "Applied to
+      N", "Followed up N times", "Went to N events".
+- [ ] "Applied to" counts jobs whose `applied` date is in those 7 days.
+- [ ] "Went to events" counts starred events (`event-mark`, status `starred`) whose start date is in those 7 days and
+      is not after today.
+- [ ] "Followed up" counts the dates saved by this feature's button. Each job's detail view has an "I followed up
+      today" button (a `job.actions` entry) that adds today's date to the job's `ext.week.followedUp` list (no
+      repeat dates). The toast can Undo it.
+- [ ] When all three counts are 0 the block says "Nothing yet this week. A small step counts." and shows no numbers.
+- [ ] No streaks, no scores, no goals, no red or green marks, and no comparison with other weeks. Words stay kind.
+
+Data: `ext.week` on `job`: `{followedUp: ['YYYY-MM-DD', ...]}`. Owns no record type.
+Record types: none.
+Slots: `home`, `job.actions`   Soft uses: none. (Starred events come from `event-mark` records; if there are none the
+count is 0.)
+ctx calls: `ctx.slot('home', {id, render(el)})`, `ctx.slot('job.actions', {id, label, run(job)})`,
+`ctx.store.all('job')`, `ctx.store.all('event-mark')`, `ctx.store.ext(job.id, {followedUp})`, `ctx.now()`,
+`ctx.ui.toast(text, {undo: true})`, `ctx.t`, `ctx.h`.
+Dates: `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM`; compare the first ten characters.
+
+Checks to write (in `logic`; `today` is `YYYY-MM-DD`):
+- `windowStart(today)` is the day 6 days before.
+- `countApplied(jobs, today)` counts `applied` dates inside the window; skips deleted jobs.
+- `countFollowed(jobs, today)` counts saved follow-up dates inside the window, across all jobs.
+- `countEvents(marks, today)` counts starred marks with `copy.start` inside the window and not after today.
+- `addFollowDate(list, today)` returns a new list without a repeat, and sorted.
+- `allZero(counts)` is true only when every count is 0.
+
+Out of scope: goals; targets; streaks; weekly emails; scores of any kind.
+Ideas for after: "Last week" beside it (just numbers); the same counts in the `print` summary; a gentle line when the
+week had a hard stretch.
+
+
+# PART 3 OF 4: THE CONTRACT (docs/CONTRACT.md)
 
 # The feature contract
 
@@ -402,176 +440,19 @@ Desk.check('example', (t, f) => {       // f = the registered feature
 
 ## 8. A complete example
 
-This feature keeps short notes. It uses every part of the contract. Its source is `docs/example-feature.js` and its
-check is `docs/example-feature.check.js`; the copies below are identical to those files. Run it with:
+One whole feature, using every part of the contract: `docs/example-feature.js`, with its check in
+`docs/example-feature.check.js`. It keeps short notes.
+
+It is deliberately not printed here. A kit pastes this file *and* the example into one chat, so a second copy would
+be a third of the message for nothing -- and a kit that a free chat cuts short is worse than a kit that is merely
+long. Read the two files beside this page instead, or run the example's check:
 
 ```
 node checks/run.js example
 ```
 
-`checks/run.js` uses the two files in `docs/` when the id is `example`. For any other id it uses `features/<id>.js`
-and `checks/<id>.check.js`. You can also pass paths: `node checks/run.js <id> <featureFile> <checkFile>`.
 
-### The feature
-
-```js
-// features/example.js  (a complete example feature: short notes)
-Desk.register({
-  id: 'example',
-  name: 'Notes',
-  purpose: 'Keep short notes about your job search.',
-  types: ['note'],
-  strings: {
-    tabLabel: 'Notes',
-    heading: 'Your notes',
-    titleLabel: 'Title',
-    textLabel: 'Note',
-    add: 'Add note',
-    remove: 'Remove',
-    removed: 'Note removed.',
-    added: 'Note added.',
-    empty: 'No notes yet. Add your first one above.',
-    needTitle: 'Please give your note a title.',
-    searchLabel: 'Find a note',
-  },
-  css: `
-    .example-form { display: grid; gap: 0.5rem; margin-bottom: 1rem; }
-    .example-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; }
-    .example-note { padding: 0.75rem; border: 1px solid currentColor; border-radius: 0.5rem; }
-    .example-problem { font-weight: bold; }
-  `,
-  logic: {
-    // Newest first. Notes with the same time are put in title order.
-    sortNotes(notes) {
-      return notes.slice().sort((a, b) => {
-        if (a.updated !== b.updated) return a.updated < b.updated ? 1 : -1;
-        return String(a.title).localeCompare(String(b.title));
-      });
-    },
-    // Tidy what the person typed. Returns { ok: true, note } or { ok: false, problem },
-    // where problem is a string key for ctx.t().
-    cleanNote(input) {
-      const title = String(input.title || '').trim();
-      const text = String(input.text || '').trim();
-      if (!title) return { ok: false, problem: 'needTitle' };
-      return { ok: true, note: { type: 'note', title: title, text: text } };
-    },
-    // Notes whose title or text contains the words typed, ignoring capital letters.
-    findNotes(notes, query) {
-      const q = String(query || '').trim().toLowerCase();
-      if (!q) return notes;
-      return notes.filter((n) => (n.title + ' ' + n.text).toLowerCase().indexOf(q) !== -1);
-    },
-  },
-  mount(ctx) {
-    const h = ctx.h;
-    const logic = this.logic;
-    ctx.slot('tab', {
-      id: 'example',
-      label: ctx.t('tabLabel'),
-      order: 90,
-      render(el) {
-        let query = '';
-        const problem = h('p', { class: 'example-problem', role: 'alert' });
-        const title = h('input', { type: 'text', id: 'example-title' });
-        const text = h('textarea', { id: 'example-text', rows: '3' });
-        const list = h('ul', { class: 'example-list' });
-
-        function draw() {
-          const notes = logic.findNotes(logic.sortNotes(ctx.store.all('note')), query);
-          list.textContent = '';
-          if (notes.length === 0) list.append(h('li', {}, ctx.t('empty')));
-          notes.forEach((n) => {
-            list.append(h('li', { class: 'example-note' },
-              h('strong', {}, n.title),
-              h('p', {}, n.text),
-              h('button', { type: 'button', on: { click: () => {
-                ctx.store.batch('Remove note', () => ctx.store.remove(n.id));
-                ctx.ui.toast(ctx.t('removed'));
-                draw();
-              } } }, ctx.t('remove'))));
-          });
-        }
-
-        el.append(
-          h('h2', {}, ctx.t('heading')),
-          h('form', { class: 'example-form', on: { submit: (e) => {
-            e.preventDefault();
-            const result = logic.cleanNote({ title: title.value, text: text.value });
-            problem.textContent = result.ok ? '' : ctx.t(result.problem);
-            if (!result.ok) return;
-            ctx.store.put(result.note);
-            title.value = '';
-            text.value = '';
-            ctx.ui.toast(ctx.t('added'));
-            draw();
-          } } },
-            h('label', { for: 'example-title' }, ctx.t('titleLabel')), title,
-            h('label', { for: 'example-text' }, ctx.t('textLabel')), text,
-            problem,
-            h('button', { type: 'submit' }, ctx.t('add'))),
-          h('label', { for: 'example-search' }, ctx.t('searchLabel')),
-          h('input', { type: 'search', id: 'example-search', on: { input: (e) => {
-            query = e.target.value;
-            draw();
-          } } }),
-          list);
-        draw();
-      },
-    });
-  },
-});
-```
-
-### Its check
-
-```js
-// checks/example.check.js  (the check for the example feature)
-Desk.check('example', (t, f) => {
-  const L = f.logic;
-
-  t.eq(f.id, 'example', 'the feature has its id');
-  t.eq(f.types, ['note'], 'it owns the note type');
-  t.ok(typeof f.mount === 'function', 'it has a mount function');
-
-  t.eq(L.sortNotes([]), [], 'an empty list stays empty');
-  const sorted = L.sortNotes([
-    { title: 'b', updated: '2026-10-01T10:00:00Z' },
-    { title: 'a', updated: '2026-10-02T10:00:00Z' },
-    { title: 'c', updated: '2026-10-01T10:00:00Z' },
-  ]);
-  t.eq(sorted.map((n) => n.title), ['a', 'b', 'c'], 'newest first, then by title');
-
-  const input = [{ title: 'z', updated: '1' }, { title: 'y', updated: '2' }];
-  L.sortNotes(input);
-  t.eq(input[0].title, 'z', 'sorting does not change the list it was given');
-
-  t.eq(L.cleanNote({ title: '   ', text: 'x' }), { ok: false, problem: 'needTitle' }, 'a blank title is refused');
-  t.eq(L.cleanNote({ title: ' Call back ', text: ' soon ' }),
-    { ok: true, note: { type: 'note', title: 'Call back', text: 'soon' } }, 'spaces are trimmed');
-  t.ok(L.cleanNote({ title: 'ok' }).ok, 'the text may be left out');
-  t.ok(f.strings[L.cleanNote({ title: '' }).problem], 'the problem is a real string key');
-
-  const notes = [{ title: 'Library', text: 'Ask about coaching' }, { title: 'Bus', text: 'Route 25' }];
-  t.eq(L.findNotes(notes, 'LIBRARY').length, 1, 'find ignores capital letters');
-  t.eq(L.findNotes(notes, 'route').map((n) => n.title), ['Bus'], 'find looks in the text too');
-  t.eq(L.findNotes(notes, '  ').length, 2, 'an empty search shows everything');
-});
-```
-
-Things to copy from it:
-
-- `logic` holds the thinking (sorting, tidying, finding). It has no DOM, no `Desk`, no clock.
-- `logic` returns a string key for a problem (`needTitle`), and `mount` turns it into words with `ctx.t`.
-- Every word a person sees is in `strings`, in plain short words.
-- All elements come from `h()`. Text goes in as children, never as HTML.
-- Only the `note` type is written, because that is the only type in `types`.
-- Changes that touch records go through `ctx.store`, and removal is one `batch` so it can be undone.
-
-
-======================================================================
-PART 3 OF 4: THE EXAMPLE FEATURE (docs/example-feature.js)
-======================================================================
+# PART 4 OF 4: THE EXAMPLE FEATURE (docs/example-feature.js)
 
 // features/example.js  (a complete example feature: short notes)
 Desk.register({
@@ -679,47 +560,3 @@ Desk.register({
     });
   },
 });
-
-
-======================================================================
-PART 4 OF 4: THE BRIEF FOR YOUR FEATURE (docs/features/week.md)
-======================================================================
-
-# This week  (id: week, size: S)
-In plain words: How many you applied to, followed up and went to this week. No streaks and no scores.
-Why someone wants it: Job searching feels endless. A small plain count of what you did this week shows that you are
-moving, without pressure.
-
-Done when:
-- [ ] An agent in the folder adds `checks/week.check.js`, and `node checks/run.js week` passes.
-- [ ] Home shows a "Your week" block with three counts for the last 7 days (today and the 6 days before): "Applied to
-      N", "Followed up N times", "Went to N events".
-- [ ] "Applied to" counts jobs whose `applied` date is in those 7 days.
-- [ ] "Went to events" counts starred events (`event-mark`, status `starred`) whose start date is in those 7 days and
-      is not after today.
-- [ ] "Followed up" counts the dates saved by this feature's button. Each job's detail view has an "I followed up
-      today" button (a `job.actions` entry) that adds today's date to the job's `ext.week.followedUp` list (no
-      repeat dates). The toast can Undo it.
-- [ ] When all three counts are 0 the block says "Nothing yet this week. A small step counts." and shows no numbers.
-- [ ] No streaks, no scores, no goals, no red or green marks, and no comparison with other weeks. Words stay kind.
-
-Data: `ext.week` on `job`: `{followedUp: ['YYYY-MM-DD', ...]}`. Owns no record type.
-Record types: none.
-Slots: `home`, `job.actions`   Soft uses: none. (Starred events come from `event-mark` records; if there are none the
-count is 0.)
-ctx calls: `ctx.slot('home', {id, render(el)})`, `ctx.slot('job.actions', {id, label, run(job)})`,
-`ctx.store.all('job')`, `ctx.store.all('event-mark')`, `ctx.store.ext(job.id, {followedUp})`, `ctx.now()`,
-`ctx.ui.toast(text, {undo: true})`, `ctx.t`, `ctx.h`.
-Dates: `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM`; compare the first ten characters.
-
-Checks to write (in `logic`; `today` is `YYYY-MM-DD`):
-- `windowStart(today)` is the day 6 days before.
-- `countApplied(jobs, today)` counts `applied` dates inside the window; skips deleted jobs.
-- `countFollowed(jobs, today)` counts saved follow-up dates inside the window, across all jobs.
-- `countEvents(marks, today)` counts starred marks with `copy.start` inside the window and not after today.
-- `addFollowDate(list, today)` returns a new list without a repeat, and sorted.
-- `allZero(counts)` is true only when every count is 0.
-
-Out of scope: goals; targets; streaks; weekly emails; scores of any kind.
-Ideas for after: "Last week" beside it (just numbers); the same counts in the `print` summary; a gentle line when the
-week had a hard stretch.

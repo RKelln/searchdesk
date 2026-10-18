@@ -320,6 +320,35 @@ can follow a day later if it must).
   - Trial 1's reply and trial 2's are kept at `/tmp/opencode/t63-trial2/` for comparison. Still to trial: `pay` (whose
     choices come from data rather than a fixed list), and one more. **Trial 2 says nothing about a weak model**, which
     is the case AGENTS.md is written for.
+- **Trial 3, 2026-10-17, Gemini on `pay` — and the finding that invalidates trials 1 and 2 as kit tests.** The reply was
+  a complete `sites` feature: a different planned feature, with pay nowhere in it. Measured rather than argued, the
+  reply's `mount` is `docs/example-feature.js` renamed — 10 of the example's 29 significant statements appear verbatim
+  once the names are normalised away, and all 10 are structural.
+  - **The cause was not the model. The kit never arrived.** A kit was 40,594 bytes and Gemini's paste stopped at
+    31,958, which is exactly where the tail used to begin: PART 3 (the example) and PART 4 (the brief) were both lost.
+    **The model was never shown the brief.** It built what it had, which was the contract's own `sites` skeleton near
+    the top. That also means the earlier reading — that the contract's `sites` example was pulling the reply — was not
+    supported by the evidence, though the change made for it is still right on its own terms (one example, never a
+    real feature's id).
+  - `tools/kit.py` warns at 60,000 bytes, which was 20,000 more than one free chat would take. Tightened: the brief is
+    now PART 2, immediately after the instruction, so a kit that is cut short still says what to build. Everything
+    that decides the outcome — instruction, brief, the whole contract — is now delivered by 29,619 bytes. Formatting
+    was measured rather than guessed: separators, blank lines, fences and comments come to 1,790 bytes, 4.4% of a kit,
+    so trimming them is worth doing and cannot be what fixes this. CONTRACT.md section 8 was a verbatim second copy of
+    the example the kit already ships in PART 3, and is now a pointer to the two files.
+  - **The reorder exposed a real bug in `docs/kits/index.html`.** `page()` hardcoded "parts 1-3 are shared, part 4 is
+    the brief", so every kit on the page would have been handed the *first* brief. Deriving shared-from-own instead of
+    counting still put the brief last, because joining two groups loses the order. It now emits one ordered list. Found
+    by a probe that opens the page, presses all 14 buttons, and compares each assembled kit byte-for-byte with the
+    .txt file beside it — 8/8, and it is the check that would have caught either version of this bug.
+  - **The reply, kept at `/tmp/opencode/sites-trial/gemini-sites-reply.js`, met 6 of 13 of its own brief's criteria.**
+    No note field, no edit, no link validation (so it required a link, stored a `javascript:` URL, and refused no
+    duplicate links), sorted newest-first instead of by name, delete with no Undo, neither the locale's starting sites
+    nor the AI-lead lane, and none of the 21 `data-test` names the brief lists. Right: pure logic in `logic` rather
+    than mount, and although it never validates a URL, `h()` refused to render the `javascript:` one — the safety net
+    caught what the feature missed.
+  - **So `pay` has still not been trialled.** Trials 1 and 2 (bigtext, ChatGPT) are valid: that chat took the whole
+    40k. Gemini's does not. Worth knowing before reading anything into the model comparison.
 
 ## P1 (by Nov 16)
 

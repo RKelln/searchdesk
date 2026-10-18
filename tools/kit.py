@@ -29,15 +29,17 @@ INSTRUCTION = """You are building one feature file for Search Desk, a job-search
 Reply with exactly one JavaScript file, in one code block, and nothing else.
 No words before the code block. No words after it.
 
-THE BRIEF AT THE END IS WHAT YOU BUILD. Its id is the id you must use. Read it first.
-The contract below and the example after it show the shape of such a file: the rules to follow and the shape to
+THE BRIEF IN PART 2 IS WHAT YOU BUILD. Its id is the id you must use. Read it first.
+The contract in part 3 and the example in part 4 show the shape of such a file: the rules to follow and the shape to
 copy. The example is not what you are building -- it is a different feature, made up, kept as a model. Do not build
 it, and do not build anything the example shows instead of your brief.
-Follow the contract below. Do not use any of the banned words in it."""
+Follow the contract. Do not use any of the banned words in it."""
 
 
 def sep(title):
-    return "\n\n" + "=" * 70 + "\n" + title + "\n" + "=" * 70 + "\n\n"
+    # Just a heading. A kit is pasted into a chat that may cut it short, so every byte here is a byte not spent on
+    # the contract or the brief, and a row of dashes under four headings is 248 bytes of nothing.
+    return "\n\n# " + title + "\n\n"
 
 
 def read(path):
@@ -56,12 +58,18 @@ def build(brief):
 # The four parts of a kit, built exactly as build() used to build them, kept apart so docs/kits/index.html can embed
 # parts 1-3 once and each brief's part 4 once, then join them in the browser. One copy of the separators, so the page
 # and the .txt files cannot drift apart.
+#
+# The brief is part 2, not part 4, and that is the whole point of the order. A free chat can cut a long paste short:
+# the T6.3 trial had Gemini stop at 32k bytes of a 40k kit, which is exactly where the tail used to start, so the
+# model never saw the brief at all and built a different feature. The brief is short and the contract is long, so the
+# brief goes first: if the paste is cut again the person still gets what to build, which is the one thing that decides
+# what comes back. Everything after it is how to build it well.
 def segments(brief):
     return (
         sep("PART 1 OF 4: WHAT TO DO").lstrip("\n") + INSTRUCTION + "\n",
-        sep("PART 2 OF 4: THE CONTRACT (docs/CONTRACT.md)") + read(DOCS / "CONTRACT.md"),
-        sep("PART 3 OF 4: THE EXAMPLE FEATURE (docs/example-feature.js)") + read(DOCS / "example-feature.js"),
-        sep("PART 4 OF 4: THE BRIEF FOR YOUR FEATURE (docs/features/" + brief.name + ")") + read(brief),
+        sep("PART 2 OF 4: THE BRIEF: WHAT TO BUILD (docs/features/" + brief.name + ")") + read(brief),
+        sep("PART 3 OF 4: THE CONTRACT (docs/CONTRACT.md)") + read(DOCS / "CONTRACT.md"),
+        sep("PART 4 OF 4: THE EXAMPLE FEATURE (docs/example-feature.js)") + read(DOCS / "example-feature.js"),
     )
 
 
@@ -123,7 +131,7 @@ PAGE_JS = """    // Each part is base64 so no HTML escaping or newline rule can 
       for (var i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
       return new TextDecoder('utf-8').decode(bytes);
     }
-    var SHARED = ['k1', 'k2', 'k3'];
+    var PARTS = __PARTS__;
     var status = document.getElementById('status');
     var box = document.getElementById('box');
     function show(kit) {
@@ -138,8 +146,7 @@ PAGE_JS = """    // Each part is base64 so no HTML escaping or newline rule can 
       buttons[b].addEventListener('click', function () {
         var id = this.getAttribute('data-kit');
         var kit = '';
-        for (var s = 0; s < SHARED.length; s++) kit += part(SHARED[s]);
-        kit += part('k4-' + id);
+        for (var i = 0; i < PARTS.length; i++) kit += part(PARTS[i].replace('@', id));
         try {
           if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(kit).then(function () { status.textContent = 'Copied.'; },
@@ -155,7 +162,14 @@ PAGE_JS = """    // Each part is base64 so no HTML escaping or newline rule can 
 def page(briefs):
     """docs/kits/index.html: the same kits as a list with a Copy button each. No network, no build step, opens from
     a file:// path. Generated here so `kit.py --check` says when it is stale."""
-    shared = segments(briefs[0])[:3]
+    # Which parts are the same in every kit, and which one holds this brief? Work it out by comparing rather than
+    # by counting: a fixed index would quietly hand every kit the first brief when the parts are reordered, which is
+    # exactly what happened when the brief moved from part 4 to part 2.
+    base = segments(briefs[0])
+    allsegs = [segments(b) for b in briefs]
+    shared_i = [i for i in range(len(base)) if all(segs[i] == base[i] for segs in allsegs)]
+    own_i = [i for i in range(len(base)) if i not in shared_i]
+    shared = [base[i] for i in shared_i]
     cards = []
     for brief in briefs:
         title, size, plain = brief_facts(brief)
@@ -172,9 +186,22 @@ def page(briefs):
             % (esc(title), ' <span class="size">%s</span>' % esc(size) if size else '',
                esc(plain), brief.stem, brief.stem, brief.stem)
         )
-    hidden = ['    <pre hidden id="%s">%s</pre>' % (n, b64(t)) for n, t in zip(['k1', 'k2', 'k3'], shared)]
-    for brief in briefs:
-        hidden.append('    <pre hidden id="k4-%s">%s</pre>' % (brief.stem, b64(segments(brief)[3])))
+    shn = ['k%d' % (i + 1) for i in range(len(shared))]
+    onn = ['k%d' % (i + len(shared) + 1) for i in range(len(own_i))]
+    hidden = ['    <pre hidden id="%s">%s</pre>' % (n, b64(t)) for n, t in zip(shn, shared)]
+    for brief, segs in zip(briefs, allsegs):
+        for n, i in zip(onn, own_i):
+            hidden.append('    <pre hidden id="%s-%s">%s</pre>' % (n, brief.stem, b64(segs[i])))
+    # The ids in the order the parts must come out, with '@' where the kit's own id goes. An ordered list, not two
+    # groups: joining "the shared parts" then "the parts for this brief" moves the brief to the end, and the brief
+    # being second is the whole point of the kit.
+    order = []
+    for i in range(len(base)):
+        if i in own_i:
+            order.append(onn[own_i.index(i)] + '-@')
+        else:
+            order.append(shn[shared_i.index(i)])
+    page_parts = str(order)
     return (
         "<!DOCTYPE html>\n"
         '<html lang="en">\n'
@@ -202,7 +229,9 @@ def page(briefs):
         '  <textarea id="box" readonly hidden aria-label="The kit you chose"></textarea>\n'
         '  <p class="status" role="status" id="status"></p>\n'
         + "\n".join(hidden) + "\n"
-        "<script>\n" + PAGE_JS + "\n</script>\n"
+        "<script>\n"
+        + PAGE_JS.replace("__PARTS__", page_parts)
+        + "\n</script>\n"
         "</main>\n"
         "</body>\n"
         "</html>\n"
