@@ -4,7 +4,7 @@ Why someone wants it: Job searching means many sites and it is easy to lose trac
 gives the AI's "new place to look" leads a home: you can take one, and it becomes a site.
 
 Done when:
-- [ ] `node checks/run.js sites` passes.
+- [ ] An agent in the folder adds `checks/sites.check.js`, and `node checks/run.js sites` passes.
 - [ ] A "Job sites" item is in the menu. It shows your sites, sorted by name, each with its name, its note, and a link
       that opens in a new tab.
 - [ ] You can add a site (name, link, note), edit it, and delete it. Delete can be undone with the toast's Undo.

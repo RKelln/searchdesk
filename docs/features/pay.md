@@ -4,7 +4,7 @@ Why someone wants it: Pay is easy to forget between postings. Seeing both number
 when an employer asks what you expect.
 
 Done when:
-- [ ] `node checks/run.js pay` passes.
+- [ ] An agent in the folder adds `checks/pay.check.js`, and `node checks/run.js pay` passes.
 - [ ] A job's detail view has a "Pay" section with two boxes: "The posting says" and "What I am aiming for". Each is a
       yearly amount or an hourly amount (a choice), with a low number and an optional high number.
 - [ ] Saving writes `ext.pay` on the job and shows a short plain summary, for example "The posting says $20 to $24 an

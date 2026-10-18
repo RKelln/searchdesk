@@ -4,7 +4,7 @@ Why someone wants it: Interviewers ask for examples ("Tell me about a time...").
 wrote a few down in advance.
 
 Done when:
-- [ ] `node checks/run.js stories` passes.
+- [ ] An agent in the folder adds `checks/stories.check.js`, and `node checks/run.js stories` passes.
 - [ ] A "My examples" item is in the menu. It lists the stories, newest first, with a title and the first line.
 - [ ] You can add, edit and delete a story. A title and some text are needed. Delete can be undone with the toast's Undo.
 - [ ] The form shows a small guide: "What was going on? What did you do? What happened?" (three plain prompts, as

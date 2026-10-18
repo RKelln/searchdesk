@@ -3,7 +3,7 @@ In plain words: Suggests job sites and organisations for your kind of work, as s
 Why someone wants it: Most people only know the big job sites. A good list for your trade or field is hard to find.
 
 Done when:
-- [ ] `node checks/run.js recipe-sites` passes.
+- [ ] An agent in the folder adds `checks/recipe-sites.check.js`, and `node checks/run.js recipe-sites` passes.
 - [ ] The AI helper screen lists a "Sites for my field" task. It needs the `sites` feature: if `ctx.has('sites')`
       is false the task's `needs` says "This task needs the Job sites feature." (the recipe is still listed).
 - [ ] `needs` also says "Add the kind of work you look for in About me" when the shared profile has no roles line.

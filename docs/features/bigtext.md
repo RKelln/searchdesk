@@ -3,7 +3,7 @@ In plain words: Larger text and stronger contrast, remembered on this device.
 Why someone wants it: Small grey text is hard to read for many people, on a phone or a library computer.
 
 Done when:
-- [ ] `node checks/run.js bigtext` passes.
+- [ ] An agent in the folder adds `checks/bigtext.check.js`, and `node checks/run.js bigtext` passes.
 - [ ] The Data and settings screen has a "Bigger text" block with a choice: Normal, Bigger, Biggest, and a switch for
       "Stronger contrast".
 - [ ] The choice changes the page at once, without a reload.

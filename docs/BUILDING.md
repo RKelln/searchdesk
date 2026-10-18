@@ -85,9 +85,12 @@ the folder at `docs/kits/<id>.txt`. (They are made by `uv run tools/kit.py`. You
    `..., 'recipe-custom', 'bigtext'];`
    If the id is also in the `Desk.planned` list below it, delete that one line.
 7. Reload Search Desk in the browser.
-8. Open `#selftest` (add `#selftest` to the end of the address). It runs a check on every part.
-9. If it shows a problem, copy the problem text. Paste it into the same chat and write: "Fix this. Reply with the
-   whole file again." Save the new file over the old one and reload. Repeat until it passes.
+8. Open `#selftest` (add `#selftest` to the end of the address). It checks every part for the rules it has to follow.
+   A part built this way has no check file, so its row says "No check file". **That is not a problem**, and it is not
+   red: nothing red means the file follows the contract.
+9. Now use the feature and see that it does what the brief said. This is the check you have without Node.
+10. If `#selftest` shows a problem, copy the problem text. Paste it into the same chat and write: "Fix this. Reply with
+   the whole file again." Save the new file over the old one and reload. Repeat until it passes.
 
 ### If the chat adds extra words or several files
 

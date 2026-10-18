@@ -4,7 +4,7 @@ Why someone wants it: The 2026 posting rules say what a posting has to include. 
 shows which postings are careful with you.
 
 Done when:
-- [ ] `node checks/run.js checklist` passes.
+- [ ] An agent in the folder adds `checks/checklist.check.js`, and `node checks/run.js checklist` passes.
 - [ ] A job's detail view has a "Posting checklist" section. It lists every item in
       `ctx.locale.postingRules.checklist` (Ontario: pay range, says if AI screens applicants, says if the job is open now).
 - [ ] Each item has three buttons: Yes, No, Not sure. The answer is saved on the job and still there after a reload.

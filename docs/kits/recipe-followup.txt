@@ -283,6 +283,10 @@ Desk.check('sites', (t, f) => {          // f = the registered feature
   `PASS`/`FAIL` lines and a summary. If the id is not plain a-z and hyphens, or the file is missing, it prints a
   `STOP:` sentence.
 - The app's own self-test page (`#selftest`, also T1.6) runs the same checks for every loaded feature.
+- **Having no check file is not a broken feature.** On `#selftest` its row says "No check file" and is not red, and
+  the contract scan still runs over it. A feature built from a kit has no check file, because a kit asks for one file
+  and only one. So there are two levels: `#selftest` tells you the file follows the rules, and a check file tells you
+  the logic is right. Without Node, or without writing one, you check the second by using the feature.
 
 ## 7. How the contract is enforced
 
@@ -584,7 +588,7 @@ Why someone wants it: Many people do not follow up because they do not know what
 removes the hard part.
 
 Done when:
-- [ ] `node checks/run.js recipe-followup` passes.
+- [ ] An agent in the folder adds `checks/recipe-followup.check.js`, and `node checks/run.js recipe-followup` passes.
 - [ ] The AI helper screen lists a "Follow-up message" task.
 - [ ] A job's detail view has a "Write a follow-up message" button. It goes to `#ai/followup/<job id>`, and the task
       uses that job.

@@ -4,7 +4,7 @@ Why someone wants it: Once a week it helps to ask "what should I do next on each
 short answer for each job, and you decide which to use.
 
 Done when:
-- [ ] `node checks/run.js recipe-weekly` passes.
+- [ ] An agent in the folder adds `checks/recipe-weekly.check.js`, and `node checks/run.js recipe-weekly` passes.
 - [ ] The AI helper screen lists a "Weekly check-in" task.
 - [ ] The question lists the open jobs (every stage but `closed`, at most 15, those with the earliest next dates first),
       each with an alias `J1`, `J2`, ... and its stage, title, organisation, applied date, next step and dates. It also has the

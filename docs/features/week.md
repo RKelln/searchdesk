@@ -4,7 +4,7 @@ Why someone wants it: Job searching feels endless. A small plain count of what y
 moving, without pressure.
 
 Done when:
-- [ ] `node checks/run.js week` passes.
+- [ ] An agent in the folder adds `checks/week.check.js`, and `node checks/run.js week` passes.
 - [ ] Home shows a "Your week" block with three counts for the last 7 days (today and the 6 days before): "Applied to
       N", "Followed up N times", "Went to N events".
 - [ ] "Applied to" counts jobs whose `applied` date is in those 7 days.

@@ -3,7 +3,7 @@ In plain words: Which version of your resume you sent where.
 Why someone wants it: When an employer calls, you want to know which resume they have in front of them.
 
 Done when:
-- [ ] `node checks/run.js resumes` passes.
+- [ ] An agent in the folder adds `checks/resumes.check.js`, and `node checks/run.js resumes` passes.
 - [ ] A job's detail view has a "Resume sent" section with a box for the version's name (for example "Cook, 1 page")
       and a date box (`YYYY-MM-DD`, with a "Today" button).
 - [ ] Saving shows "Sent <name> on <date>." The section is empty and quiet for a job with no resume noted.

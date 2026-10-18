@@ -4,7 +4,7 @@ Why someone wants it: Some people do their search with paper, or bring a page to
 worker. Other features can add their own section to this page.
 
 Done when:
-- [ ] `node checks/run.js print` passes.
+- [ ] An agent in the folder adds `checks/print.check.js`, and `node checks/run.js print` passes.
 - [ ] A "Summary" item is in the menu. It shows today's date and a "Print or save as PDF" button that opens the
       browser's print window (`window.print()`).
 - [ ] "Dates this week" lists every job whose follow-up date, interview date or closing date falls in the next 7 days

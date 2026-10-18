@@ -3,7 +3,7 @@ In plain words: Put an interview or a starred event into your phone's calendar.
 Why someone wants it: A date written in a tracker is easy to miss. In the calendar it gets a reminder.
 
 Done when:
-- [ ] `node checks/run.js calendar` passes.
+- [ ] An agent in the folder adds `checks/calendar.check.js`, and `node checks/run.js calendar` passes.
 - [ ] A job's detail view has an "Add the interview to my calendar" button. A job with an `interviewAt` saves a file
       named like `interview-<job title>.ics`. A job without one shows a toast: "This job has no interview date yet."
 - [ ] Every event row has an "Add to my calendar" button that saves a `.ics` file for that event.

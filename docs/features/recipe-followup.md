@@ -4,7 +4,7 @@ Why someone wants it: Many people do not follow up because they do not know what
 removes the hard part.
 
 Done when:
-- [ ] `node checks/run.js recipe-followup` passes.
+- [ ] An agent in the folder adds `checks/recipe-followup.check.js`, and `node checks/run.js recipe-followup` passes.
 - [ ] The AI helper screen lists a "Follow-up message" task.
 - [ ] A job's detail view has a "Write a follow-up message" button. It goes to `#ai/followup/<job id>`, and the task
       uses that job.

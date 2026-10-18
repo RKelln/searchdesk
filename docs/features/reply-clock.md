@@ -4,7 +4,7 @@ Why someone wants it: In Ontario, employers have to tell you the outcome within 
 (45 days in the 2026 rules). Knowing the date tells you when it is fair to ask.
 
 Done when:
-- [ ] `node checks/run.js reply-clock` passes.
+- [ ] An agent in the folder adds `checks/reply-clock.check.js`, and `node checks/run.js reply-clock` passes.
 - [ ] A job that has an interview date today or earlier (`interviewAt`, the stage is not `closed`) shows a "Reply due"
       section in its detail view: the interview date, the due date, and how far away it is ("in 12 days",
       "3 days late") using `ctx.fmt`.

@@ -4,7 +4,7 @@ Why someone wants it: Most jobs come from people. A note about who you met, and 
 when you write to them a week later.
 
 Done when:
-- [ ] `node checks/run.js contacts` passes.
+- [ ] An agent in the folder adds `checks/contacts.check.js`, and `node checks/run.js contacts` passes.
 - [ ] A "People" item is in the menu. It lists people, newest first, with name, where you met, and a short note.
 - [ ] You can add, edit and delete a person. A name is needed. Delete can be undone with the toast's Undo.
 - [ ] A person can have a "next step" date (`YYYY-MM-DD`). People whose date is today or earlier are listed first,
