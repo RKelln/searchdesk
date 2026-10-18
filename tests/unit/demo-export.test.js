@@ -6,7 +6,12 @@
 const test = require('node:test');
 const assert = require('node:assert');
 const { spawnSync } = require('child_process');
-const { load, root } = require('./_load');
+const { load, root, gone } = require('./_load');
+
+// Every check here runs the tool, so a copy without tools/ has nothing to run and skips rather than fails
+// (see `gone` in _load.js). The tool is a development convenience: what it prints is checked again in
+// io.test.js and merge.test.js against the same records, without the tool.
+const why = gone('tools/demo-export.js');
 
 function run(args) {
   const r = spawnSync('node', ['tools/demo-export.js', ...args], { cwd: root, encoding: 'utf8' });
@@ -14,7 +19,7 @@ function run(args) {
   return r.stdout;
 }
 
-test('the demo export is a copy the page would read, and holds no example records', () => {
+test('the demo export is a copy the page would read, and holds no example records', { skip: why }, () => {
   const copy = JSON.parse(run([]));
   assert.strictEqual(copy.schema, 'searchdesk/1');
   const ids = Object.keys(copy.records);
@@ -34,7 +39,7 @@ test('the demo export is a copy the page would read, and holds no example record
   assert.strictEqual(m.report.added, ids.length);
 });
 
-test('every id declared in data/example.js shows up in the demo export', () => {
+test('every id declared in data/example.js shows up in the demo export', { skip: why }, () => {
   const copy = JSON.parse(run([]));
   const text = require('fs').readFileSync(root + '/data/example.js', 'utf8');
   // A fixed id only: `id: 'em_' + pick.id` builds one at load time, so it is not matched.
@@ -43,7 +48,7 @@ test('every id declared in data/example.js shows up in the demo export', () => {
   for (const id of ids) assert.ok(copy.records[id], id + ' is in data/example.js but not in the demo export');
 });
 
-test('--ids lists every record in the export', () => {
+test('--ids lists every record in the export', { skip: why }, () => {
   const copy = JSON.parse(run([]));
   const lines = run(['--ids']).trim().split('\n');
   assert.strictEqual(lines.length, Object.keys(copy.records).length);

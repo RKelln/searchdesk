@@ -4,7 +4,7 @@ const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const { load, root } = require('./_load');
+const { load, root, gone } = require('./_load');
 
 const FIX = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'togather-events.json'), 'utf8'));
 const API = 'https://staging.toronto.togather.foundation/api/v1/events';
@@ -246,7 +246,7 @@ test('events: only one fetch at a time', async () => {
   assert.strictEqual(a.events.length, b.events.length);
 });
 
-test('locale and tools/snapshot.py agree on the endpoint and tiers', () => {
+test('locale and tools/snapshot.py agree on the endpoint and tiers', { skip: gone('tools/snapshot.py') }, () => {
   const win = {};
   win.window = win;
   vm.runInContext(fs.readFileSync(path.join(root, 'locale/toronto.js'), 'utf8'), vm.createContext(win));

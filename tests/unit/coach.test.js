@@ -6,10 +6,13 @@ const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const { root } = require('./_load');
+const { root, gone } = require('./_load');
 const { execFileSync } = require('child_process');
 
 const golden = fs.readFileSync(path.join(__dirname, 'golden', 'coach-v4.txt'), 'utf8');
+// The harness lives in tools/ and a copy without it has nothing to run. The prompt text itself is checked above
+// and in checks/recipe-coach.check.js, so the gap is this test's own job, not the app's.
+const noHarness = gone('tools/interview-harness/export-prompt.js');
 
 function feature() {
   const w = { console };
@@ -66,7 +69,7 @@ test('only the options change the text, and only where they should', () => {
   assert.ok(diff(golden, L.instructions({ research: 'off' }, true))[0].startsWith('If search'));
 });
 
-test('the harness export prints the same text, and refuses a bad option', () => {
+test('the harness export prints the same text, and refuses a bad option', { skip: noHarness }, () => {
   const script = path.join(root, 'tools/interview-harness/export-prompt.js');
   const out = execFileSync('node', [script, '--workshop'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
   assert.strictEqual(out, golden);

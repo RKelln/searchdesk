@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert');
 const { spawnSync } = require('child_process');
 const fs = require('fs');
-const { load, root } = require('./_load');
+const { load, root, gone, noRepo } = require('./_load');
 
 function fresh() {
   const D = load(['core/strings.js', 'core/store.js', 'core/merge.js', 'core/io.js']);
@@ -21,16 +21,25 @@ test('filename uses the local date', () => {
 
 // A person's export holds their name, jobs and notes. It lands in this folder when someone uses the app here,
 // so git must ignore it, and the docs must name it the way the code does. They drifted apart once already.
+// The two halves are separate tests because a copy without .git/ (an archive, a USB stick) can still be asked
+// to keep its docs honest, and a copy without the design notes can still be asked about git. See `gone` and
+// `noRepo` in _load.js.
 const noGit = spawnSync('git', ['--version'], { cwd: root }).status !== 0;
 
-test('the export filename is ignored by git and named in the docs', { skip: noGit && 'git is not installed' }, () => {
+test('the export filename is ignored by git', { skip: noGit ? 'git is not installed' : noRepo() }, () => {
   const D = fresh();
   for (const date of [new Date(2026, 9, 16), new Date(2026, 0, 1)]) {
     const name = D.io.filename(date);
     const r = spawnSync('git', ['check-ignore', '-q', name], { cwd: root });
     assert.strictEqual(r.status, 0, name + ' is not ignored by .gitignore: a real export could be committed');
   }
+});
+
+test('the export filename is named in the docs', () => {
   for (const doc of ['AGENTS.md', 'docs/DESIGN.md']) {
+    // A doc this copy does not carry is a doc that cannot name the file wrongly, so it is not checked. The one
+    // that is always here is the one that is always read.
+    if (gone(doc)) continue;
     const text = fs.readFileSync(root + '/' + doc, 'utf8');
     assert.ok(!text.includes('searchdesk-backup-'), doc + ' still names the old export file');
     assert.ok(text.includes('searchdesk-<date>.json'), doc + ' does not name the export file');
