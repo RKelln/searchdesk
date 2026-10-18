@@ -28,7 +28,36 @@ Each idea has a short brief in `docs/features/`. Pick one. Not sure? Ask your ag
 | `stories` | Short stories from your work, ready for interview questions. |
 | `week` | How many you applied to, followed up and went to this week. No streaks and no scores. |
 
-The brief is `docs/features/<id>.md`. Have your own idea? That works too. Say it in one sentence.
+The brief is `docs/features/<id>.md`. Want one that is not on that list? See "Your own idea" below.
+
+## Your own idea
+
+Nothing on that list is special. You can ask for anything the app is able to do, and it gets built the same way: a
+brief, then a feature file.
+
+Pick the **id** first. It is lowercase, with dashes, and short, because it becomes a file name: `recruiter`, not
+`track-which-recruiter-called`. The same id is used for `features/<id>.js`, `checks/<id>.check.js` and
+`docs/kits/<id>.txt`.
+
+**With an agent (Path A), just ask.** Say: "I want to add a feature that is not in the list. I want <what you want>.
+The id is `<id>`." It writes the brief, builds the file, runs the checks, and writes your kit. You end up with a brief
+and a feature that someone with no agent can build from later, which is the point of writing the brief down.
+
+**With no agent (Path B), do it by hand.** It is more work, and it is the only way on a computer that has no agent on
+it — some workshop computers have no Python, Node or git.
+
+1. **Write the brief.** A brief is a plain text file in `docs/features/`. Nobody makes it but you and an AI you ask.
+   In a free AI chat, say what you want in plain words and answer the two or three questions it asks you. Then open
+   `docs/features/week.md`, copy all of it, paste that into the same chat, and say: "This is the shape of a brief.
+   Write the brief for what I described, for the id `recruiter`. Reply with the brief only, as one text file. Do not
+   write any code." Copy the reply and save it as `docs/features/<id>.md`. Check it: it must start with `# ` and have no
+   JavaScript in it. If the chat gave you a `.js` file instead, it built the feature rather than writing the brief. Say
+   "I wanted the brief, in words, not code. Reply with the brief only."
+2. **Make the kit.** `uv run tools/kit.py` (or `python3 tools/kit.py`) writes `docs/kits/<id>.txt` for it, exactly as
+   it does for ours. Path B needs that file. No Python? A kit is only three files in order: `docs/CONTRACT.md`, then
+   `docs/example-feature.js`, then your brief. Copy all three into one message.
+3. **Carry on.** You now have exactly what every other feature has. Go to Path B above and start at the step that saves
+   the file.
 
 ## Path A: an agent in the folder
 

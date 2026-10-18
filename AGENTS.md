@@ -45,7 +45,9 @@ Read [`docs/CONTRACT.md`](docs/CONTRACT.md). It has the `ctx` API, the slots, `h
    shell shows a stub with its `name` and `purpose` (taken from `Desk.planned` or the list) and the line "This part is
    not built yet." The rest of the app works normally.
 7. **Registering is idempotent.** Registering the same id twice replaces the first and logs a warning.
-8. **One file.** No other files except `checks/<id>.check.js` and `docs/features/<id>.md`.
+8. **One file.** No other files except `checks/<id>.check.js` and `docs/features/<id>.md`. Its kit,
+   `docs/kits/<id>.txt`, is the one exception: `uv run tools/kit.py` writes that from the brief. Never write a kit by
+   hand.
 
 For the person-facing steps (with an agent, or a free chat and a kit), see [`docs/BUILDING.md`](docs/BUILDING.md).
 

@@ -13,7 +13,12 @@ This is a thin wrapper. The rules live in the docs; read them, do not copy them.
 1. Read `AGENTS.md` and `docs/CONTRACT.md`. Read `docs/BUILDING.md` if the person asks how this works. If your model is
    small or free, also follow "For a small or free model" in `AGENTS.md`.
 2. Find out what to build.
-   - If they know, find its brief in `docs/features/<id>.md` (if there is one) and read it.
+   - If they know, find its brief in `docs/features/<id>.md` and read it.
+   - If they know and there is no brief, write the brief first, then build from it. The brief is
+     `docs/features/<id>.md`, in the shape of an existing one (`docs/features/week.md`). Ask two or three short
+     questions to pin down what they want; do not write it from one vague sentence. The id is lowercase with dashes
+     and short, because it becomes `features/<id>.js`. After the feature passes, run `uv run tools/kit.py` so
+     `docs/kits/<id>.txt` exists for people who have no agent.
    - If they have no idea, follow "If the person has no idea what to build" in `AGENTS.md`. Ask one short question
      about them first. Then offer three briefs from `docs/features/` that fit, one at a time. Say what each does in
      one plain sentence, then ask "Do you want this one?". Move on only if they say no.
