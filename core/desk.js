@@ -210,6 +210,10 @@ window.Desk = window.Desk || {};
     var L = localeCopy();
     return (L && typeof L.name === 'string' && L.name.trim()) ? L.name.trim() : '';
   }
+  // Whether this build has a place at all. The locale pack is the only thing that says: it holds the help, the
+  // local rules and where the events come from. A build without one has none of those, so a feature that says it
+  // needs a place has nothing to show -- which is not the same as being broken.
+  function hasPlace() { return Object.keys(localeCopy()).length > 0; }
   // Desk.now() is a Date. Tests and demos may fix it with Desk.setNow(dateOrMs) and clear it with Desk.setNow(null).
   Desk.now = function () { return fixedNow === null ? new Date() : new Date(fixedNow); };
   Desk.setNow = function (v) { fixedNow = v === null || v === undefined ? null : new Date(v).getTime(); };
@@ -315,7 +319,11 @@ window.Desk = window.Desk || {};
     var tabs = [], used = {};
     slots.tab.forEach(function (e) {
       used[e.def.id] = true;
-      tabs.push({ id: e.def.id, label: e.def.label, order: e.def.order, seq: e.seq, kind: 'feature', def: e.def });
+      // A feature may say it needs a place (needsLocale). It still loads and its code still passes its check; it
+      // just has nothing to show in a build with no locale pack, so it is shown as a stub with its own reason.
+      var noPlace = !!(defs[e.def.id] && defs[e.def.id].needsLocale) && !hasPlace();
+      tabs.push({ id: e.def.id, label: e.def.label, order: e.def.order, seq: e.seq,
+        kind: noPlace ? 'stub' : 'feature', noPlace: noPlace, def: e.def });
     });
     var stubIds = Object.keys(missingIds).concat(Object.keys(broken));
     var listIndex = Array.isArray(Desk.features) ? Desk.features : [];
@@ -336,8 +344,20 @@ window.Desk = window.Desk || {};
     var info = infoFor(tab.id);
     el.appendChild(H('h2', {}, info.name));
     if (info.purpose) el.appendChild(H('p', { class: 'stub-purpose' }, info.purpose));
+    if (tab.broken) {
+      // Broken beats "needs a place": if it is not working, that is the more urgent thing to say.
+      el.appendChild(H('p', { class: 'stub-note', 'data-test': 'stub' }, T('stubBroken')));
+      return;
+    }
+    if (tab.noPlace) {
+      // Its own reason, not "not built yet" -- nothing is broken and nothing is waiting to be built.
+      el.appendChild(H('p', { class: 'stub-note', 'data-test': 'stub' }, T('noPlaceNote')));
+      el.appendChild(H('p', { class: 'muted', 'data-test': 'stub-no-place' }, T('noPlaceOnly')));
+      el.appendChild(H('p', { class: 'muted' }, T('noPlaceWork')));
+      el.appendChild(H('p', { class: 'muted' }, T('noPlaceRest', { app: T('appName') })));
+      return;
+    }
     el.appendChild(H('p', { class: 'stub-note', 'data-test': 'stub' }, T('stubNotBuilt')));
-    if (tab.broken) el.appendChild(H('p', { class: 'stub-broken' }, T('stubBroken')));
   }
 
   function renderIdeas(el) {

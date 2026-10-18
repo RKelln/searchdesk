@@ -27,6 +27,9 @@ Desk.register({
   id: 'events',
   name: 'Events',
   purpose: 'Find hiring events and job fairs, and star the ones you like.',
+  // Where the events come from is in the locale pack, and a feed needs a Togather server for that place, so with
+  // no pack this screen has nothing real in it. The shell then shows a stub that says so.
+  needsLocale: true,
   types: ['event-mark', 'suggestion'],
   uses: [],
   strings: {

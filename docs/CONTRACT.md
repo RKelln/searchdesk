@@ -69,6 +69,37 @@ Records are plain objects. Every record has `id`, `type`, `updated`, `source` (`
 `import`), and sometimes `deleted: true` and `ext`. Unknown types and unknown `ext` keys are kept and exported
 untouched, so never delete what you do not own.
 
+### A feature that needs a place
+
+Some parts of this app are about one place: the help, the rules, the events. They read the locale pack, so in a
+build with no pack they have nothing to show. Say so in your registered object, and the shell does the rest:
+
+```js
+Desk.register({
+  id: 'help',
+  name: 'Free help',
+  purpose: 'People who help you look for work, for free.',
+  needsLocale: true,        // this cannot work without a place
+  types: [],
+  // ...
+});
+```
+
+What `needsLocale: true` does, and does not, do:
+
+- **The feature still loads and still passes its check.** Nothing is broken and nothing is waiting to be built, so
+  the stub does not say "not built yet" -- it says this part is about one place and this build is not set to one.
+- **Its menu entry is still there**, in the same italic a stub usually has. Hiding it would lose the reason.
+- **`#<your id>` in the address shows the stub** rather than an empty screen.
+- **`ctx.has('otherFeature')` is still true**, and other features can still read your records. Only the screen and
+  the menu entry change.
+
+Leave it off a feature that works fine without a pack. It is not a licence to be location-specific: if your feature
+would still be useful with no help and no events, it does not need this.
+
+Adding a second place is not a setting. It is a locale pack plus real work, and the events feed needs a Togather
+server for that place.
+
 ## 3. Slots
 
 | Slot | Where it shows | `def` |

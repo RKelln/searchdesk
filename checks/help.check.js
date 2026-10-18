@@ -2,6 +2,8 @@ Desk.check('help', (t, f) => {
   const L = f.logic;
   t.eq(f.id, 'help', 'the feature has its id');
   t.eq(f.types, [], 'it owns no types');
+  // Everything here comes from the locale pack, so the shell shows a stub when there is no pack.
+  t.eq(f.needsLocale, true, 'it says it needs a place');
   t.ok(typeof f.mount === 'function', 'it has a mount function');
   const help = [
     { kind: 'online', name: 'B', source: 'https://b.example/' },

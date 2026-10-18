@@ -3,6 +3,9 @@ Desk.register({
   id: 'help',
   name: 'Free help',
   purpose: 'People who help you look for work, for free.',
+  // Everything on this screen comes from the locale pack, so with no pack there is nothing here to show. The shell
+  // then shows a stub that says so, rather than an empty screen.
+  needsLocale: true,
   types: [],
   strings: {
     tabLabel: 'Free help',

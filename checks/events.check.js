@@ -7,6 +7,8 @@ Desk.check('events', (t, f) => {
   const ids = (list) => list.map((e) => e.id);
 
   t.eq(f.id, 'events', 'the feature has its id');
+  // The feed comes from the locale pack, so with no pack there is nothing real to list.
+  t.eq(f.needsLocale, true, 'it says it needs a place');
   t.eq(f.types, ['event-mark', 'suggestion'], 'it owns event-mark, and writes suggestion status');
   t.ok(typeof f.mount === 'function', 'it has a mount function');
   t.eq(TODAY, '2026-10-16', 'todayKey is the local date');
