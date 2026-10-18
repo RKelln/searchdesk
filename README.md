@@ -68,6 +68,18 @@ person only."), and turns live events off, so the page asks the network for noth
 Some managed computers have no Python, Node or git. If yours does not, build on another computer and copy the file
 over. Finder may leave `.DS_Store` files in folders; ignore them.
 
+**A folder copy can leave the development tools out.** `tools/`, `tests/e2e/`, `reference/` and this repo's own
+`docs/PLAN.md` and `docs/DESIGN.md` are for working on Search Desk, not for running it, and a folder you hand to
+people does not need them. Take the folder rather than the repository — the tracked files at a tag — and the unit
+suite in it still passes:
+
+```
+node --test tests/unit/*.test.js
+```
+
+Checks that read a file the folder does not carry skip and name it, rather than failing and making the code look
+broken. Skipped is not passed, so read the count. Nothing about the app itself is skipped.
+
 For a normal copy (live events on, starts empty), run `uv run tools/build.py`. It writes `dist/searchdesk.html`
 (also `dist/index.html`, plus a manifest and icons, so you can host the `dist` folder on any web server).
 

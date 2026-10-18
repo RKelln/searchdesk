@@ -68,6 +68,14 @@ For the person-facing steps (with an agent, or a free chat and a kit), see [`doc
 - The made-up person's records in the shape a saved copy has: `node tools/demo-export.js` (add `--ids` for one line per
   record). Use it instead of asking a real person for their data.
 - In the browser, open the app and go to `#selftest`. It runs every loaded feature's check and the contract scan.
+- **The suite survives a copy without the development tools.** `tools/`, `tests/e2e/`, `reference/` and this
+  repo's own `docs/PLAN.md` and `docs/DESIGN.md` are for developing Search Desk, not for running it. A host who
+  wants to give people the app — a library workshop copy, a folder on a USB stick — can leave them out, and the
+  unit suite still passes: a check that reads one of them skips and says which file is not there. Skipped is not
+  passed, and the skip count is reported, so a run that skipped half of itself is visible rather than quietly
+  green. `gone()` and `noRepo()` in `tests/unit/_load.js` are the two helpers. Nothing app-level is skipped: the
+  app is `core/`, `locale/`, `data/`, `features/`, `checks/` and `index.html`, and every check over those runs
+  wherever the copy is.
 - The words you type as a slash command live in `tools/commands/<name>.md`, and the skills live in
   `tools/skills/<name>.md`. Those are the only two places to edit them. `uv run tools/agent-files.py` copies them where
   each tool looks: commands into `.opencode/commands/` (OpenCode), `.claude/commands/` (Claude Code) and
