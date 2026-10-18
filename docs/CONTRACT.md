@@ -59,6 +59,7 @@ not listed twice.
 | `profileLines(profile?)` | the profile lines an AI question will contain: only fields whose "send to AI" switch is on (the same function the recipes use) |
 | `backupNudge()` | whether to remind the person to save a copy: `{show, text, days}` (`show` is true when there are changes since the last export and either 7 days have passed or there are 10 or more records; `days` is null if never exported). Used by Home |
 | `wide()` | true when the window is wide enough for the layout kit's two-pane and dashboard layouts (1100px, the same number as the `min-width: 1100px` rules in `core/desk.css`). Use it to choose a different default on a big screen — a board instead of a list, say — while a phone keeps the simpler one. The screen is drawn again when this flips, so a person who drags the window narrower or wider gets the right layout without tapping anything. |
+| `pref(spec)` / `pref(key)` / `pref.set(key, value)` / `pref.note(text)` | a preference, saved and drawn for you (section 3) |
 | `events.current()` / `events.refresh(opts?)` | the events to show: `{events, source, generated, note}` where `events` are `{id, title, start, end, venue, address, url, tier, tags}`, `source` is `'cache'` or `'snapshot'`. `current()` is instant. `refresh()` returns a Promise and asks `core/net.js` to fetch the latest only when live events are on (otherwise it just resolves `current()`); the screen is drawn again after a good fetch. `note` is a plain line when a fetch failed. Used by Events |
 | `download(name, text, type)` | save a text file (for example a calendar `.ics`). `name` uses only letters, digits, `-`, `.`, `_` (up to 80 characters); `type` is `text/calendar`, `text/plain`, `text/csv` or `application/json`. Returns `true`, or `false` if refused |
 | `recipe(def)` | register an AI recipe (the same id again replaces it) |
@@ -132,6 +133,50 @@ so it lands on the undo stack, but nothing pops up on its own — if you want an
 
 There is a `settings` slot on the Data screen for exactly this. No feature uses it yet, so the block you add is the
 first one there.
+
+### A preference: `ctx.pref`
+
+Hand-rolling a preference is the one thing a feature used to do badly, so core does it. Say what the preference *is*,
+and you get a labelled control, saved, checked against your own list, and put on the Data screen.
+
+```js
+ctx.pref({ key: 'size', type: 'choice', label: 'Text size', def: 'normal',
+           options: [{ value: 'normal', label: 'Normal' }, { value: 'big', label: 'Bigger' }] });
+ctx.pref({ key: 'contrast', type: 'toggle', label: 'Stronger contrast', def: false, onChange: apply });
+ctx.pref.note('These settings are saved in your backup file.');
+```
+
+| | |
+|---|---|
+| `key` | `ext.<feature id>.<key>` on the `settings` record. Lowercase, then letters or digits: `size`, `lateDays`. Two features can both have a `size`. |
+| `type` | `'choice'` (a list of options) or `'toggle'` (on or off). Those two are all there is; a new kind is added to core, never improvised. |
+| `label`, `options[].label` | the words a person reads, so from your strings (`ctx.t`). Grade 6. |
+| `def` | the value before anyone chooses, and the value a stale save falls back to. For a `choice` it must be one of your options; core says so if it is not. |
+| `onChange(value)` | runs **after** the choice is saved, so it can read the new one. For a preference that changes the page — a class on `document.documentElement`. Saving is already done; do not save again. |
+| `hint` | a short line under this one row. `pref.note(text)` puts one line under the whole block. |
+
+Reading and writing:
+
+```js
+ctx.pref('size')                  // 'big' -- the saved value, or def if the saved one is not offered
+ctx.pref.set('size', 'bigger')    // true, or false if 'bigger' is not one of your options (nothing is saved)
+```
+
+Five things worth knowing:
+
+1. **You write no CSS.** The controls are styled in `core/desk.css`, in light and dark, and the row sits side by side
+   when there is room and stacks when there is not.
+2. **A stale value is never your problem.** If the saved value is not one you offer — an old file, or one edited by
+   hand — reading gives you `def`. The control shows the default rather than a blank option.
+3. **All of one feature's preferences land in one block**, titled with the feature's own `name`. A feature with no
+   preferences adds no block at all.
+4. **`data-test` names are made for you:** `pref-<key>` on the control and `pref-reset-<key>` on the way back. Add
+   them to `tests/e2e/README.md` if you test them.
+5. **A "Start again" link appears** on a row that is not at its default, and puts the default back. Nothing appears
+   while there is nowhere to go back from.
+
+The parts that decide what a saved value means are `Desk.prefs.allowed(def, value)` and `Desk.prefs.read(def, ext)`,
+pure, and checked in `tests/unit/prefs.test.js`. So a feature that uses `ctx.pref` has less `logic` to test, not more.
 
 ## 4. `h()`: the only way to make elements
 

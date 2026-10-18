@@ -226,8 +226,9 @@ window.Desk = window.Desk || {};
 
   function makeCtx(def) {
     var id = def.id;
-    return Object.freeze({
-      store: Desk.store.scoped(id, Array.isArray(def.types) ? def.types : []),
+    var store = Desk.store.scoped(id, Array.isArray(def.types) ? def.types : []);
+    var ctx = {
+      store: store,
       slot: function (name, d) { addSlot(name, id, d); },
       renderSlot: renderSlot, // addition to CONTRACT: how a feature shows job.panel, job.actions and so on
       h: Desk.h,
@@ -255,7 +256,11 @@ window.Desk = window.Desk || {};
       download: function (name, text, type) { return !!(Desk.io && Desk.io.saveText && Desk.io.saveText(name, text, type)); },
       recipe: function (r) { addRecipe(r, id); },
       removeRecipe: function (rid) { removeRecipe(String(rid), id); }
-    });
+    };
+    // ctx.pref: say once what a preference is, and get back a labelled, checked, saved control on the Data
+    // screen. It needs the ctx it is going on, so it is added after the object is built (core/prefs.js).
+    if (Desk.makePrefs) ctx.pref = Desk.makePrefs(ctx, def);
+    return Object.freeze(ctx);
   }
 
   function styleEl(id) { return doc ? doc.getElementById('feature-css-' + id) : null; }

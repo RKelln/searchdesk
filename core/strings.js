@@ -230,6 +230,9 @@ window.Desk = window.Desk || {};
     selftestChecksCount: '{pass} of {total} checks passed',
     selftestBanned: 'Uses "{word}" in {where} (line {line}). Parts of the app may not do this.',
     selftestShowDetails: 'Show every check',
+    // One preference set by a feature (ctx.pref in core/prefs.js). The label, the choices and any note are the
+    // feature's own words, so only the way back is core's.
+    prefReset: 'Start again',
     'base.home.name': 'Today',
     'base.home.purpose': 'See what needs you today: follow-ups, interviews and closing dates.',
     'base.jobs.name': 'Jobs',
