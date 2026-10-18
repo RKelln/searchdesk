@@ -1,6 +1,9 @@
 # Board view  (was: id `board`, size: M)
 In plain words: Jobs as columns by stage.
 
+> This file is a note on built work, not a brief to build. See [`README.md`](README.md) in this folder. A brief
+> lives in `docs/features/`, because everything there gets packed into a kit for someone to build.
+
 **This is built, inside Jobs.** It was first written as a separate `board` feature with its own menu tab. It is now a
 List/Board choice on the Jobs screen instead, so there is one place for jobs and the menu stays short. Nothing is
 planned here any more.

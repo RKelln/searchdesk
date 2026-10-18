@@ -72,7 +72,7 @@ not listed twice.
 | `fmt.date(v)`, `fmt.time(v)`, `fmt.dateTime(v)`, `fmt.relative(v, now)`, `fmt.daysFrom(v, now)` | show dates in plain words ("Thu Oct 22", "6:30pm", "in 3 days", "2 days late"); `v` is `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM` or an ISO time |
 | `has(featureId)` | whether another feature is loaded, for soft `uses` |
 | `locale` | the locale pack (local help, sites, rules), read-only |
-| `now()` | the current time (tests can fix it) |
+| `now()` | the current time as a Date (tests can fix it). For a `YYYY-MM-DD` day key, pass it to `ctx.fmt` or convert it; it has no `slice` |
 | `profile()` | the profile record |
 | `profileLines(profile?)` | the profile lines an AI question will contain: only fields whose "send to AI" switch is on (the same function the recipes use) |
 | `backupNudge()` | whether to remind the person to save a copy: `{show, text, days}` (`show` is true when there are changes since the last export and either 7 days have passed or there are 10 or more records; `days` is null if never exported). Used by Home |

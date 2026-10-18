@@ -14,7 +14,7 @@ Desk.planned = [ // ideas not built yet; each has a brief in docs/features/<id>.
   { id: 'stories', name: 'My examples', purpose: 'Short stories from your work, ready for interview questions.' },
   { id: 'resumes', name: 'Which resume', purpose: 'Which version of your resume you sent where.' },
   // 'board' was a separate tab here once. The board is now a List/Board choice inside Jobs, which keeps one place
-  // for jobs and keeps the menu short. See docs/features/board.md.
+  // for jobs and keeps the menu short. See docs/built/board.md.
   { id: 'week', name: 'This week', purpose: 'How many you applied to, followed up and went to this week. No streaks and no scores.' },
   { id: 'recipe-weekly', name: 'AI: weekly check-in', purpose: 'Sends your open jobs and suggests the next step for each, as suggestions.' },
   { id: 'recipe-sites', name: 'AI: sites for my field', purpose: 'Suggests job sites and organisations for your kind of work, to add to your sites.' },
