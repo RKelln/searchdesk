@@ -64,9 +64,13 @@ Build notes (things that tripped the first build):
   `site-link`, `site-edit`, `site-delete`, `sites-start`, `start-row`, `start-add`, `sites-leads`, `lead-row` (with
   `data-id`), `lead-domain`, `lead-have`, `lead-ai-mark`, `lead-take`, `lead-dismiss`, `sites-empty`. The menu link is
   `nav-sites` (core makes it). Add any new ones to `tests/e2e/README.md`.
-- When this feature is added to `features/list.js`, also take `sites` out of `Desk.planned`, and update
-  `BASE_FEATURES` in `tests/e2e/test_smoke.py` and the `must` list in `tests/e2e/test_data.py`
-  (`test_data_lists_ideas_you_could_build_with_a_brief_each`); both fail otherwise.
+- When this feature is added to `features/list.js`, also take `sites` out of `Desk.planned`, so it stops being
+  listed under "Ideas you could build". **Nothing fails if you forget, so do not go hunting for a failure that is
+  not there.** Measured while building `pay` (see `wip/README.md` on the branch of that name): with the feature in
+  both `Desk.features` and `Desk.planned`, `test_data_lists_ideas_you_could_build_with_a_brief_each` passes, because
+  it skips an id that is built (`if must in built: continue`), and `test_smoke_loads` passes, because it only checks
+  the order of the base features. Adding `sites` to `BASE_FEATURES` is still worth doing, so the smoke test covers it
+  -- that is for coverage, not to stop a red test.
 
 Out of scope: checking whether a link works; fetching anything from a site; folders or tags; reminders to visit.
 Ideas for after: a "last looked" date with a "Looked today" button; a star for the sites that work best; show the site

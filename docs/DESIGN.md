@@ -405,6 +405,8 @@ Done when:
 Data: <types it owns, or the ext it adds, with field names>
 Slots: <which ones>   Soft uses: <features, and what changes when they are present>
 Checks to write: <the logic functions and what they must return>
+Test hooks: <the data-test names the tests will look for, one per control — without these a feature cannot be
+  tested in the browser, and a free chat has no way to guess them>
 Out of scope: <the obvious extensions not to build now>
 Ideas for after: <two or three, for a fast person>
 ```
