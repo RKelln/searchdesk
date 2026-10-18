@@ -82,6 +82,33 @@ test('detectPaste tells state, answer, empty and unknown apart', () => {
   assert.strictEqual(d('[1,2]'), 'unknown');
 });
 
+test('a copy inside a whole chat message is still a copy', () => {
+  // Selecting a whole chat reply copies the words around the code. Those words are not part of the copy.
+  const D = fresh();
+  const d = D.io.detectPaste;
+  const p = D.io.parseState;
+  const state = JSON.stringify({ schema: 'searchdesk/1', app: 'test', records: {} });
+  const wrapped = 'Here is the copy you asked for:\n\n```json\n' + state + '\n```\n\nLet me know if you want more.';
+  assert.strictEqual(d(wrapped), 'state');
+  assert.strictEqual(p(wrapped).schema, 'searchdesk/1');
+  assert.strictEqual(d('```\n' + state + '\n```'), 'state', 'bare fence still works');
+  assert.strictEqual(d('prose\n```\n' + state + '\n```\nmore prose'), 'state');
+  // The second block is the copy, when the first one is something else.
+  assert.strictEqual(d('notes\n```\nDESK-7Q3K\n```\ncopy:\n```json\n' + state + '\n```'), 'state');
+});
+
+test('words around a block never turn something else into a copy', () => {
+  const D = fresh();
+  const d = D.io.detectPaste;
+  // A fenced block that is an answer stays an answer, even with a copy-looking schema somewhere in the words.
+  assert.strictEqual(d('```\nDESK-7Q3K\nL1 | fits you\n```'), 'answer');
+  assert.strictEqual(d('Your copy has schema searchdesk/1\n```\nDESK-7Q3K\nL1 | fits you\n```'), 'answer');
+  // A fenced block that is neither stays unknown.
+  assert.strictEqual(d('here you go:\n```\n{"a":1}\n```'), 'unknown');
+  assert.strictEqual(d('```\nnot json at all\n```'), 'unknown');
+  assert.strictEqual(d('```js\nfunction x() {}\n```'), 'unknown');
+});
+
 test('report sentences', () => {
   const D = fresh();
   const s = D.io.reportSentence;

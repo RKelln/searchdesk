@@ -51,9 +51,33 @@ window.Desk = window.Desk || {};
     var m = /^```[A-Za-z]*[ \t]*\r?\n([\s\S]*?)\r?\n?```$/.exec(s);
     return m ? m[1].trim() : s;
   }
+  // Every fenced block in the text, not only one that fills it. A person who selects a whole chat message
+  // copies the words around the code as well, and those words are not part of the copy.
+  function fences(text) {
+    var s = String(text === null || text === undefined ? '' : text).replace(/^﻿/, '');
+    var re = /```[A-Za-z]*[ \t]*\r?\n([\s\S]*?)```/g, out = [], m;
+    while ((m = re.exec(s)) !== null) out.push(m[1].trim());
+    return out;
+  }
   function tryObject(s) {
     if (s.charAt(0) !== '{') return null;
     try { var o = JSON.parse(s); return isObj(o) ? o : null; } catch (e) { return null; }
+  }
+  function isState(o) {
+    return !!(o && typeof o.schema === 'string' && o.schema.indexOf('searchdesk/') === 0);
+  }
+  // The copy, wherever it is in the text: the whole thing, or the first fenced block that really is one. A
+  // fenced block is only accepted when it parses and says so, so words around it cannot turn an answer into a
+  // copy, and cannot turn anything else into one either.
+  function stateObject(text) {
+    var o = tryObject(stripFence(text));
+    if (isState(o)) return o;
+    var blocks = fences(text);
+    for (var i = 0; i < blocks.length; i++) {
+      var b = tryObject(blocks[i]);
+      if (isState(b)) return b;
+    }
+    return null;
   }
   var ANSWER_CODE = /\bDESK-[0-9A-Z]{4}\b/i;
   var ANSWER_LINE = /^[\s>*\-•(\[#]*[LCJ]\s*-?\s*0*\d+[\])*.]*\s*[|:\-–—]/im;
@@ -61,13 +85,12 @@ window.Desk = window.Desk || {};
   function detectPaste(text) {
     var s = stripFence(text);
     if (!s) return 'empty';
-    var o = tryObject(s);
-    if (o && typeof o.schema === 'string' && o.schema.indexOf('searchdesk/') === 0) return 'state';
+    if (stateObject(text)) return 'state';
     if (ANSWER_CODE.test(s) || /HOW TO ANSWER/.test(s) || ANSWER_LINE.test(s) || /"t"\s*:\s*"pick"/.test(s)) return 'answer';
     return 'unknown';
   }
   // -> the parsed state object, or null
-  function parseState(text) { return tryObject(stripFence(text)); }
+  function parseState(text) { return stateObject(text); }
 
   // ---- Pure: merging and the report ---------------------------------------------------------------
   // Before merging, give the file's settings record this device's own lastExport / exampleLoaded (or none),
