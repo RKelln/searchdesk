@@ -340,6 +340,20 @@ window.Desk = window.Desk || {};
     return orderTabs(tabs);
   }
 
+  // ---- A few words inside a sentence can be links ------------------------------------------------------
+  // The string holds [[the words]] and the addresses live here, never in the string table: a translator should
+  // not have to touch a URL, and they can move the linked words to wherever their language puts a link, or drop
+  // the brackets if there is nowhere natural. A word with no address here is left as plain text rather than
+  // becoming a link that goes nowhere.
+  var STUB_LINKS = { Togather: 'https://togather.foundation' };
+  function richText(s) {
+    return String(s).split(/\[\[(.+?)\]\]/).map(function (part, i) {
+      if (i % 2 === 0) return part; // even indexes are the words between the brackets
+      var url = STUB_LINKS[part];
+      return url ? H('a', { href: url }, part) : part;
+    });
+  }
+
   function renderStub(el, tab) {
     var info = infoFor(tab.id);
     el.appendChild(H('h2', {}, info.name));
@@ -353,7 +367,7 @@ window.Desk = window.Desk || {};
       // Its own reason, not "not built yet" -- nothing is broken and nothing is waiting to be built.
       el.appendChild(H('p', { class: 'stub-note', 'data-test': 'stub' }, T('noPlaceNote')));
       el.appendChild(H('p', { class: 'muted', 'data-test': 'stub-no-place' }, T('noPlaceOnly')));
-      el.appendChild(H('p', { class: 'muted' }, T('noPlaceWork')));
+      el.appendChild(H('p', { class: 'muted' }, richText(T('noPlaceWork'))));
       el.appendChild(H('p', { class: 'muted' }, T('noPlaceRest', { app: T('appName') })));
       return;
     }

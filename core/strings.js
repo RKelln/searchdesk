@@ -33,7 +33,7 @@ window.Desk = window.Desk || {};
     // is loaded and working but has nothing to show. Not the same as "not built yet": nothing is broken here.
     noPlaceNote: 'This part is about one place, and this version is not set to a place yet.',
     noPlaceOnly: 'Toronto is the only place set up so far.',
-    noPlaceWork: 'Adding another place is not a setting you change. It is real work: the help, the rules and the events all come from that place, and the events need a Togather server of their own.',
+    noPlaceWork: 'Adding another place is not a setting you change. It is real work: the help, the rules and the events all come from that place, and the events need a [[Togather]] server of their own.',
     noPlaceRest: 'The rest of {app} works as usual.',
     screenError: 'This part could not be shown. The rest of the app still works.',
     slotError: 'One block here could not be shown.',
