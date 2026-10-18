@@ -363,6 +363,7 @@ every loaded feature, plus the contract scan and the core's own checks.
 | `recipe-events` | AI: events worth going to | section 9.6 |
 | `recipe-posting` | AI: turn a posting into a job | section 9.7 |
 | `recipe-coach` | AI: practise an interview | section 9.8 |
+| `build` | (no tab) | A card on the AI helper screen, in the `ai` slot after "Your own tasks": four steps to adding a feature with a coding tool, that it need not cost anything, and the kit route for people who would rather not install anything. No records and no preferences, so it cannot affect anything. It says what BUILDING.md says, to people who are in the app and have no folder open. |
 
 Core, which cannot be removed: the shell, the Data and settings screen (export, import, share, undo, "remove the
 made-up person", storage status, version), the AI helper screen that hosts recipes, and the self-test.

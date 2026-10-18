@@ -1,6 +1,6 @@
 // Which features to load, and ideas not built yet.
 window.Desk = window.Desk || {};
-Desk.features = ['home', 'jobs', 'profile', 'events', 'help', 'recipe-events', 'recipe-posting', 'recipe-coach', 'recipe-custom'];
+Desk.features = ['home', 'jobs', 'profile', 'events', 'help', 'recipe-events', 'recipe-posting', 'recipe-coach', 'recipe-custom', 'build'];
 Desk.planned = [ // ideas not built yet; each has a brief in docs/features/<id>.md
   { id: 'sites', name: 'Job sites', purpose: 'Keep the job sites you use in one place, with a note about each.' },
   { id: 'calendar', name: 'Add to calendar', purpose: 'Put an interview or a starred event into your phone\'s calendar.' },
