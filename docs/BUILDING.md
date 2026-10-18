@@ -1,17 +1,43 @@
 # Building a feature
 
-This page is for anyone who wants to add a part to Search Desk, or change one, **with a coding agent**. You do not
+This page is for turning an idea of yours into a working part of Search Desk, **with a coding agent**. You do not
 need to know how to code. You need an agent that can read and save files, and a computer.
-
-No agent installed? There is a copy-and-paste route in [`KITS.md`](KITS.md) that needs nothing but a browser chat.
-It is the same result and more work.
 
 Building is a computer job. A feature is one file. You save it in a folder, then reload the page. A phone is not
 the place for this.
 
-## Pick a feature
+Two ways in, and the difference is only where the idea comes from:
 
-Each idea has a short brief in `docs/features/`. Pick one. Not sure? Ask your agent, and it will help you choose.
+- **You have an idea** and want to see it work. That is this page, and it is the main thing here.
+- **Someone has already written it up** — the ideas in the table below, each with a brief. Point your agent at the
+  brief, or copy it into a browser chat with no agent at all: [`KITS.md`](KITS.md) is that route.
+
+No agent installed at all? Everything on this page still works by copy and paste, with more steps.
+[`KITS.md`](KITS.md) has them.
+
+## Your own idea
+
+Nothing the app does is off limits. The features below were all somebody's idea once.
+
+Pick the **id** first. It is lowercase, with dashes, and short, because it becomes a file name: `recruiter`, not
+`track-which-recruiter-called`. The same id is used for `features/<id>.js` and `checks/<id>.check.js`.
+
+Then say what you want, in one sentence, and let the agent ask you the rest:
+
+> I want to add a feature that is not in the list. I want <what you want>. The id is `<id>`.
+
+Do not ask it to write the feature from that one sentence. It asks two or three short questions, because the
+differences between a feature that works and one that nearly works are in the detail nobody thought to mention.
+
+Then it writes a **brief** to `docs/features/<id>.md` in plain words, builds the file from it, runs the checks, and
+tells you what passed. The brief is the important part. It is what makes the result match what you wanted, it is
+what you check the result against, and it is what lets somebody with no agent build the same feature later by
+pasting it into a browser chat. Ask the agent to rebuild the kits afterwards and it writes one for your brief too.
+
+## Or build one that is already written up
+
+Each of these is real work the project wants and has not built yet. The app lists the same set on its **Data** tab
+as "Ideas you could build", and a few will be in a later version of Search Desk — [`KITS.md`](KITS.md) says more.
 
 | Id | In plain words |
 | --- | --- |
@@ -30,38 +56,19 @@ Each idea has a short brief in `docs/features/`. Pick one. Not sure? Ask your ag
 | `stories` | Short stories from your work, ready for interview questions. |
 | `week` | How many you applied to, followed up and went to this week. No streaks and no scores. |
 
-The brief is `docs/features/<id>.md`. Every one of these is real work the project wants and has not built yet —
-the app lists the same set on its **Data** tab as "Ideas you could build", and a few will be in a later version of
-Search Desk. [`KITS.md`](KITS.md) says more about that, and it is worth reading whether you use an agent or not.
-
-Want one that is not on that list? See "Your own idea" below. A brief is the
-record of what to build, so it is written down whether you use an agent or not — that is what lets the same feature
-be built again later by someone else, or by a chat with no agent at all.
-
-## Your own idea
-
-Nothing on that list is special. You can ask for anything the app is able to do, and it gets built the same way:
-a brief, then a feature file.
-
-Pick the **id** first. It is lowercase, with dashes, and short, because it becomes a file name: `recruiter`, not
-`track-which-recruiter-called`. The same id is used for `features/<id>.js` and `checks/<id>.check.js`.
-
-Just ask. Say: "I want to add a feature that is not in the list. I want <what you want>. The id is `<id>`." It asks
-two or three short questions, writes the brief, builds the file, runs the checks, and tells you what passed. Do not
-ask it to write the feature from one vague sentence; the brief is what makes the result match what you wanted.
-
-The brief is the part that outlasts you. It means somebody with no agent at all can build the same feature later by
-pasting it into a browser chat, which is what `docs/kits/` is for. Ask the agent to rebuild the kits afterwards and
-it writes one for your new brief too — the one step here that only makes sense once the brief exists.
+The brief is `docs/features/<id>.md` and it is the same shape as the one your own idea gets, so everything below
+applies unchanged. Say: "build `week`" or "read `docs/features/week.md` and build that", and the agent reads the
+brief and builds it. Not sure which one to want? Ask — it will ask you one question about your search and then
+suggest a few.
 
 ## Build it
 
 1. Open your agent in the Search Desk folder.
-2. Tell it what you want. Most find the instructions on their own, because `AGENTS.md` is in the folder. If it
-   does not, say: "Read AGENTS.md, then help me add a feature."
-3. If you do not know what to build, say so. It will ask you one question, then offer ideas one at a time.
-4. The agent writes the file, adds it to `features/list.js`, and runs the checks. It tells you what passed.
-5. Reload the page and open `#selftest`. That is the final check.
+2. Tell it what you want, from either section above. Most agents find the instructions on their own, because
+   `AGENTS.md` is in the folder. If one does not, say: "Read AGENTS.md, then help me add a feature."
+3. The agent writes the brief if there is not one, builds the file, adds it to `features/list.js`, and runs the
+   checks. It tells you what passed.
+4. Reload the page and open `#selftest`. That is the final check.
 
 **Your agent's own way of invoking it.** Every coding agent has one, and they all differ — a slash command, a
 mention, a `$name`, a skill you type by hand. Rather than guess, look for what your tool calls a command or a

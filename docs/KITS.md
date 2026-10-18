@@ -1,8 +1,12 @@
 # Building a feature with a free chat
 
 This page is for building a Search Desk feature with **no agent installed** — a browser chat and a text editor,
-nothing else. If you have a coding agent that reads and writes files, do not use this page;
-[`BUILDING.md`](BUILDING.md) is shorter and better.
+nothing else — **from a feature that is already written up**. If you have a coding agent that reads and saves files,
+do not use this page; [`BUILDING.md`](BUILDING.md) is shorter and better, and it covers your own ideas as well as
+these.
+
+If your idea is not on the list below, go to [`BUILDING.md`](BUILDING.md). This page assumes somebody has already
+done the thinking: there is a brief, and all that is left is turning it into a file.
 
 Building this way is copy and paste. A **kit** is one text file holding everything the chat needs: the rules, an
 example feature, and the brief for the one you picked. The chat reads it and gives you back one file, which you
