@@ -29,9 +29,11 @@ INSTRUCTION = """You are building one feature file for Search Desk, a job-search
 Reply with exactly one JavaScript file, in one code block, and nothing else.
 No words before the code block. No words after it.
 
-Follow the contract below. Do not use any of the banned words in it.
-Use the example feature as the shape of your file.
-Build the feature described in the brief at the end."""
+THE BRIEF AT THE END IS WHAT YOU BUILD. Its id is the id you must use. Read it first.
+The contract below and the example after it show the shape of such a file: the rules to follow and the shape to
+copy. The example is not what you are building -- it is a different feature, made up, kept as a model. Do not build
+it, and do not build anything the example shows instead of your brief.
+Follow the contract below. Do not use any of the banned words in it."""
 
 
 def sep(title):
