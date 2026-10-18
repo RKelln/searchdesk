@@ -77,6 +77,13 @@ Checks to write (in `logic`; `today` is `YYYY-MM-DD`):
   today or later and `copy.start` is before today; it skips deleted marks.
 - None of them change their input.
 
+Test hooks: put these `data-test` names on: `print-button`, `print-today` (the date line), `print-late` and
+`print-late-row` (`data-id`) for the late jobs, `print-week` and `print-week-row` (`data-id`, and `data-kind` of
+`followUp`, `interview` or `closes`) for the week, `print-events` and `print-event-row` (`data-id`), `print-extra`
+(the wrapper around the `print` slot, so a test can add a test-only section and check it arrives) and
+`print-empty` ("Nothing this week."). The menu link is `nav-print` (core makes it). No name covers the printed
+page: that one is checked by hand in the browser's print preview. Add any new ones to `tests/e2e/README.md`.
+
 Out of scope: choosing a different range; page layouts; sending the page by email.
 Ideas for after: let `sites` and `contacts` add their own `print` sections; a "Next week" button; a big-print version.
 

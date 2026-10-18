@@ -43,6 +43,13 @@ Checks to write (in `logic`):
   not changed.
 - `summary(items, answers)` returns `{yes, no, unsure, open}` where `open` is the items with no answer yet.
 
+Test hooks: put these `data-test` names on: `checklist` (the section), `checklist-count` (the "2 of 3 yes" line)
+and `checklist-source` (the rule link). Each item's row is `checklist-item-<item id>`. The three buttons on a row
+are all named `checklist-answer`, told apart by `data-item="<item id>"` and `data-value="yes"`, `no` or `unsure`:
+one name used three times, because it is one thing three times over. A test then asks for
+`[data-test="checklist-answer"][data-item="<item id>"][data-value="yes"]`. There is no menu link: this is a
+section inside a job. Add any new ones to `tests/e2e/README.md`.
+
 Out of scope: reading the posting for the person; law text; telling the person to complain.
 Ideas for after: fill pay and AI items from `recipe-posting`'s result; show the "yes" count in the jobs list; a
 `print` section.

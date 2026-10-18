@@ -40,5 +40,10 @@ Checks to write:
   suggestion each, and skips a line with no step.
 - The template has every placeholder you list (`Desk.prompt.absentPlaceholders` / `missingPlaceholders` are empty).
 
+Test hooks: put these `data-test` names on: `weekly-panel` (a job's "Suggested next step (from AI)" section),
+`weekly-step` (the sentence), `weekly-take` ("Use it") and `weekly-dismiss` ("Not for me"). With the recipe's id
+`weekly`, its task on the AI screen is the existing `ai-task-weekly`. There is no menu link. Add any new ones to
+`tests/e2e/README.md`.
+
 Out of scope: changing jobs; moving stages; scheduling. 
 Ideas for after: a once-a-week reminder on Home; ask for a ranking as well; a short "what went well" line.

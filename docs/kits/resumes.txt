@@ -41,6 +41,11 @@ Checks to write (in `logic`):
 - `versionNames(jobs)` gives the distinct names, sorted, ignoring capital letters, and skips deleted jobs.
 - `othersUsing(jobs, job)` counts other jobs with the same name (ignoring capital letters), not deleted.
 
+Test hooks: put these `data-test` names on: `resume-panel` (the section), `resume-version` (the name box),
+`resume-date` (the date box), `resume-versions` (the `datalist` of names you used before), `resume-today`,
+`resume-save`, `resume-clear`, `resume-problem` (a refusal), `resume-count` ("Also sent to 3 other jobs") and
+`resume-empty`. There is no menu link: this is a section inside a job. Add any new ones to `tests/e2e/README.md`.
+
 Out of scope: storing the resume file or its text; comparing versions.
 Ideas for after: a list of versions with the jobs that used each; the version name on the one-page summary; a
 reminder to update a version that is old.

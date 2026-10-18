@@ -30,5 +30,13 @@ Checks to write (in `logic`):
 - `forJob(contacts, jobId)` returns the people linked to that job, not deleted.
 - `fromEvent(event)` gives `{eventTitle, eventDate}` using the first ten characters of `start`.
 
+Test hooks: put these `data-test` names on: `contacts-add`, `contacts-form`, `contacts-name`, `contacts-role`,
+`contacts-org`, `contacts-note`, `contacts-next`, `contacts-job` (the job picker), `contacts-save`,
+`contacts-cancel`, `contacts-problem` and `contacts-empty`. One row per person is `contact-row` with `data-id`,
+and its buttons are `contact-edit` and `contact-delete`; `contact-due` goes on a person whose date is today or
+earlier. A job's section is `contacts-panel`, and its rows are `contact-row` as well, with its "Add a person for
+this job" button named `contact-add-job`. Use the slot id `contact-event`, so the event row's button is
+`action-contact-event`. The menu link is `nav-contacts` (core makes it). Add any new ones to `tests/e2e/README.md`.
+
 Out of scope: syncing with a phone's address book; email links; reminders outside the page.
 Ideas for after: a "Write to them" button that uses `recipe-followup`; show due people on Home; a `print` section.

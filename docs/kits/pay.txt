@@ -50,6 +50,12 @@ Checks to write (in `logic`):
   differ or a side is empty.
 - Low higher than high is refused (`problem: 'lowHigh'`).
 
+Test hooks: put these `data-test` names on: `pay-panel` (the whole section), `pay-posted-low`, `pay-posted-high`,
+`pay-posted-per`, `pay-aim-low`, `pay-aim-high`, `pay-aim-per` (the six controls, the two `-per` ones are the
+hourly/yearly choice), `pay-save`, `pay-problem` (a refusal line), `pay-summary` (the short summary it reads
+back) and `pay-compare` (the sentence about how the posting and your aim match). There is no menu link: this is a
+section inside a job. Add any new ones to `tests/e2e/README.md`.
+
 Out of scope: converting hourly to yearly; looking up average pay; sorting the job list by pay.
 Ideas for after: remember your aim and fill it in for new jobs; show the pay on the one-page summary (`print`
 slot); add the benefits you were told about.

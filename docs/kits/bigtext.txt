@@ -63,6 +63,10 @@ Checks to write (in `logic`):
 `readChoice` and `patchFor` are not needed: `ctx.pref` reads the saved value and refuses one you do not offer, and
 `Desk.prefs.read` / `Desk.prefs.allowed` in `core/prefs.js` are already checked in `tests/unit/prefs.test.js`.
 
+Test hooks: this feature needs no names of its own. `ctx.pref` makes `pref-size` and `pref-reset-size`, and
+`pref-contrast` and `pref-reset-contrast`, so do not add those yourself. The page change is read from the class
+list on `document.documentElement`, not from a `data-test`. Add any new ones to `tests/e2e/README.md`.
+
 Out of scope: choosing fonts or colours; per-screen sizes; changing the browser's own zoom.
 Ideas for after: a dyslexia-friendly font choice; more line spacing; a "reduce motion" switch.
 

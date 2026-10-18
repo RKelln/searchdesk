@@ -33,6 +33,11 @@ Checks to write (in `logic`; `today` is `YYYY-MM-DD`):
 - `addFollowDate(list, today)` returns a new list without a repeat, and sorted.
 - `allZero(counts)` is true only when every count is 0.
 
+Test hooks: put these `data-test` names on: `home-week` (the block on Home), `home-week-applied`,
+`home-week-followed`, `home-week-events` (the three counts) and `home-week-empty` ("Nothing yet this week."). Use
+the slot id `week-followup`, so the button on a job is `action-week-followup`. There is no menu link. Add any new
+ones to `tests/e2e/README.md`.
+
 Out of scope: goals; targets; streaks; weekly emails; scores of any kind.
 Ideas for after: "Last week" beside it (just numbers); the same counts in the `print` summary; a gentle line when the
 week had a hard stretch.

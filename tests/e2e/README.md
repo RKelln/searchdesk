@@ -16,6 +16,16 @@ Every test should end with `assert_no_errors(page)` (console errors, page errors
 Features that tests need to reach put a `data-test` attribute on the element (via `h()`: `{ 'data-test': 'toast' }`).
 Do not change a name once used. Do not select by visible text, since text lives in the string table.
 
+**Choosing a name.** Kebab-case, prefixed with the feature id (`pay-panel`, `contacts-add`). **Singular for a row
+that repeats** — one element per row, carrying `data-id` (`contact-row`, `home-reply-clock-row`) — and plural for
+the one-off controls and sections around it. Where one row has the same button several times over, use one name
+and tell them apart with an attribute: `[data-test="…-answer"][data-value="yes"]`. A section drawn inside someone
+else's screen is `<id>-<thing>`; a block a feature adds to Home is `home-<id>`; a block it adds to Data/settings is
+`<id>-...`. **Core already makes these, so never add them yourself:** `nav-<id>` for a tab, `action-<id>` for a
+`job.actions` or `event.actions` button, `ai-task-<id>` for a recipe's task, `pref-<key>` for a `ctx.pref` choice or
+toggle, and `toast` and `paste-box`. A brief lists the names its own feature should use; the table below gains a row
+when that feature is built.
+
 | Selector | Element |
 |---|---|
 | `[data-test="paste-box"]` | the paste textarea (T1.4 import, T3.3 reply paste) |

@@ -46,6 +46,10 @@ Checks to write:
   `http:` address becomes `''`.
 - The template has every placeholder you list.
 
+Test hooks: this recipe needs no new names. With the recipe's id `sites`, its task is the existing `ai-task-sites`;
+a missing feature or a missing profile line shows in the existing `ai-needs`; and the leads themselves are shown by
+`sites` under its own names (see `docs/features/sites.md`). Add any new ones to `tests/e2e/README.md`.
+
 Out of scope: checking that a link works; fetching anything; adding the site automatically.
 Ideas for after: ask for local employers as well as sites; let the person say "only free sites"; a choice of how many.
 

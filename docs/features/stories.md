@@ -28,6 +28,13 @@ Checks to write (in `logic`):
 - `sortStories(list)` newest first, by `updated`, then by title; does not change its input.
 - `firstLine(text)` gives the first line cut at 80 characters with `...` if cut.
 
+Test hooks: put these `data-test` names on: `stories-add`, `stories-form`, `stories-title`, `stories-text`,
+`stories-guide` (the three prompts), `stories-count` (the 800 count), `stories-problem`, `stories-save`,
+`stories-cancel`, `stories-warn` (the line about sharing) and `stories-empty`; one row per story is `story-row`
+with `data-id`, and its buttons are `story-edit` and `story-delete`. The menu link is `nav-stories` (core makes
+it). The recipe-coach line above needs no new name: the question's preview is the existing `ai-preview-text`. Add
+any new ones to `tests/e2e/README.md`.
+
 Out of scope: writing the story for the person; tags; a story picker per job.
 Ideas for after: a tag for the kind of question each story fits (teamwork, a mistake); show only the stories that
 fit the job; a `print` section.

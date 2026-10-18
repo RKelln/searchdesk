@@ -44,6 +44,13 @@ Checks to write (in `logic`; `today` is `YYYY-MM-DD`):
   and deleted jobs.
 - `cleanDays('45')` is `{ok: true, days: 45}`; `'0'` is ok; `'-3'`, `'4.5'` and `'x'` give `{ok: false, problem}`.
 
+Test hooks: put these `data-test` names on: `reply-panel` (a job's section), `reply-due`, `reply-left` ("in 12
+days") and `reply-source` (the rule link); Home's block is `home-reply-clock`, with one `home-reply-clock-row`
+per job (`data-id`); the settings block is `reply-clock-settings`, with `reply-clock-days` (the number box),
+`reply-clock-save`, `reply-clock-problem` (a refusal) and `reply-clock-locale` (the line saying what the locale
+says). A number box is not a choice, so it is not a `ctx.pref` and it does not get a `pref-` name. There is no
+menu link. Add any new ones to `tests/e2e/README.md`.
+
 Out of scope: telling the person what to do if the date passes; legal advice; a copy of the whole rule.
 Ideas for after: pair it with `recipe-followup` (a "Ask about my result" message); show the date on the `print`
 page; let each job have its own number of days.

@@ -96,6 +96,9 @@ Strings the build needs (all in `strings`): `jobButton`, `eventButton`, `noInter
 - `fileName('Cook, line / day 2')` has only letters, numbers and hyphens, and ends in `.ics`.
 - `uidFor(job)` is the same every time for the same job.
 
+Test hooks: the two action names above are all this feature needs. Everything else about the file is checked in
+`logic`, where no name is needed, and a refusal is the existing `toast`. Add any new ones to `tests/e2e/README.md`.
+
 Out of scope: asking for reminders ahead of time (`VALARM`); repeat events; time zones; sending to Google or Outlook.
 Ideas for after: add the follow-up date as an all-day entry; "Add all my starred events" in one file; a reminder
 the day before.

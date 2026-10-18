@@ -52,6 +52,10 @@ Checks to write:
 - `logic.kindFor(job)` gives `'thanks'` for stage `interview`, else `'followup'`.
 - `logic.question(...)` with a very long profile stays under 6,000 characters.
 
+Test hooks: this recipe needs no new names. Give the slot entry the id `followup`, so the job's button is
+`action-followup`; the task on the AI screen is the existing `ai-task-followup`, the choice is `ai-opt-<option
+id>`, and a job that is missing shows in the existing `ai-needs`. Add any new ones to `tests/e2e/README.md`.
+
 Out of scope: sending the message; reading the draft back into the app; saving drafts.
 Ideas for after: a "Ask about my result" kind that uses the `reply-clock` date; a choice of language; a choice of
 tone (warm or formal).
