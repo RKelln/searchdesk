@@ -1,0 +1,130 @@
+<!doctype html>
+<!-- Made by tools/menu.py from docs/features/*.md. Do not edit by hand: run the tool. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ideas to build for Search Desk</title>
+<style>
+  :root { --ink:#1c1f23; --muted:#5b6470; --rule:#dfe3e8; --ground:#eef1f4; --card:#fff; --accent:#1f4e79; --chip:#e3edf6; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#e8ebef; --muted:#a3adb8; --rule:#2f3640; --ground:#14181d; --card:#1c2128; --accent:#8bb8e8; --chip:#26344a; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--ground); color:var(--ink); font:1.0625rem/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; }
+  main { max-width:56rem; margin:0 auto; padding:2rem 1rem 4rem; }
+  h1 { margin:0 0 .4rem; font-size:2rem; line-height:1.2; }
+  .lead { color:var(--muted); max-width:42rem; margin:0 0 2rem; }
+  h2 { margin:2rem 0 .8rem; font-size:1.3rem; } h2 small { color:var(--muted); font-weight:400; font-size:.95rem; margin-left:.4rem; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(17rem,1fr)); gap:1rem; }
+  article { background:var(--card); border:1px solid var(--rule); border-radius:.5rem; padding:1.1rem 1.2rem; }
+  h3 { margin:0 0 .4rem; font-size:1.1rem; display:flex; justify-content:space-between; gap:.5rem; align-items:baseline; }
+  .size { font-size:.78rem; font-weight:600; background:var(--chip); color:var(--accent); padding:.1rem .5rem; border-radius:1rem; white-space:nowrap; }
+  p { margin:0 0 .6rem; } .plain { font-weight:500; } .why { color:var(--muted); font-size:.95rem; } .id { color:var(--muted); font-size:.85rem; margin:0; }
+  code { background:var(--chip); padding:.05rem .35rem; border-radius:.25rem; }
+  .none { background:var(--card); border:1px dashed var(--rule); border-radius:.5rem; padding:1rem 1.2rem; color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Ideas to build for Search Desk</h1>
+  <p class="lead">Each of these is already written up, so an agent can build it from its brief. Pick the one that would help
+  Amira most, then ask for it by name. Small ones fit in one sitting. If none of them is right, describe your own.</p>
+  <section>
+    <h2>Small <small>about one sitting</small></h2>
+    <div class="grid">
+    <article>
+      <h3>Add to calendar <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">Put an interview or a starred event into your phone&#x27;s calendar.</p>
+      <p class="why">A date written in a tracker is easy to miss. In the calendar it gets a reminder.</p>
+      <p class="id">Ask for it by name: <code>calendar</code></p>
+    </article>
+    <article>
+      <h3>AI: follow-up message <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">Drafts a short follow-up or thank-you note for a job. You copy it yourself.</p>
+      <p class="why">Many people do not follow up because they do not know what to write. A short draft to edit removes the hard part.</p>
+      <p class="id">Ask for it by name: <code>recipe-followup</code></p>
+    </article>
+    <article>
+      <h3>AI: sites for my field <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">Suggests job sites and organisations for your kind of work, as suggestions to add to <code>sites</code>.</p>
+      <p class="why">Most people only know the big job sites. A good list for your trade or field is hard to find.</p>
+      <p class="id">Ask for it by name: <code>recipe-sites</code></p>
+    </article>
+    <article>
+      <h3>Bigger text <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">Larger text and stronger contrast, remembered on this device.</p>
+      <p class="why">Small grey text is hard to read for many people, on a phone or a library computer.</p>
+      <p class="id">Ask for it by name: <code>bigtext</code></p>
+    </article>
+    <article>
+      <h3>Job sites <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">Keep the job sites you use in one place, with a note about each.</p>
+      <p class="why">Job searching means many sites and it is easy to lose track of which ones you check. This also gives the AI&#x27;s &quot;new place to look&quot; leads a home: you can take one, and it becomes a site.</p>
+      <p class="id">Ask for it by name: <code>sites</code></p>
+    </article>
+    <article>
+      <h3>One-page summary <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">A page you can print or save as a PDF: this week&#x27;s jobs, dates and events.</p>
+      <p class="why">Some people do their search with paper, or bring a page to the library or a meeting with a worker. Other features can add their own section to this page.</p>
+      <p class="id">Ask for it by name: <code>print</code></p>
+    </article>
+    <article>
+      <h3>Pay notes <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">The pay each posting gives, beside the pay you are aiming for.</p>
+      <p class="why">Pay is easy to forget between postings. Seeing both numbers on a job helps you decide, and helps when an employer asks what you expect.</p>
+      <p class="id">Ask for it by name: <code>pay</code></p>
+    </article>
+    <article>
+      <h3>Posting checklist <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">What a posting must tell you in Ontario, and whether this one does.</p>
+      <p class="why">The 2026 posting rules say what a posting has to include. Checking each one takes a minute and shows which postings are careful with you.</p>
+      <p class="id">Ask for it by name: <code>checklist</code></p>
+    </article>
+    <article>
+      <h3>Reply due <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">After an interview, shows the date the employer should have told you the result by.</p>
+      <p class="why">In Ontario, employers have to tell you the outcome within a set time after the last interview (45 days in the 2026 rules). Knowing the date tells you when it is fair to ask.</p>
+      <p class="id">Ask for it by name: <code>reply-clock</code></p>
+    </article>
+    <article>
+      <h3>This week <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">How many you applied to, followed up and went to this week. No streaks and no scores.</p>
+      <p class="why">Job searching feels endless. A small plain count of what you did this week shows that you are moving, without pressure.</p>
+      <p class="id">Ask for it by name: <code>week</code></p>
+    </article>
+    <article>
+      <h3>Which resume <span class="size" title="about one sitting">Small</span></h3>
+      <p class="plain">Which version of your resume you sent where.</p>
+      <p class="why">When an employer calls, you want to know which resume they have in front of them.</p>
+      <p class="id">Ask for it by name: <code>resumes</code></p>
+    </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>Medium <small>a little longer</small></h2>
+    <div class="grid">
+    <article>
+      <h3>AI: weekly check-in <span class="size" title="a little longer">Medium</span></h3>
+      <p class="plain">Sends your open jobs and suggests the next step for each, as suggestions.</p>
+      <p class="why">Once a week it helps to ask &quot;what should I do next on each of these?&quot; A free chat can give a short answer for each job, and you decide which to use.</p>
+      <p class="id">Ask for it by name: <code>recipe-weekly</code></p>
+    </article>
+    <article>
+      <h3>My examples <span class="size" title="a little longer">Medium</span></h3>
+      <p class="plain">Short stories from your work, ready for interview questions; the coach recipe can include them.</p>
+      <p class="why">Interviewers ask for examples (&quot;Tell me about a time...&quot;). It is much easier to answer when you wrote a few down in advance.</p>
+      <p class="id">Ask for it by name: <code>stories</code></p>
+    </article>
+    <article>
+      <h3>People I met <span class="size" title="a little longer">Medium</span></h3>
+      <p class="plain">A short note about people you met, linked to an event or a job.</p>
+      <p class="why">Most jobs come from people. A note about who you met, and what they said, is what you need when you write to them a week later.</p>
+      <p class="id">Ask for it by name: <code>contacts</code></p>
+    </article>
+    </div>
+  </section>
+
+  <p class="none">None of these fits? Tell the agent what Amira struggles with, in your own words, and it will turn that into a plan.</p>
+</main>
+</body>
+</html>
