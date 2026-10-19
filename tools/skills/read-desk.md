@@ -37,6 +37,10 @@ and do not paste it back to the person: say what you found in a sentence or two.
 
 ## Things to remember
 
+- Do not answer "what is on the desk" by opening the page in a browser of your own. That browser keeps its own
+  records, apart from the person's, so it can show a different desk (it will even bring in `data/inbox.js` itself and
+  look right). The copy comes from the person's page; a browser you open does not.
+
 - A record marked `(made-up)` belongs to the practice person. It is fictional, and it is what the demo is built on.
 - If the age it shows is older than the change you are asking about, the copy has not caught up. Say so, or ask for a
   new export; do not report an old copy as the current desk.
