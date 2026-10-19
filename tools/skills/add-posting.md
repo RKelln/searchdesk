@@ -26,8 +26,9 @@ description: Use when someone gives you a job posting as a link, as pasted text,
   date, and pay if it gives one.
 - Leave blank rather than infer: pay it does not state, a closing date, a link, qualifications, experience, contact
   details.
-- Show the title, the employer, the requirements and the fields you are leaving blank, in plain words, before you
-  write anything.
+- Write the record, then say what you added: the title, the employer, the requirements and the fields you left blank,
+  in plain words. Do not ask first. The job is in the desk where they can see it, and Undo on the banner or Delete on
+  the job takes it out if it is wrong.
 - You cannot read the browser's storage from files. If the current records matter, ask them to export a backup into
   the folder and read that.
 
