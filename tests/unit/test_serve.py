@@ -245,6 +245,20 @@ class TestDevScript(unittest.TestCase):
         self.assertNotIn("</script", line)
         self.assertIn("<\\/script>", line)
 
+    def test_the_workshop_line_is_inside_a_script_element_in_the_page_that_is_sent(self):
+        # The two tests above passed while the page was broken: the line was correct and arrived as text, so
+        # the desk opened empty and the host's banner was visible on the page. This asserts the delivery.
+        head = serve.dev_script(reload=True, workshop=True, banner="Practice computer")
+        self.assertIn("<script>window.DESK_WORKSHOP = {", head)
+        self.assertIn("};\n</script>", head)
+        self.assertEqual(head.count("<script>"), 2)          # the workshop line and the reload helper
+        self.assertEqual(head.count("</script>"), 2)
+
+    def test_a_banner_cannot_open_an_html_comment_either(self):
+        # "<!--" inside a script element starts a comment in the legacy parser and can swallow what follows.
+        self.assertNotIn("<!--", serve.workshop_script("<!-- x"))
+        self.assertIn("<\\!--", serve.workshop_script("<!-- x"))
+
     def test_the_helper_is_es5_and_has_no_arrow_functions(self):
         # It runs in whatever browser is on the table, which may be older than this repo.
         body = serve.dev_script()

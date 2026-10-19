@@ -4,6 +4,11 @@ Search Desk is a job-search helper that runs in a web browser from plain files: 
 dependencies. It keeps a person's jobs, dates, events and free help in one place, and optionally helps them use a free
 AI chat by copy and paste.
 
+This file is the brief for the **source repo on a development machine**: git, Node, `python3`, and the tools in
+`tools/`. A workshop copy is a folder cut from a tag, and it carries its own brief (`AGENTS.md` and `BUILDING.md`
+in that folder); there, that brief wins on what to run, on what may be touched, and on anything about the session.
+What never changes is how a feature file is written: that is the contract, in every shape.
+
 Features are single files that follow one contract. Most people who open this repo with an agent want to add or change
 a feature, so read the contract first: [`docs/CONTRACT.md`](docs/CONTRACT.md). The full design is in `docs/DESIGN.md`
 and the task list is in `docs/PLAN.md`.
@@ -58,16 +63,21 @@ machine that will not let anyone install one. The briefs in `docs/features/` are
 ## Running tests and checks
 
 - Unit tests (needs Node): `node --test tests/unit/*.test.js`. Node 22 rejects a folder, so keep the glob.
-- Unit tests for the tools (Python): `uv run tests/unit/test_build.py` and `uv run tests/unit/test_serve.py`.
+- Unit tests for the tools (Python): `python3 tests/unit/test_build.py` and `python3 tests/unit/test_serve.py`
+  (`uv run` is the same thing; the tools are standard library only).
 - Serving the page while somebody watches it change, which is what a workshop runs on:
-  `uv run tools/serve.py --workshop --rebuild`. It reloads the page when a file changes, and a screen named in
-  `.dev-go` moves the open tab there. It never writes to the app's own files. `docs/WORKSHOP.md` is the run-through.
+  `python3 tools/serve.py --workshop --rebuild`, or `uv run tools/serve.py` where it is installed. Pass
+  `--workshop` only when the folder has no `data/workshop.js`: a workshop copy carries that file, and then the
+  flag says the same thing twice. It reloads the page when a file changes, and a screen named in `.dev-go` moves
+  the open tab there. It never writes to the app's own files. `docs/WORKSHOP.md` is the run-through.
 - Check one feature (Linux or anywhere with Node): `node checks/run.js <id>`. It loads `features/<id>.js` and
   `checks/<id>.check.js`. Try it on the example with `node checks/run.js example`. This exists now.
 - Check one feature on a Mac without Node: `bash checks/check.sh <id>` (it runs through `osascript -l JavaScript`). This arrives with task T1.6; if
   `checks/check.sh` is not there yet, it is not built yet.
-- Browser tests (needs `uv`): `uv run tests/e2e/run.py`. This arrives with task T1.7.
-- Screenshots for design work (needs `uv`): `uv run tools/screens.py` takes every screen on a phone and a computer,
+- Browser tests (development only: they need Playwright and its browsers, which a workshop copy does not have):
+  `python3 tests/e2e/run.py`, or `uv run tests/e2e/run.py`.
+- Screenshots for design work (development only: it drives Playwright): `python3 tools/screens.py` takes every
+  screen on a phone and a computer,
   light and dark, writes `screens/index.html`, and flags sideways scroll, page errors and stray `null` text.
   Add `--sizes wide` for layout work: at 1280 a layout can look tidy and still waste half a real desktop.
 - A feature does not have to write layout CSS. The layout kit in `docs/CONTRACT.md` gives a card grid (`cols`), a

@@ -21,7 +21,9 @@ Each machine needs three things:
   copy of `features/` will overwrite each other, and nobody notices until the screen is wrong.
 - **An agent that can read and save files.** See
   [`BUILDING.md`](BUILDING.md#free-ways-to-get-help-from-ai) for the free ways.
-- **Python 3 with `uv`.** In this shape everyone runs the server, not just the host: `uv run tools/serve.py`.
+- **Python 3.9 or newer.** That is the whole list: the server is standard library only, so `python3` is enough
+  and there is nothing to install. `uv run tools/serve.py` and `python3 tools/serve.py` do exactly the same
+  thing, so a machine without `uv` loses nothing.
 
 Node is only for running checks, so only the host needs it, and even that is optional
 (`bash checks/check.sh <id>` works with no Node at all).
@@ -35,10 +37,15 @@ back of a room. Ten minutes of setup saves a room of squinting.
 
 ### If a machine cannot run any of this
 
-Some managed computers have no Python and no `uv`. Two things still work there:
+**No `uv`? Nothing is lost.** `python3 tools/serve.py --workshop --rebuild` is the same command; the tool uses
+only what Python already has. Say this out loud at the start, because "do I need to install something?" is the
+question that stops people.
 
-- **No Python? Open the page from the folder instead.** Double-click `index.html` and press Cmd-R after each
-  change. That is the whole loop minus the automatic reload, and much better than sitting the session out.
+Two cases are genuinely harder:
+
+- **No Python at all** (a Mac with no developer tools: `python3` there offers to download them, which is a long
+  download and may be blocked). Open `index.html` from the folder by double-clicking it, and press Cmd-R after
+  each change. That is the whole loop minus the automatic reload, and it beats sitting the session out.
 - **No agent either?** [`KITS.md`](KITS.md) is the same fourteen features as text to paste into a browser
   chat. There is no live loop in that session: people paste, they wait, they read the answer back. Worth
   running, but it is a different session, and better to know before the room fills up than after.
@@ -50,6 +57,15 @@ On each machine, from inside the Search Desk folder:
 ```
 uv run tools/serve.py --workshop --rebuild
 ```
+
+or, with no `uv` anywhere on the machine, exactly the same thing:
+
+```
+python3 tools/serve.py --workshop --rebuild
+```
+
+If this copy already carries `data/workshop.js`, drop `--workshop`: that file says the same thing, and two ways to
+say it is how a host ends up unsure which one won.
 
 It prints an address, usually `http://127.0.0.1:8000/`. Open that in a browser. Three things are now true, and
 they are the whole reason this exists:
@@ -117,19 +133,29 @@ plain words. It is the one thing in the session that needs no agent at all, whic
 the session: **have each person run it themselves.** Watching an agent say "all good" means nothing; watching
 the page say it means everything.
 
-## 5. At the end: one file to take home
+## 5. At the end: take the folder home
 
-Each person runs this on their own machine, and keeps the file:
+What they keep is the **folder**, not a built file. It is the project: the app, the feature they wrote, its check,
+and their notes. On a stick, or sent to themselves, an agent at home can open that same folder and carry on where
+the session stopped. That is the point of keeping it: a folder is something you can go on changing.
+
+The agent files travel with it (`.claude/`, `.agents/`, `opencode.jsonc`), which is what makes the at-home agent
+work with no set-up. `TAKE-HOME.txt`, if the copy carries one, says the rest.
+
+**The single file is a snapshot, not the take-home.**
 
 ```
-uv run tools/build.py --workshop
+python3 tools/build.py --workshop
 ```
 
-That writes `dist/workshop/searchdesk.html`: one file, no server, no install, Amira already in it and the
-network never asked for anything. It opens in Chrome from a USB stick or an email attachment. If the server was
-started with `--rebuild`, the file has been kept fresh all along and this is only being run again to be sure.
+writes `dist/workshop/searchdesk.html`: one file, no server, no install, Amira already in it, and the network never
+asked for anything. It opens in Chrome from a stick or an email attachment, which makes it the clearest ten seconds
+of the session, when somebody's feature goes from "it worked on my screen" to a file that opens anywhere. What it
+does not carry is their records, which live in the browser, or anything they can go on building: everything is
+inlined, and there is nothing inside it to change.
 
-Worth doing in the room, because it is the clearest ten seconds of the session: somebody's feature goes from
-"it worked on my screen" to a file they can double-click on any computer, with nothing installed.
+For a normal copy instead (live events on, starts empty), run `python3 tools/build.py`.
 
-For a normal copy instead (live events on, starts empty), run `uv run tools/build.py`.
+**Two origins are two desks.** A copy opened by double-clicking `index.html` and the same copy served at
+`127.0.0.1` keep separate records, because a browser files storage by origin. If someone practised at home and
+wants that desk here, bring it across with the Data screen's file, not the browser's history.

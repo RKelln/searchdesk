@@ -36,4 +36,11 @@ This is a thin wrapper. The rules live in the docs; read them, do not copy them.
    - which commands passed (name them);
    - that the last check is theirs: open the app in the browser, reload, and go to `#selftest`.
 
+**In a workshop**, where somebody is watching the screen while you work: the page is already being served, so
+the loop is change one file in `features/` and say what you changed. There is no build step. The page reloads
+itself. To show them a screen, write its name into `.dev-go` in the folder, one word and no `#` (the tab goes
+there once, then the server takes the note out); do not ask them to reload, and do not ask them to find the new
+screen. Keep to `features/`, `checks/` and `docs/features/` unless the task needs `core/`, and say so if it
+does. Never write a real name, email or phone number anywhere.
+
 Keep your replies short and in plain words (about grade 6).

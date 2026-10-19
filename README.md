@@ -58,6 +58,9 @@ The short version: start the page, then let people watch an agent change it.
 uv run tools/serve.py --workshop --rebuild
 ```
 
+(`python3 tools/serve.py --workshop --rebuild` is the same thing where `uv` is not installed: standard library
+only, nothing to install. Drop `--workshop` if the folder already carries `data/workshop.js`.)
+
 It prints an address, usually `http://127.0.0.1:8000/`. The page reloads itself every time a file changes, so
 there is nothing to press and no build step; Amira is already loaded, the banner says it is a practice computer,
 and the page asks the network for nothing. Writing a screen's name in `.dev-go` moves the open tab there, so a

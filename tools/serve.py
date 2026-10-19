@@ -6,10 +6,12 @@
 """Serve Search Desk for a workshop, where a person watches an agent change it.  Run:
 
     uv run tools/serve.py                # the page, reloading itself when a file changes
+    python3 tools/serve.py               # the same thing where uv is not installed: standard library only
     uv run tools/serve.py --workshop     # opens straight into Amira, banner on, asks the network for nothing
     uv run tools/serve.py --rebuild      # also rewrites dist/workshop/searchdesk.html whenever a file changes
 
-Then open the URL it prints.  The full run-through for a host is in docs/WORKSHOP.md.
+Then open the URL it prints.  The full run-through for a host is in docs/WORKSHOP.md.  Needs Python 3.9 or newer
+and nothing else: no packages, no install step, nothing to keep up to date.
 
 Why this exists
   The page needs no server: opening index.html from a file works, and that is the documented way to build a
@@ -192,7 +194,8 @@ def workshop_script(banner=None):
     body = '{ autoExample: true, liveEvents: false'
     if banner:
         body += ', banner: ' + json.dumps(banner, ensure_ascii=True)
-    return re.sub(r"</(script)", r"<\\/\1", "window.DESK_WORKSHOP = " + body + " };\n", flags=re.I)
+    line = re.sub(r"</(script)", r"<\\/\1", "window.DESK_WORKSHOP = " + body + " };\n", flags=re.I)
+    return line.replace("<!--", "<\\!--")
 
 
 RELOAD_JS = """(function () {
@@ -271,7 +274,9 @@ def dev_script(reload=True, workshop=False, banner=None, token=None, go=None):
     plain source page. With reload=False this is only the workshop line, or nothing at all."""
     parts = []
     if workshop:
-        parts.append(workshop_script(banner))
+        # Inside a script element, not beside it: bare, the line is text on the page, window.DESK_WORKSHOP
+        # stays undefined and the desk opens empty with the host's words on show.
+        parts.append("<script>" + workshop_script(banner) + "</script>\n")
     if reload:
         parts.append("<script>\n/* Added by tools/serve.py as it sends this page. It is not in the file on disk. */\n"
                      + (RELOAD_JS % (json.dumps(token or ""), json.dumps(go or ""))) + "</script>\n")

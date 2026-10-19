@@ -20,6 +20,13 @@ To change a command, edit the file here and run the tool. Do not edit a copy: `u
 says if any is out of date, and `node --test tests/unit/agent-files.test.js` fails in CI when one is. A file named
 `README.md` or starting with `_` is a note, not a command, and is not copied.
 
+## These files ship
+
+A workshop copy is a folder cut from a tag, and it keeps this folder, so an agent in the room reads these commands
+too. Two rules follow. Name commands that work with `python3` alone, and mention `uv` as the alternative rather than
+the only spelling. And keep workshop-only behaviour out: session rules belong in the brief the copy carries, so a
+command here is true at home as well.
+
 ## Writing the body
 
 Frontmatter keeps to two keys, one line each: `description` (shown in the tool's command list) and `argument-hint`
