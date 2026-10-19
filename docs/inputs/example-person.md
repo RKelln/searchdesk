@@ -33,7 +33,7 @@ knows no one in her field here yet.
 | 5 | Data Entry Clerk | Northgate Logistics | closed | applied −30 days | "No reply. Job reposted." |
 | 6 | Receptionist / Bookkeeping Support | Danforth Physio Clinic | interview | interview −10 days (so a reply-clock date shows) | "Waiting to hear back" |
 
-Job 2 carries a short made-up posting (about 120 words) and `asks` ("QuickBooks or similar; scheduling; customer
+Job 2 carries a made-up posting written like a real one (about 160 words: an opening, the duties, what they ask for, how to apply) and `asks` ("QuickBooks or similar; scheduling; customer
 service"), so the coach recipe has something to work with.
 
 ## Events

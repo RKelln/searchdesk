@@ -42,12 +42,33 @@ window.DESK_EXAMPLE = window.DESK_EXAMPLE || function () {
     });
   });
 
+  // W04's practice posting, written the way a real small-clinic posting reads: an opening, the duties,
+  // what they ask for, how to apply. It is the text participants paste into the recipe, so it carries
+  // line breaks and section headings; `features/jobs.js` prints it with white-space: pre-wrap.
+  // Two facts are deliberately absent, and the workshop checks for that: the pay (offered at the
+  // interview) and a closing date (open until filled). The posting says nothing about AI screening.
+  // The apply address uses the reserved .example TLD on purpose: it looks like a real address and
+  // can never route anywhere. Do not swap in a domain that resolves.
   var posting = 'Kingsway Dental Group is a friendly dental office in Etobicoke. We are looking for an Office ' +
-    'Administrator to join our front desk team. You will greet patients, answer the phone, book and confirm ' +
-    'appointments, and keep the schedule in order. You will also send reminders, handle simple billing, and ' +
-    'keep patient files neat and private. The hours are Monday to Friday, with some evenings. You should be ' +
-    'calm, kind and careful with details. Experience with QuickBooks or similar software is an asset. Training ' +
-    'is given. (Made-up posting.)';
+    'Administrator to join our front desk team. The hours are Monday to Friday, with some evenings.\n\n' +
+    'You will be responsible for:\n\n' +
+    'Greeting patients and answering the phone.\n' +
+    'Booking and confirming appointments, and keeping the schedule in order.\n' +
+    'Sending reminders for upcoming appointments.\n' +
+    'Handling simple billing and taking payments.\n' +
+    'Keeping patient files neat and private.\n' +
+    'Ordering front desk and office supplies.\n\n' +
+    'You will need to have:\n\n' +
+    'A calm, kind manner with patients.\n' +
+    'Care with details and with private information.\n' +
+    'Comfort with email, calendars and simple spreadsheets.\n' +
+    'Experience with QuickBooks or similar software (an asset).\n' +
+    'Willingness to learn. Training is given.\n\n' +
+    'How to apply:\n\n' +
+    'Send your resume to the office manager at frontdesk@kingswaydental.example. We will contact you ' +
+    'if we would like to meet.\n\n' +
+    'Pay is discussed at the interview. There is no closing date: we will keep this posting open until ' +
+    'the position is filled.';
 
   return { records: [
     { type: 'profile',
