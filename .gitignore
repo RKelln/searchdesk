@@ -15,3 +15,5 @@ __pycache__
 # pattern in step with Desk.io.filename; tests/unit/io.test.js fails if the two drift apart.
 searchdesk-*.json
 data/inbox.js
+# The half-written copy serve.py --mirror moves over searchdesk-live.json.
+/searchdesk-live.json.tmp

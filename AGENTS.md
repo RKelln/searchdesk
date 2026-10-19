@@ -135,6 +135,10 @@ help them most this week.
 
 For an agent that can read and write files (the person's exported backup sits in the folder).
 
+- **Reading the desk now:** with `python3 tools/serve.py --mirror` running, the page keeps `searchdesk-live.json` up to
+  date by itself, and `python3 tools/read-desk.py` reads a part of it (`--type job`, `--id <id>`, `--find <word>`) so you
+  never open the whole file. The `read-desk` skill has the steps. The mirror is off by default and local only, because
+  it writes the desk's records to a file; it includes the made-up person, marked `source: "example"`.
 - **Reading:** the person exports to `searchdesk-<date>.json` in the folder (`Desk.io.filename` names it, for example
   `searchdesk-2026-10-16.json`), and you read that. Whoever runs the model may keep what you send it: if the model does
   not say that it keeps nothing, act as if it does. Never paste a real backup, name, email or phone number into a chat

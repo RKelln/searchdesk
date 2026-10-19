@@ -9,6 +9,7 @@
     python3 tools/serve.py               # the same thing where uv is not installed: standard library only
     uv run tools/serve.py --workshop     # opens straight into Amira, banner on, asks the network for nothing
     uv run tools/serve.py --rebuild      # also rewrites dist/workshop/searchdesk.html whenever a file changes
+    uv run tools/serve.py --mirror       # also keeps searchdesk-live.json up to date, so an agent can read the desk
 
 Then open the URL it prints.  The full run-through for a host is in docs/WORKSHOP.md.  Needs Python 3.9 or newer
 and nothing else: no packages, no install step, nothing to keep up to date.
@@ -60,11 +61,29 @@ What it serves, and what it does not
   Only what the page needs: index.html, core/, locale/, data/, features/ and checks/. Not .git, not docs/, not
   tools/, not tests/, not reference/, not dist/, not screens/, and never a .json -- a person's exported backup
   (searchdesk-<date>.json) can sit in this folder, and --host 0.0.0.0 puts this server on the room's wifi. It
-  never writes to a file the app uses, and it never changes index.html or any other file on disk.
+  never changes index.html or any other file the app uses; with --mirror it writes one file of its own,
+  searchdesk-live.json.
 
   The two things it adds are added to what it sends, not to the file: the reload helper, and (with --workshop)
   the same window.DESK_WORKSHOP line the built workshop copy carries. Saving the page from the browser
   therefore saves the plain source page, which is what someone opening it later wants.
+
+Letting an agent see the desk
+  The desk's records live in the browser, not in a file, so an agent in this folder cannot read them. With
+  --mirror the page sends its records to this server about a second after any change, and the server keeps them in
+  searchdesk-live.json: the same shape the Data screen's export makes ("schema", then "records" by id), so anything
+  that reads an export reads this. One difference: it includes the made-up person, whose records say
+  source: "example", where an export leaves her out. Nobody presses anything. It is one-way: the agent writes back through data/inbox.js, as
+  before.
+
+  It is off unless asked for, because the file holds whatever is in the desk, and with a real person's desk that
+  is a real person's data landing in a folder they did not choose. It is also the one place this server accepts
+  anything from a browser, so it takes three precautions. It binds only to this computer (--mirror with a --host
+  that is not local stops with a message). It accepts a write only from this page's own address, which closes the
+  door on any other website open in the same browser. And it wants a token that exists only in the page this
+  server sent, made fresh each run: without both, a web page could put words of its choosing into the file the
+  agent trusts. The file is git-ignored (searchdesk-*.json), is never served back (.json is refused), is replaced
+  whole, never half written, and is capped at 8 MB.
 
 Options
   --port N        port to listen on (default 8000; 0 picks a free one)
@@ -72,6 +91,7 @@ Options
   --workshop      open into the made-up person, show the practice banner, never use the network
   --banner TEXT   with --workshop, the banner words
   --rebuild       also rebuild dist/workshop/ when a file changes, so the copy to take home stays fresh
+  --mirror        keep searchdesk-live.json up to date with what is in the desk (see above)
   --no-reload     serve the files exactly as they are, with no reload helper
   --quiet         do not log each request
   --check         print the files it would watch and stop (for working out why nothing reloads)
@@ -86,8 +106,11 @@ import hashlib
 import http.server
 import importlib.util
 import json
+import hmac
+import os
 import posixpath
 import re
+import secrets
 import socket
 import sys
 import threading
@@ -104,6 +127,10 @@ GO_FILE = ".dev-go"
 NEVER = (".git", "docs", "tools", "tests", "reference", "dist", "screens", "node_modules", "__pycache__")
 # A screen name: a lowercase id, and at most one / for a screen behind a tap (sites/new). Nothing else, because
 # this text ends up in the page as a route and nowhere else.
+MIRROR_FILE = "searchdesk-live.json"
+MIRROR_ROUTE = "/__desk"
+MIRROR_MAX = 8 * 1024 * 1024
+LOCAL_NAMES = ("127.0.0.1", "localhost", "[::1]")
 GO_RE = re.compile(r"^#?[a-z][a-z0-9-]*(?:/[a-z0-9-]+)?$")
 
 
@@ -185,6 +212,52 @@ def take_go(root):
     except OSError as e:
         say("  could not take %s out of the file (%s); it will be used again" % (route, e.strerror or e))
     return route
+
+
+def host_name(host):
+    """The name part of a Host header: '127.0.0.1:8000' -> '127.0.0.1', '[::1]:8000' -> '[::1]'."""
+    host = str(host or "").strip().lower()
+    if host.startswith("["):
+        end = host.find("]")
+        return host[:end + 1] if end > 0 else host
+    return host.rsplit(":", 1)[0] if ":" in host else host
+
+
+def mirror_allowed(host, origin, sent, expected):
+    """May this request write the mirror file? Pure, so the checks are tested without a server.
+    The token must match (made fresh each run, only in the page this server sent), the Host header must name this
+    computer (a page on another site reaching this server by a name it controls fails here), and when the browser
+    says which page is asking, it must be this server's own address."""
+    if not expected or not sent or not hmac.compare_digest(str(sent), str(expected)):
+        return False
+    if host_name(host) not in LOCAL_NAMES:
+        return False
+    if origin and origin != "http://" + str(host):
+        return False
+    return True
+
+
+def mirror_text(body):
+    """The text to keep for a posted body, or None when it is not what the Data screen's export makes: bytes of
+    JSON that are an object with records, small enough. Anything else is refused, so the file is always
+    something an export reader can read."""
+    if not body or len(body) > MIRROR_MAX:
+        return None
+    try:
+        data = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError):
+        return None
+    if not isinstance(data, dict) or not isinstance(data.get("records"), (list, dict)):
+        return None
+    return json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+
+
+def write_mirror(root, text):
+    """Replace the mirror file whole: written beside it, then moved over it, so a reader never sees half."""
+    target = Path(root) / MIRROR_FILE
+    temp = Path(root) / (MIRROR_FILE + ".tmp")
+    temp.write_text(text, encoding="utf-8")
+    os.replace(str(temp), str(target))
 
 
 def workshop_script(banner=None):
@@ -269,7 +342,38 @@ RELOAD_JS = """(function () {
 """
 
 
-def dev_script(reload=True, workshop=False, banner=None, token=None, go=None):
+MIRROR_JS = """(function () {
+  var token = %s;                                 // made fresh each run; only the page this server sent has it
+  var timer = null, last = '';
+  function ready() { return window.Desk && Desk.store && Desk.store.subscribe && Desk.store.state; }
+  function send() {
+    timer = null;
+    var text;
+    try {
+      // The Data screen's export leaves the made-up person out, so that a saved copy never carries her. An agent
+      // in a workshop has to see her, so this is the same shape with every record in it; each one still says
+      // source: "example" when it is hers. Settings are device business and stay out.
+      var all = Desk.store.state().records || {}, out = {};
+      Object.keys(all).forEach(function (id) { if (all[id] && all[id].type !== 'settings') out[id] = all[id]; });
+      text = JSON.stringify({ schema: 'searchdesk/1', mirror: true, records: out }, null, 2) + '\\n';
+    } catch (e) { return; }
+    if (text === last) return;
+    last = text;
+    fetch('__desk', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Desk-Token': token },
+      body: text })['catch'](function () { last = ''; });   // the server stopped: try again at the next change
+  }
+  function soon() { if (timer) clearTimeout(timer); timer = setTimeout(send, 800); }
+  function start() {
+    if (!ready()) { setTimeout(start, 200); return; }
+    Desk.store.subscribe(soon);
+    soon();
+  }
+  window.addEventListener('load', start);
+})();
+"""
+
+
+def dev_script(reload=True, workshop=False, banner=None, token=None, go=None, mirror_token=None):
     """The text this server adds to the page it sends. Never written to disk, so index.html on disk stays the
     plain source page. With reload=False this is only the workshop line, or nothing at all."""
     parts = []
@@ -280,6 +384,9 @@ def dev_script(reload=True, workshop=False, banner=None, token=None, go=None):
     if reload:
         parts.append("<script>\n/* Added by tools/serve.py as it sends this page. It is not in the file on disk. */\n"
                      + (RELOAD_JS % (json.dumps(token or ""), json.dumps(go or ""))) + "</script>\n")
+    if mirror_token:
+        parts.append("<script>\n/* Added by tools/serve.py (--mirror). It is not in the file on disk. */\n"
+                     + (MIRROR_JS % json.dumps(mirror_token)) + "</script>\n")
     return "".join(parts)
 
 
@@ -347,6 +454,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     rebuild = False
     lock = threading.Lock()
     token = ""
+    mirror_token = ""                   # empty unless --mirror: then the route exists, and this is what it wants
 
     def log_message(self, fmt, *args):
         if self.verbose:
@@ -384,6 +492,30 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def do_HEAD(self):
         return self.do_GET()
 
+    def do_POST(self):
+        """The one write the page can ask for, and only with --mirror: its records, kept in searchdesk-live.json."""
+        route = self.path.split("?")[0]
+        if route != MIRROR_ROUTE or not self.mirror_token:
+            return self.send_error(404)
+        if not mirror_allowed(self.headers.get("Host"), self.headers.get("Origin"),
+                              self.headers.get("X-Desk-Token"), self.mirror_token):
+            return self.send_error(403, "not from this page")
+        try:
+            size = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            size = 0
+        if size <= 0 or size > MIRROR_MAX:
+            return self.send_error(413 if size else 400)
+        text = mirror_text(self.rfile.read(size))
+        if text is None:
+            return self.send_error(400, "that is not a Search Desk copy")
+        try:
+            write_mirror(self.root, text)
+        except OSError as e:
+            return self.send_error(500, "could not write %s: %s" % (MIRROR_FILE, e.strerror or e))
+        self.send_response(204)
+        self.end_headers()
+
     def send_bytes(self, body, content_type):
         self.send_response(200)
         self.send_header("Content-Type", content_type)
@@ -415,7 +547,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         token = token_for(self.root, watched_files(self.root))
         with self.lock:
             self.token = token
-        page = add_scripts(html, dev_script(self.reload, self.workshop, self.banner, token, go))
+        page = add_scripts(html, dev_script(self.reload, self.workshop, self.banner, token, go, self.mirror_token))
         if page is None:
             self.send_error(500, "this page has no </head> for the dev scripts to go in")
             return
@@ -463,6 +595,8 @@ def intro(args, urls):
         lines.append("  Anyone on this wifi can open it too; this server hands out only the page's own files.")
     else:
         lines.append("  To open it on a phone or another laptop, stop and start it again with --host 0.0.0.0")
+    if getattr(args, "mirror", False):
+        lines.append("  The desk's records are kept in searchdesk-live.json as you work, for an agent to read. Local only.")
     if args.rebuild:
         lines.append("  dist/workshop/searchdesk.html is rebuilt on every change, ready to copy onto a USB stick.")
     lines += ["", "  To take a copy home: uv run tools/build.py --workshop", ""]
@@ -476,6 +610,8 @@ def main(argv=None):
     ap.add_argument("--workshop", action="store_true")
     ap.add_argument("--banner")
     ap.add_argument("--rebuild", action="store_true")
+    ap.add_argument("--mirror", action="store_true",
+                    help="keep %s up to date with what is in the desk, for an agent to read" % MIRROR_FILE)
     ap.add_argument("--no-reload", dest="reload", action="store_false", default=True)
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--check", action="store_true", help="print the files it would watch, then stop")
@@ -483,6 +619,10 @@ def main(argv=None):
 
     if not (ROOT / "index.html").is_file():
         sys.exit("serve: no index.html here. Run this from inside the Search Desk folder.")
+
+    if args.mirror and host_name(args.host) not in LOCAL_NAMES:
+        sys.exit("serve: --mirror writes the desk's records to a file, so it only runs on this computer. "
+                 "Drop --host, or drop --mirror.")
 
     files = watched_files(ROOT)
     if args.check:
@@ -498,6 +638,7 @@ def main(argv=None):
     Handler.banner = args.banner
     Handler.verbose = not args.quiet
     Handler.rebuild = args.rebuild
+    Handler.mirror_token = secrets.token_urlsafe(24) if args.mirror else ""
     Handler.token = token_for(ROOT, files)
 
     handler = functools.partial(Handler, directory=str(ROOT))

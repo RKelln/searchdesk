@@ -309,6 +309,134 @@ class TestWorkshopMode(unittest.TestCase):
         self.assertEqual(build.workshop_script("Practice computer"), serve.workshop_script("Practice computer"))
 
 
+class TestMirror(unittest.TestCase):
+    """--mirror is the one place the server takes anything from a browser, so the refusals are what is tested."""
+
+    def test_the_token_the_host_and_the_origin_must_all_be_right(self):
+        ok = serve.mirror_allowed("127.0.0.1:8000", "http://127.0.0.1:8000", "tok", "tok")
+        self.assertTrue(ok)
+        self.assertTrue(serve.mirror_allowed("localhost:8000", None, "tok", "tok"))   # a tool, not a browser
+        self.assertFalse(serve.mirror_allowed("127.0.0.1:8000", "http://127.0.0.1:8000", "other", "tok"))
+        self.assertFalse(serve.mirror_allowed("127.0.0.1:8000", "http://127.0.0.1:8000", "", "tok"))
+
+    def test_another_site_cannot_write_even_with_the_token(self):
+        self.assertFalse(serve.mirror_allowed("127.0.0.1:8000", "https://evil.example", "tok", "tok"))
+        self.assertFalse(serve.mirror_allowed("evil.example:8000", None, "tok", "tok"))   # rebinding by name
+
+    def test_no_token_on_the_server_means_nothing_is_allowed(self):
+        self.assertFalse(serve.mirror_allowed("127.0.0.1:8000", None, "", ""))
+
+    def test_host_names(self):
+        self.assertEqual(serve.host_name("127.0.0.1:8000"), "127.0.0.1")
+        self.assertEqual(serve.host_name("[::1]:8000"), "[::1]")
+        self.assertEqual(serve.host_name("Localhost"), "localhost")
+
+    def test_only_a_copy_is_kept(self):
+        self.assertIn('"records"', serve.mirror_text(b'{"schema":"searchdesk/1","records":[]}'))
+        self.assertIsNone(serve.mirror_text(b"not json"))
+        self.assertIsNone(serve.mirror_text(b"[1, 2]"))
+        self.assertIsNone(serve.mirror_text(b'{"name":"no records"}'))
+        self.assertIsNone(serve.mirror_text(b""))
+        self.assertIsNone(serve.mirror_text(b"x" * (serve.MIRROR_MAX + 1)))
+
+    def test_the_file_is_replaced_whole(self):
+        with tempfile.TemporaryDirectory() as d:
+            serve.write_mirror(d, "one\n")
+            serve.write_mirror(d, "two\n")
+            self.assertEqual((Path(d) / serve.MIRROR_FILE).read_text(), "two\n")
+            self.assertFalse((Path(d) / (serve.MIRROR_FILE + ".tmp")).exists())
+
+    def test_the_page_gets_the_script_only_with_a_token(self):
+        self.assertNotIn("__desk", serve.dev_script())
+        body = serve.dev_script(mirror_token="abc123")
+        self.assertIn("__desk", body)
+        self.assertIn('"abc123"', body)
+        self.assertNotIn("=>", body)
+
+    def test_the_mirror_script_is_valid_javascript(self):
+        # A \n in a Python string becomes a real line break inside a JS string, and the script silently never runs.
+        import shutil
+        import subprocess
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("no node here")
+        with tempfile.TemporaryDirectory() as d:
+            f = Path(d) / "mirror.js"
+            f.write_text(serve.MIRROR_JS % '"t"', encoding="utf-8")
+            done = subprocess.run([node, "--check", str(f)], capture_output=True, text=True)
+            self.assertEqual(done.returncode, 0, done.stderr)
+
+    def test_a_mirror_file_is_never_served_and_never_committed(self):
+        self.assertFalse(serve.is_public(serve.MIRROR_FILE))
+        ignore = (ROOT / ".gitignore").read_text()
+        self.assertIn("searchdesk-*.json", ignore)       # matches searchdesk-live.json
+        self.assertIn(serve.MIRROR_FILE + ".tmp", ignore)
+
+
+class TestMirrorServer(unittest.TestCase):
+    """A real server on a free port, to see the refusals happen over HTTP."""
+
+    def setUp(self):
+        import functools
+        import http.client
+        import threading
+        self.http = http.client
+        self.dir = tempfile.TemporaryDirectory()
+        make_tree(Path(self.dir.name))
+        self.handler = type("H", (serve.Handler,), {"root": Path(self.dir.name), "verbose": False,
+                                                      "mirror_token": "secret-token"})
+        self.httpd = serve.http.server.ThreadingHTTPServer(
+            ("127.0.0.1", 0), functools.partial(self.handler, directory=self.dir.name))
+        self.port = self.httpd.server_address[1]
+        threading.Thread(target=self.httpd.serve_forever, daemon=True).start()
+
+    def tearDown(self):
+        self.httpd.shutdown()
+        self.httpd.server_close()
+        self.dir.cleanup()
+
+    def post(self, body, headers=None, host=None):
+        conn = self.http.HTTPConnection("127.0.0.1", self.port)
+        h = {"Content-Type": "application/json", "X-Desk-Token": "secret-token"}
+        h.update(headers or {})
+        if host:
+            h["Host"] = host
+        conn.request("POST", "/__desk", body=body, headers=h)
+        status = conn.getresponse().status
+        conn.close()
+        return status
+
+    def kept(self):
+        return (Path(self.dir.name) / serve.MIRROR_FILE)
+
+    def test_a_good_copy_is_kept(self):
+        self.assertEqual(self.post(b'{"schema":"searchdesk/1","records":[{"id":"a"}]}'), 204)
+        self.assertIn('"records"', self.kept().read_text())
+
+    def test_the_wrong_token_is_refused_and_nothing_is_written(self):
+        self.assertEqual(self.post(b'{"records":[]}', {"X-Desk-Token": "nope"}), 403)
+        self.assertFalse(self.kept().exists())
+
+    def test_another_origin_is_refused(self):
+        self.assertEqual(self.post(b'{"records":[]}', {"Origin": "https://evil.example"}), 403)
+        self.assertFalse(self.kept().exists())
+
+    def test_something_that_is_not_a_copy_is_refused(self):
+        self.assertEqual(self.post(b"hello"), 400)
+        self.assertFalse(self.kept().exists())
+
+    def test_the_kept_file_is_not_served_back(self):
+        self.post(b'{"records":[]}')
+        conn = self.http.HTTPConnection("127.0.0.1", self.port)
+        conn.request("GET", "/" + serve.MIRROR_FILE)
+        self.assertEqual(conn.getresponse().status, 404)
+        conn.close()
+
+    def test_without_mirror_the_route_does_not_exist(self):
+        self.handler.mirror_token = ""
+        self.assertEqual(self.post(b'{"records":[]}'), 404)
+
+
 class TestUrls(unittest.TestCase):
     def test_a_local_server_prints_the_local_address(self):
         self.assertEqual(serve.urls_for("127.0.0.1", 8000), ["http://127.0.0.1:8000/"])
