@@ -5,8 +5,7 @@ description: Use when someone gives you a job posting as a link, as pasted text,
 
 # Add a job posting to the desk
 
-The rules for adding a posting are in `AGENTS.md`, section 1, and in the record contract behind it. This file only
-covers the part that changes with the input: getting the text of the posting.
+## Getting the text
 
 1. **They pasted it.** Use what they pasted. Do not ask for it again, and do not summarise the requirements away.
 2. **They gave a link.** Fetch that one address with WebFetch, if your tools have it. That page and no other: this
@@ -16,13 +15,24 @@ covers the part that changes with the input: getting the text of the posting.
      fallback, not a failure; the desk's own helper works by hand the same way.
    - A job page carries more than the posting. Keep the title, the employer, the location, the requirements and the
      closing date if it gives one; drop navigation, similar jobs and adverts.
-3. **In a workshop**, the posting is the file `workshop-assets/job-posting.html`: read it yourself rather than
-   asking for a paste.
+3. **A file in the folder.** In a workshop the posting is `workshop-assets/job-posting.html`: read it yourself
+   rather than asking for a paste.
 
-Then follow section 1: show the title, the employer, the requirements and the fields that are unknown before you
-write anything; write only what the posting says; never invent pay, dates, links, qualifications or experience; make
-it a practice copy and tell them how to undo it.
+## Turning it into a record
 
-If they ask how they could do this without a coding agent at all, that is the desk's own helper: paste the posting
-into the AI helper on the Data screen, copy the question it writes, ask a free chat, paste the answer back, and the
-desk fills the job form. Point at the button they can see rather than describing the machinery.
+- Read `docs/CONTRACT.md` for the record shape before preparing an inbox, and use the real schema rather than a
+  guessed example. The inbox is `data/inbox.js`.
+- Keep what the posting states: title, employer, location, the stage if it names one, the requirements, the closing
+  date, and pay if it gives one.
+- Leave blank rather than infer: pay it does not state, a closing date, a link, qualifications, experience, contact
+  details.
+- Show the title, the employer, the requirements and the fields you are leaving blank, in plain words, before you
+  write anything.
+- You cannot read the browser's storage from files. If the current records matter, ask them to export a backup into
+  the folder and read that.
+
+## Without an agent
+
+If they ask how they could do this with a free chat instead: the desk's own helper on the Data screen takes the
+posting, writes the question to copy, and fills the job form when the answer comes back. Point at the button they
+can see rather than describing the machinery.
