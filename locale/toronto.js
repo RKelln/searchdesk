@@ -84,10 +84,15 @@ window.DESK_LOCALE = {
     libraryClasses: 'The library also runs free career and job search sessions (resumes, interviews, using AI in a job search). Find them in the Events tab, under the library.',
   },
 
-  // Default job sites, general audience only. Job Bank first.
+  // Default job sites, offered as "To start with" until the person saves them. Job Bank first.
+  // Job Bank, CharityVillage, Work in Culture and GoodWork were each opened and read on 2026-10-19.
+  // The first is the general door; the other three are sector boards (non-profit, arts and culture,
+  // environment), added on Ryan's call so the list reaches work that Job Bank barely carries.
   sites: [
     { id: 'jobbank', name: 'Job Bank', url: 'https://www.jobbank.gc.ca/' },
-    // TODO(maintainer): no other sites are named in toronto-help.md or DESIGN, so none are added from memory.
+    { id: 'charityvillage', name: 'CharityVillage', url: 'https://charityvillage.com/jobs' },
+    { id: 'workinculture', name: 'Work in Culture', url: 'https://workinculture.ca/job-search/' },
+    { id: 'goodwork', name: 'GoodWork', url: 'https://www.goodwork.ca/' },
   ],
 
   // DESIGN 9.5. TODO(V9): `account` values are unverified; check each service's current terms before shipping.
