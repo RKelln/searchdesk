@@ -47,6 +47,15 @@ SKILL_TARGETS = [".agents/skills", ".claude/skills"]
 
 PLACEHOLDER = re.compile(r"\{\{(\w+)\}\}")
 
+# Skills the workshop kit adds to .claude/skills when a set is published (payload/kit in the TPL repo).
+# They have no canonical file in tools/, so they are not copies of anything here. Without this list a
+# workshop copy reports them as "a copy with no file to come from", and an agent whose instructions say
+# to keep the unit suite green goes looking for a way to fix a file it must not touch.
+KIT_SKILLS = {
+    ".claude/skills/send-transcript/SKILL.md",
+    ".claude/skills/take-home/SKILL.md",
+}
+
 
 def read(path):
     return path.read_bytes().decode("utf-8").replace("\r\n", "\n").strip("\n") + "\n"
@@ -152,6 +161,8 @@ def main():
         for folder in COMMAND_TARGETS + SKILL_TARGETS:
             here = ROOT / folder
             for path in sorted(here.rglob("*.md")) if here.exists() else []:
+                if path.relative_to(ROOT).as_posix() in KIT_SKILLS:
+                    continue  # the kit's own skill, not a copy of anything here
                 if path not in known:
                     bad.append(path)  # a copy with no file to come from
         for path in bad:
