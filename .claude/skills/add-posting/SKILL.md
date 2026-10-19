@@ -26,11 +26,16 @@ description: Use when someone gives you a job posting as a link, as pasted text,
   date, and pay if it gives one.
 - Leave blank rather than infer: pay it does not state, a closing date, a link, qualifications, experience, contact
   details.
-- Write the record, then say what you added: the title, the employer, the requirements and the fields you left blank,
-  in plain words. Do not ask first. The job is in the desk where they can see it, and Undo on the banner or Delete on
-  the job takes it out if it is wrong.
-- You cannot read the browser's storage from files. If the current records matter, ask them to export a backup into
-  the folder and read that.
+- Write the record without asking first. Then check it landed, from the desk's own copy: wait a few seconds (the page
+  reloads and merges the inbox by itself, and `searchdesk-live.json` follows about a second later), then run
+  `python3 tools/read-desk.py --find <the employer>` (the `read-desk` skill has the rest).
+- Then say what you added, in plain words: the title, the employer, the requirements and the fields you left blank.
+  If the job is in the copy, say so. If it is not, say it has not shown up yet: the page may not be open, or the server
+  was not started with `--mirror`. Do not claim it landed without having seen it, and do not say you cannot check:
+  the copy is how you check. The job is in the desk where they can see it, and Undo on the banner or Delete on the job
+  takes it out if it is wrong.
+- You cannot read the browser's own storage. The copy file is the way to see the desk; if it is missing, start the
+  server with `--mirror`, or ask for an export from the Data screen moved into the folder.
 
 ## Without an agent
 
