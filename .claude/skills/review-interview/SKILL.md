@@ -8,6 +8,10 @@ description: Use when someone asks you to review the interview, the interviewer,
 "Review the interview" means: how did the interviewer do, measured against the recipe it was given. It does not mean
 scoring the person's answers; the coach already gave that feedback at the end of the interview.
 
+A fairer review comes from someone who did not run the interview: a separate reviewer agent or a new chat, with the
+transcript and the recipe. Do that if you can. Reviewing in the same chat is fine for a demonstration, as long as you
+say so and judge your own turns as strictly as you would anyone's.
+
 ## What to read
 
 1. **The interview.** It is the conversation you just had, or the transcript they give you. If neither is here, say
