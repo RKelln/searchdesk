@@ -494,6 +494,14 @@ window.Desk = window.Desk || {};
     }
   } });
 
+  Desk.dataSection({ id: 'about', order: 50, render: function (el) {
+    el.appendChild(H('h3', {}, T('aboutHeading')));
+    el.appendChild(H('p', {}, T('aboutIntro')));
+    el.appendChild(H('ul', {},
+      H('li', {}, H('a', { href: 'https://searchdesk.ryankelln.com', 'data-test': 'about-hosted' }, T('aboutHostedLink')), ' ' + T('aboutHosted')),
+      H('li', {}, H('a', { href: 'https://github.com/RKelln/searchdesk', 'data-test': 'about-source' }, T('aboutSourceLink')), ' ' + T('aboutSource'))));
+  } });
+
   Desk.dataSection({ id: 'storage', order: 40, render: function (el) {
     el.appendChild(H('h3', {}, T('storageHeading')));
     var mode = Desk.persist ? Desk.persist.status() : 'memory';

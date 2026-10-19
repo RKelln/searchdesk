@@ -108,6 +108,12 @@ window.Desk = window.Desk || {};
     exampleRemoved: 'Removed the made-up person. Your own things are still here.',
     // example (T2.6)
     exampleBanner: 'Amira (made up) is on this screen. She is not a real person. Remove her on the Data screen.',
+    aboutHeading: 'Where Search Desk lives',
+    aboutIntro: 'These two links are for when you want to use Search Desk somewhere else, or change it.',
+    aboutHosted: 'The web copy: open it in any browser to use Search Desk on another device. Your jobs are not shared between devices, so save a copy here and bring it back there.',
+    aboutHostedLink: 'searchdesk.ryankelln.com',
+    aboutSource: 'The source files: for people who want to change Search Desk, or run their own copy with an AI coding agent. They come with instructions.',
+    aboutSourceLink: 'github.com/RKelln/searchdesk',
     storageHeading: 'Saving on this device',
     storageOk: 'Saved in this browser. {n} things are kept here.',
     storageOkOne: 'Saved in this browser. 1 thing is kept here.',
