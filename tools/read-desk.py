@@ -16,9 +16,10 @@ Data screen), and the whole of it is long: every note, every posting. This reads
     python3 tools/read-desk.py --find dental        # records with that word anywhere, one line each
     python3 tools/read-desk.py --file ~/Downloads/searchdesk-2026-10-19.json ...
 
-Which file: --file if given, else the newest of searchdesk-live.json and searchdesk-<date>.json in this folder, else the
-newest searchdesk-*.json in ~/Downloads (where the browser puts an export). It says which it used and how old it is,
-because a copy only knows the desk as of the moment it was written.
+Which file: --file if given, else the newest of searchdesk-live.json and searchdesk-<date>.json in this folder. Add
+--downloads to look in ~/Downloads as well, where the browser puts an export: it is not looked at otherwise, because
+on a Mac the first look in Downloads makes the system ask the person for permission. It says which file it used and
+how old it is, because a copy only knows the desk as of the moment it was written.
 
 Long text (a posting, a note) is cut to 80 characters in the one-line views; --id with no --fields shows it whole.
 Standard library only. Read only: it never writes anything.
@@ -38,11 +39,11 @@ LINE_FIELDS = {
 }
 
 
-def candidates():
-    here = sorted(ROOT.glob("searchdesk-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
-    if here:
-        return here
-    return sorted((Path.home() / "Downloads").glob("searchdesk-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+def candidates(downloads=False):
+    found = list(ROOT.glob("searchdesk-*.json"))
+    if downloads:
+        found += (Path.home() / "Downloads").glob("searchdesk-*.json")
+    return sorted(found, key=lambda p: p.stat().st_mtime, reverse=True)
 
 
 def age(path):
@@ -70,6 +71,7 @@ def line(rec, fields=None):
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Read part of the desk.")
     ap.add_argument("--file")
+    ap.add_argument("--downloads", action="store_true", help="also look in ~/Downloads (the system may ask permission)")
     ap.add_argument("--type")
     ap.add_argument("--stage")
     ap.add_argument("--id")
@@ -80,10 +82,11 @@ def main(argv=None):
     if args.file:
         path = Path(args.file).expanduser()
     else:
-        found = candidates()
+        found = candidates(args.downloads)
         if not found:
-            sys.exit("No searchdesk-live.json or searchdesk-<date>.json in this folder or in ~/Downloads. "
-                     "Ask the person to press Export on the Data screen, or start the server with --mirror.")
+            sys.exit("No searchdesk-live.json or searchdesk-<date>.json in this folder. Start the server with --mirror "
+                     "(then the file keeps itself up to date), or ask the person to press Export on the Data screen "
+                     "and move the file into this folder.")
         path = found[0]
     try:
         data = json.loads(path.read_text(encoding="utf-8"))

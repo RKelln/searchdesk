@@ -13,10 +13,14 @@ lines.
 
 1. **`searchdesk-live.json`** in this folder, if the server was started with `--mirror`. The page keeps it up to date
    about a second after every change, so there is nothing for the person to do.
-2. Otherwise the newest `searchdesk-<date>.json`, in this folder or in `~/Downloads`. That is an export from the Data
-   screen, and it is only as new as the moment it was made.
-3. If there is none, say so and ask the person to press Export on the Data screen. Do not guess at what is on the
-   desk, and do not go looking in the browser's storage.
+2. Otherwise the newest `searchdesk-<date>.json` in this folder. That is an export from the Data screen, and it is only
+   as new as the moment it was made.
+3. If there is none, say so, and either start the server with `--mirror` or ask the person to press Export on the Data
+   screen and move the file into this folder. Do not guess at what is on the desk, and do not go looking in the
+   browser's storage.
+
+Do not look in `~/Downloads` unless the person says that is where they saved an export, and then add `--downloads`.
+On a Mac the system stops to ask them for permission the first time anything reads that folder.
 
 ## Read a piece of it
 
