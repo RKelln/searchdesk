@@ -11,8 +11,19 @@ One run is evidence, not proof: the candidate is an AI playing a made-up person,
 
 ## What you need
 
-- **The instructions under test.** Built as the `practice-interview` skill builds them. To test a change, hold the
-  changed text in the conversation: the original with the proposed edit applied. Do not edit `features/recipe-coach.js`.
+- **The instructions under test.** The original, built as the `practice-interview` skill builds them, and the change if
+  there is one. A change can be in three places, and it may not have been saved anywhere yet. Take the first that applies:
+  1. **What the person points at**: a file they name, or "the one you just suggested".
+  2. **A change saved in the desk.** Run `python3 tools/read-desk.py --type recipe-edit`, then `--id <id>` for the newest
+     one whose `recipe` is `coach`. Its `text` is the whole recipe with `{placeholders}` in it; fill them with the
+     same values the original used (the workshop sentence, the number of questions, the kind of question, the research
+     step, no language), and put the context block where `{context}` is.
+  3. **A change proposed in this conversation** (for example by the review) and not saved: the original with that edit
+     applied, word for word.
+
+  If more than one exists and they differ, use the newest and say which you used. If none exists, test the original
+  alone and say there was no change to compare. Never edit `features/recipe-coach.js` to run a test, and never
+  save the person's change for them.
 - **The context block** (`---`, `Candidate profile:`, `Job posting:`), built the same way, from the desk's copy.
 - **The candidate's background**: a file about the made-up person that the interviewer never sees. For the app's own
   Amira that is `docs/inputs/example-person.md`; the project's instructions may name a fuller one. Use the one named,
