@@ -5,6 +5,10 @@
 __pycache__
 .DS_Store
 
+# A note to the workshop dev server (tools/serve.py): write a screen name in it and the open tab goes there by
+# itself. The server takes it out of the file as it hands it over, so it is only there between writing and using.
+/.dev-go
+
 # A person's own data. These land in the folder when someone uses the app here, and they hold real
 # names, jobs and notes. Never commit them. (The demo file is docs/examples/inbox-demo.js.)
 # The app names an export searchdesk-<date>.json, for example searchdesk-2026-10-16.json. Keep this

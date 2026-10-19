@@ -32,6 +32,7 @@ jobs:
         run: |
           node --test tests/unit/*.test.js
           uv run tests/unit/test_build.py
+          uv run tests/unit/test_serve.py
       - name: Feature checks
         # Every check file has to pass on its own, or a broken feature can still reach the build.
         # Plain parameter expansion only, so it stays safe in bash 3.2 and on a Mac.

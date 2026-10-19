@@ -19,7 +19,7 @@ test('the agent file copies are up to date', { skip: why }, () => {
 test('each command copy has the same body in every tool folder', { skip: why }, () => {
   const run = spawnSync('python3', ['tools/agent-files.py'], { cwd: root, encoding: 'utf8' });
   assert.strictEqual(run.status, 0, run.stdout + run.stderr);
-  const names = ['check', 'everything', 'kit', 'new-feature', 'screens'];
+  const names = ['check', 'everything', 'kit', 'new-feature', 'screens', 'serve'];
   const folders = ['.opencode/commands', '.claude/commands', '.pi/prompts'];
   for (const name of names) {
     const bodies = folders.map((f) => {

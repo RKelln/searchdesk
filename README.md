@@ -52,6 +52,22 @@ not in the copies you save. Press **Remove the made-up person** when you are don
 
 ### Run a workshop
 
+The short version: start the page, then let people watch an agent change it.
+
+```
+uv run tools/serve.py --workshop --rebuild
+```
+
+It prints an address, usually `http://127.0.0.1:8000/`. The page reloads itself every time a file changes, so
+there is nothing to press and no build step; Amira is already loaded, the banner says it is a practice computer,
+and the page asks the network for nothing. Writing a screen's name in `.dev-go` moves the open tab there, so a
+new feature can be shown without anybody going looking for it.
+
+[`docs/WORKSHOP.md`](docs/WORKSHOP.md) is the whole thing: what to say, what to do when it breaks, how to get
+each person to run `#selftest` themselves, and what to build at the end.
+
+### Build one file to hand out
+
 A workshop copy is one file. It opens straight into Amira, shows a banner ("Practice computer: use the made-up
 person only."), and turns live events off, so the page asks the network for nothing.
 
@@ -135,12 +151,14 @@ Commands:
 ```
 node --test tests/unit/*.test.js            # unit tests (keep the glob)
 uv run tests/unit/test_build.py             # unit tests for the build tool
+uv run tests/unit/test_serve.py             # unit tests for the workshop server
 node checks/run.js <id>                     # check one feature, e.g. example
 bash checks/check.sh <id>                   # the same, on a Mac with no Node
 uv run tests/e2e/run.py                     # browser tests
 uv run tools/build.py                       # single-file build into dist/
 uv run tests/e2e/run.py --app dist/searchdesk.html   # browser tests on the built file
 uv run tools/snapshot.py                    # regenerate the events snapshot (needs the network)
+uv run tools/serve.py --workshop            # the page, for a workshop: it reloads itself on every change
 ```
 
 In the browser, `#selftest` runs every loaded feature's check and the contract scan. See `tests/e2e/README.md` for

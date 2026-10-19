@@ -58,6 +58,10 @@ machine that will not let anyone install one. The briefs in `docs/features/` are
 ## Running tests and checks
 
 - Unit tests (needs Node): `node --test tests/unit/*.test.js`. Node 22 rejects a folder, so keep the glob.
+- Unit tests for the tools (Python): `uv run tests/unit/test_build.py` and `uv run tests/unit/test_serve.py`.
+- Serving the page while somebody watches it change, which is what a workshop runs on:
+  `uv run tools/serve.py --workshop --rebuild`. It reloads the page when a file changes, and a screen named in
+  `.dev-go` moves the open tab there. It never writes to the app's own files. `docs/WORKSHOP.md` is the run-through.
 - Check one feature (Linux or anywhere with Node): `node checks/run.js <id>`. It loads `features/<id>.js` and
   `checks/<id>.check.js`. Try it on the example with `node checks/run.js example`. This exists now.
 - Check one feature on a Mac without Node: `bash checks/check.sh <id>` (it runs through `osascript -l JavaScript`). This arrives with task T1.6; if
