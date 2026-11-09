@@ -17,20 +17,33 @@
     "ignore": ["dist/**", "screens/**", "**/__pycache__/**", "data/events-snapshot.js"]
   },
 
-  // Last matching rule wins. Anything with no rule here asks first.
+  // OpenCode v2 allows everything by default, and the last matching rule wins. So the order matters: first
+  // everything that changes files, runs a command or leaves this folder asks, then the narrower rules below
+  // win for exactly what they name.
   "permissions": [
-    // The checks are the point of this repo (AGENTS.md), so they never need a prompt.
+    { "action": "edit", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "*", "effect": "ask" },
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+
+    // The checks are the point of this repo (AGENTS.md), so they never need a prompt. uv run and python3 are
+    // the same thing here, and each is named by file because either one can otherwise run anything at all.
     { "action": "shell", "resource": "node --test *", "effect": "allow" },
     { "action": "shell", "resource": "node checks/run.js *", "effect": "allow" },
     { "action": "shell", "resource": "bash checks/check.sh *", "effect": "allow" },
-    { "action": "shell", "resource": "uv run *", "effect": "allow" },
-    { "action": "shell", "resource": "python3 tools/kit.py *", "effect": "allow" },
-    { "action": "shell", "resource": "git status *", "effect": "allow" },
-    { "action": "shell", "resource": "git diff *", "effect": "allow" },
-    { "action": "shell", "resource": "git log *", "effect": "allow" },
+    { "action": "shell", "resource": "uv run tests/*", "effect": "allow" },
+    { "action": "shell", "resource": "python3 tests/*", "effect": "allow" },
+    { "action": "shell", "resource": "uv run tools/build.py*", "effect": "allow" },
+    { "action": "shell", "resource": "python3 tools/build.py*", "effect": "allow" },
+    { "action": "shell", "resource": "uv run tools/kit.py*", "effect": "allow" },
+    { "action": "shell", "resource": "python3 tools/kit.py*", "effect": "allow" },
+    { "action": "shell", "resource": "uv run tools/serve.py*", "effect": "allow" },
+    { "action": "shell", "resource": "python3 tools/serve.py*", "effect": "allow" },
+    { "action": "shell", "resource": "git status*", "effect": "allow" },
+    { "action": "shell", "resource": "git diff*", "effect": "allow" },
+    { "action": "shell", "resource": "git log*", "effect": "allow" },
 
     // Publishing is the maintainer's job, never the agent's.
-    { "action": "shell", "resource": "git push *", "effect": "deny" },
+    { "action": "shell", "resource": "git push*", "effect": "deny" },
 
     // The everyday work: a feature, its check, and the docs that go with it.
     { "action": "edit", "resource": "features/*", "effect": "allow" },

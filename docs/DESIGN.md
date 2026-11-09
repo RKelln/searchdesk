@@ -349,7 +349,8 @@ every loaded feature, plus the contract scan and the core's own checks.
   the person (or whoever is helping) can still say yes. The prompt makes "I am about to change the app's core" a
   visible moment instead of a silent one (verify that the agent honours the settings). `opencode.jsonc` is this
   repo's own version of that setup, so the rule is checkable rather than aspirational: allow `features/*`, `checks/*`
-  and `docs/*`, ask for `core/*`, `locale/*`, `data/*` and `index.html`, deny `git push *`.
+  and `docs/*`, ask for `core/*`, `locale/*`, `data/*` and `index.html`, deny `git push*`. OpenCode v2 allows anything
+  with no rule, so the file starts by setting every edit, command and outside folder to ask.
 
 ## 8. Features
 
