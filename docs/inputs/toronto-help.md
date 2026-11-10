@@ -17,6 +17,23 @@ Order on the Help screen: people who help one-on-one first, then the library's o
   immigration status.
 - **Source:** https://www.ontario.ca/page/employment-ontario
 
+### The Career Foundation ✓ (read 2026-11-09)
+- **What:** free job search help from an Ontario-funded employment service: resume and interview help, skills
+  training, and one-hour online workshops that are open to anyone. Their own line: "You do not need to register as
+  a client to access these workshops; give us a chance to demonstrate our expertise". Clients also get an AI
+  resume builder and an AI interview practice tool, through two platforms the agency integrated in 2024-25
+  (Devant and Kibbi). Devant's own site says membership is free and the human coaching is the paid part.
+- **How to reach:** five centres across Toronto (700 Lawrence Ave W; 21 St Clair Ave E; 2150 Islington Ave;
+  2437 Kingston Rd; 2100 Lawrence Ave W), the toll-free line 1-855-223-8231, jobsupport@careerfoundation.org, or
+  the website. The workshop calendar is https://careerfoundation.com/events-and-workshops/ and a session
+  registers through a Zoom link.
+- **Who for:** people looking for work in Ontario (a resident, legal working age, eligible to work in Canada).
+  Becoming a client registers the person with the province, which **asks for a Social Insurance Number** because
+  MLITSD requires it for Employment Ontario registration. The free workshops ask only for a name and an email.
+- **Source:** https://careerfoundation.com/ and https://careerfoundation.com/programs/ies/ (also read this pass:
+  `/`, `/job/`, `/register/`, `/contact-us/`, `/events-and-workshops/` with the live calendar, and the 2024-2025
+  annual report PDF)
+
 ### ACCES Employment ✓
 - **What:** helps job seekers facing employment barriers enter the Canadian job market; "most of our services are
   free". Newcomer-focused.

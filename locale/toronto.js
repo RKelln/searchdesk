@@ -1,6 +1,7 @@
 // Toronto locale pack: free help, default sites, AI services, events sources, posting rules.
 // Pure data (no functions) so tests can check it. Every URL is https.
-// Help copy comes only from docs/inputs/toronto-help.md (read at each service's own page, 2026-10-15).
+// Help copy comes only from docs/inputs/toronto-help.md (read at each service's own page, 2026-10-15;
+// The Career Foundation added 2026-11-09).
 // Order of `help` is the order on the Help screen. kind 'person' = a person or a helpline (shown first,
 // under "Free, from people"); kind 'online' = courses and guidance you use on your own.
 window.DESK_LOCALE = {
@@ -14,6 +15,14 @@ window.DESK_LOCALE = {
       how: 'Over 700 locations. Book by appointment, email, phone or live chat.',
       who: 'People looking for work in Ontario. The local provider decides who can join. It does not depend on immigration status.',
       source: 'https://www.ontario.ca/page/employment-ontario',
+    },
+    {
+      id: 'career-foundation', kind: 'person', name: 'The Career Foundation',
+      what: 'Free job search help from an Ontario-funded service: resume and interview help, skills training, and one-hour workshops online that anyone can join. Clients also get an AI resume builder and an AI interview practice tool.',
+      how: 'Five centres across Toronto, plus phone, email and its website. The free workshops are on its events calendar.',
+      phone: { label: 'Call 1-855-223-8231', tel: '18552238231' },
+      who: 'People looking for work in Ontario. Becoming a client means registering with the province, which asks for your Social Insurance Number. The free workshops ask only for a name and an email.',
+      source: 'https://careerfoundation.com/',
     },
     {
       id: 'acces', kind: 'person', name: 'ACCES Employment',
