@@ -258,6 +258,10 @@ test('locale and tools/snapshot.py agree on the endpoint and tiers', { skip: gon
   ev.tiers.forEach((t) => {
     assert.ok(py.includes('{"id": "' + t.id + '", "keywords": "' + (t.query.keywords || '') + '"}'), 'snapshot.py has tier ' + t.id);
   });
+  const m = /CITY_MATCH = \[([^\]]*)\]/.exec(py);
+  assert.ok(m, 'snapshot.py has CITY_MATCH');
+  const pyWords = JSON.parse('[' + m[1].replace(/\s+/g, ' ') + ']');
+  assert.deepStrictEqual(pyWords, ev.tiers.find((t) => t.id === 'city').match, 'snapshot.py filters on the locale words');
 });
 
 test('the committed snapshot: both tiers, https links, no descriptions, sorted, unique', () => {

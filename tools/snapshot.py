@@ -5,8 +5,9 @@
 # ///
 """Write data/events-snapshot.js from Togather (DESIGN 11).  Run: uv run tools/snapshot.py  (or python3 tools/snapshot.py)
 
-Options: --days N (default 56, today to N days ahead), --out FILE (default data/events-snapshot.js),
+Options: --days N (default 21, today to N days ahead), --out FILE (default data/events-snapshot.js),
          --api URL (the events endpoint), --no-detail (skip the one-request-per-event link lookup),
+         --all (keep every city event; by default only those matching CITY_MATCH, as the app shows them),
          --today YYYY-MM-DD (for tests).
 Standard library only. Needs the network.
 
@@ -60,8 +61,21 @@ TIERS = [
     {"id": "library", "keywords": "career & job search"},
     {"id": "city", "keywords": ""},
 ]
+# Keep in step with the `match` list of the city tier in locale/toronto.js (tests/unit/net.test.js checks this).
+# The city feed is thousands of events, so the snapshot keeps only the ones the app would show by default.
+# The app filters by itself too, so a snapshot made with --all works the same, only larger.
+CITY_MATCH = ["job", "career", "resume", "r\u00e9sum\u00e9", "interview", "hiring", "employ", "networking", "linkedin",
+              "newcomer", "settlement", "english conversation", "esl", "digital skills", "computer basics", "mentor",
+              "entrepreneur", "small business", "cover letter", "workplace", "volunteer"]
+# Same rule as logic.matchesWords in features/events.js: a word matches at the start of a word, in any case,
+# in the title or the tags. (Not preceded by a letter or digit; [^\W_] is a Unicode letter or digit.)
+MATCH_RE = re.compile(r"(?<![^\W_])(?:" + "|".join(re.escape(w) for w in CITY_MATCH) + ")", re.I)
+
+
+def matches(ev):
+    return bool(MATCH_RE.search(ev["title"] + " " + " ".join(ev["tags"])))
 ROOT = Path(__file__).resolve().parent.parent
-MAX_PAGES = 12
+MAX_PAGES = 16
 UA = "SearchDeskSnapshot/1 (+job search helper; reads public events)"
 
 
@@ -160,7 +174,7 @@ def source_link(api, eid):
         return None  # unknown: the caller keeps the Togather page
 
 
-def build(api, today, days, detail=True):
+def build(api, today, days, detail=True, keep_all=False):
     start = today.isoformat()
     end = (today + datetime.timedelta(days=days)).isoformat()
     events = {}
@@ -169,7 +183,7 @@ def build(api, today, days, detail=True):
         print("snapshot: %s tier: %d items" % (tier["id"], len(items)), file=sys.stderr)
         for it in items:
             ev = normalise(it, tier["id"])
-            if ev and ev["id"] not in events:
+            if ev and ev["id"] not in events and (keep_all or tier["id"] != "city" or matches(ev)):
                 events[ev["id"]] = ev
     failed = 0
     if detail:
@@ -200,10 +214,11 @@ def render(events, api, generated):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--days", type=int, default=56)
+    ap.add_argument("--days", type=int, default=21)
     ap.add_argument("--out", default=str(ROOT / "data" / "events-snapshot.js"))
     ap.add_argument("--api", default=API)
     ap.add_argument("--no-detail", action="store_true")
+    ap.add_argument("--all", action="store_true", help="keep every city event, not only those about finding work")
     ap.add_argument("--today")
     a = ap.parse_args()
     if a.today:
@@ -214,7 +229,7 @@ def main():
             today = datetime.datetime.now(ZoneInfo("America/Toronto")).date()
         except Exception:
             today = datetime.date.today()
-    events, failed = build(a.api, today, a.days, not a.no_detail)
+    events, failed = build(a.api, today, a.days, not a.no_detail, a.all)
     generated = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     text = render(events, a.api, generated)
     Path(a.out).write_text(text, encoding="utf-8")

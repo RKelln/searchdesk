@@ -203,19 +203,18 @@ def test_events_suggested_lane(page, app):
 
 
 def test_events_real_snapshot_shows_both_tiers(page, app):
-    """The committed snapshot: fix the date inside its window, then both tiers must list events."""
+    """The committed snapshot: the clock is the day it was made, then both tiers must list events. The snapshot
+    keeps only the city events about finding work (tools/snapshot.py), so nothing is hidden behind "show all"."""
     page.goto(app.url + "#events")
     wait_for_desk(page, started=True)
-    page.evaluate("() => { Desk.setNow(new Date(2026, 9, 20, 10, 0)); location.hash = '#home'; location.hash = '#events'; }")
+    page.evaluate("() => { const g = window.DESK_EVENTS_SNAPSHOT.generated; Desk.setNow(new Date(+g.slice(0, 4), +g.slice(5, 7) - 1, +g.slice(8, 10), 12, 0)); }")
+    page.evaluate("() => { location.hash = '#home'; location.hash = '#events'; }")
     page.wait_for_selector('[data-screen="events"]')
     page.click('[data-test="events-week-all"]')
     assert page.locator(LIB + " " + ROW).count() > 0
     few = page.locator(CITY + " " + ROW).count()
-    assert 0 < few <= 25, few  # only events about finding work, by the locale's words
-    page.click('[data-test="events-all-city"]')
-    assert page.locator(CITY + " " + ROW).count() <= 25 and page.locator('[data-test="events-more-city"]').count() == 1
-    page.click('[data-test="events-more-city"]')
-    assert page.locator(CITY + " " + ROW).count() == 50
+    assert 0 < few <= 25, few
+    assert page.locator('[data-test="events-all-city"]').count() == 0  # a snapshot made without --all would have it
     hrefs = page.locator('[data-test="events-link"]').evaluate_all("els => els.map(e => e.href)")
     assert hrefs and all(u.startswith("https://") for u in hrefs), hrefs[:3]
     assert_no_errors(page, allow=ALLOW_MISSING)

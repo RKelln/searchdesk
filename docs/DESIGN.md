@@ -759,7 +759,9 @@ For demos and for people with a coding agent of their own. Workshop participants
   where the API gives one, and the Togather page otherwise (check which field holds it, in T2.5).
 - **Snapshot:** `tools/snapshot.py` writes `data/events-snapshot.js` with **title, dates, venue, address, link and
   tags, and no descriptions**: republishing the original listings' text is a licence question, and facts and links
-  avoid it. The snapshot is the
+  avoid it. It covers the next 21 days, and its city tier keeps only the events that match the locale's `match`
+  words (the city feed is thousands of events a month; `--all` keeps everything). The app filters by itself too, so
+  a full snapshot also works. The snapshot is the
   fallback everywhere and the only source in a workshop copy (`DESK_WORKSHOP.liveEvents = false`).
 - **Live:** on the hosted copy, a refresh happens when the cache is older than 12 hours, and there is a "Get the
   latest" button. There is one request per tier, the results are cached in `searchdesk1:events`, and any failure falls back

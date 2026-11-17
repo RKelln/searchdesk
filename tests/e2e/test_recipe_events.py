@@ -1,5 +1,5 @@
 """Events recipe round trip (T3.4): copy the question, paste a fixture answer, suggestions appear in the Events lane,
-and "Star it" stars the event. Uses the committed snapshot with the clock fixed on its first day."""
+and "Star it" stars the event. Uses the committed snapshot with the clock fixed on its first day (the day it was made)."""
 
 import re
 
@@ -25,7 +25,8 @@ def open_ai(page, app, hash="#ai/events"):
     page.add_init_script(INIT)
     page.goto(app.url + hash)
     wait_for_desk(page, started=True)
-    page.evaluate("() => Desk.setNow(new Date(2026, 9, 16, 12, 0))")
+    # the clock is the snapshot's own day, so a refreshed snapshot needs no edit here
+    page.evaluate("() => { const g = window.DESK_EVENTS_SNAPSHOT.generated; Desk.setNow(new Date(+g.slice(0, 4), +g.slice(5, 7) - 1, +g.slice(8, 10), 12, 0)); }")
 
 
 def paste(page, text):
