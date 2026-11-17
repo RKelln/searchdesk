@@ -11,12 +11,12 @@
 //                                Otherwise it just resolves current(). The cache (`searchdesk1:events`, never exported)
 //                                is fresh for 12 hours; `force` skips that check. After a good fetch the screen is
 //                                drawn again. Any failure resolves current() with a one-line `note`.
-// Desk.net.normalise(item, tierId)  one API item -> {id,title,start,end,venue,address,url,tier,tags} or null.
+// Desk.net.normalise(item, tierId)  one API item -> {id,title,start,end,venue,address,url,tier,tags,description} or null.
 // Desk.net.normaliseAll({tierId: [items]}, tiers, known)  merge the tiers (the FIRST tier in the locale list wins
 //                                when an event is in two, so list the specific tier first), sorted.
 // The rules are the same as tools/snapshot.py's (that file describes the API). One difference: a browser cannot
 // afford one request per event, so `url` is the event's Togather page (@id) unless the snapshot already knows a
-// source link for that id. Descriptions are never kept.
+// source link for that id. Only a 200-character excerpt of a description is kept, never the full text.
 window.Desk = window.Desk || {};
 (function () {
   'use strict';
@@ -46,6 +46,14 @@ window.Desk = window.Desk || {};
     s = tidy(s, 1000);
     var m = /^(.*?)\s*Event location:\s*(.+)$/.exec(s);
     return tidy(m ? m[2] : s, limit);
+  }
+  var DESC_MAX = 200; // characters of a description that are kept: an excerpt, cut at a word (tools/snapshot.py: same)
+  function excerpt(s) {
+    s = tidy(typeof s === 'string' ? s.replace(/<[^>]*>/g, ' ') : '', 100000);
+    if (s.length <= DESC_MAX) return s;
+    var cut = s.slice(0, DESC_MAX - 1), sp = cut.lastIndexOf(' ');
+    if (sp > DESC_MAX * 0.6) cut = cut.slice(0, sp);
+    return cut.replace(/[ ,;:\-\u2013\u2014.]+$/, '') + '\u2026';
   }
   function tidy(s, limit) {
     s = typeof s === 'string' ? decodeEntities(s).replace(/\s+/g, ' ').replace(/^ | $/g, '') : '';
@@ -86,7 +94,7 @@ window.Desk = window.Desk || {};
       if (k && tags.indexOf(k) < 0) tags.push(k);
     });
     return { id: id, title: title, start: start, end: end >= start ? end : '', venue: tidyPlace(place.name, 120),
-      address: address, url: page, tier: String(tierId), tags: tags.slice(0, 6) };
+      address: address, url: page, tier: String(tierId), tags: tags.slice(0, 6), description: excerpt(item.description) };
   }
 
   function byStart(a, b) {
@@ -121,7 +129,8 @@ window.Desk = window.Desk || {};
     var end = localTime(e.end);
     return { id: id, title: title, start: start, end: end >= start ? end : '', venue: tidyPlace(e.venue, 120),
       address: tidy(e.address, 170), url: httpsUrl(e.url), tier: tidy(e.tier, 40),
-      tags: (Array.isArray(e.tags) ? e.tags : []).filter(function (t) { return typeof t === 'string'; }).map(function (t) { return tidy(t, 40); }).slice(0, 6) };
+      tags: (Array.isArray(e.tags) ? e.tags : []).filter(function (t) { return typeof t === 'string'; }).map(function (t) { return tidy(t, 40); }).slice(0, 6),
+      description: tidy(e.description, DESC_MAX + 1) };
   }
   function cleanList(list) {
     var out = [];

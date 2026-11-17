@@ -39,12 +39,12 @@ function world(opts) {
 }
 const json = (body) => Promise.resolve({ ok: true, status: 200, text: () => Promise.resolve(JSON.stringify(body)) });
 
-test('normalise: the fixture items become the normalised shape, with no description', () => {
+test('normalise: the fixture items become the normalised shape, with a 200-character description excerpt', () => {
   const { Desk } = world();
   const out = FIX.library.items.map((i) => Desk.net.normalise(i, 'library'));
   assert.ok(out.every(Boolean));
   const first = plain(out[0]);
-  assert.deepStrictEqual(Object.keys(first), ['id', 'title', 'start', 'end', 'venue', 'address', 'url', 'tier', 'tags']);
+  assert.deepStrictEqual(Object.keys(first), ['id', 'title', 'start', 'end', 'venue', 'address', 'url', 'tier', 'tags', 'description']);
   assert.match(first.id, /^[0-9A-Z]{26}$/);
   assert.match(first.start, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/);
   assert.strictEqual(first.start, FIX.library.items[0].startDate.slice(0, 16));
@@ -53,7 +53,21 @@ test('normalise: the fixture items become the normalised shape, with no descript
   assert.ok(first.tags.indexOf('career & job search') >= 0);
   assert.ok(first.address.indexOf(', ') > 0 || first.address === '');
   assert.ok(FIX.library.items[0].description.length > 20, 'the fixture does carry a description');
-  assert.ok(!JSON.stringify(out).includes(FIX.library.items[0].description.slice(0, 30)), 'it is dropped');
+  const src = FIX.library.items[0].description;
+  assert.ok(src.length > 200, 'the fixture description is longer than the excerpt');
+  assert.ok(first.description.length <= 200 && first.description.endsWith('…'), 'cut and marked');
+  assert.ok(src.startsWith(first.description.slice(0, -1)), 'the excerpt is the start of the description');
+  assert.ok(!/\s$/.test(first.description.slice(0, -1)), 'no space before the ellipsis');
+  assert.ok(out.every((e) => e.description.length <= 200));
+});
+
+test('normalise: a description loses its tags and a short one is kept whole', () => {
+  const { Desk } = world();
+  const base = FIX.library.items[0];
+  const a = plain(Desk.net.normalise(Object.assign({}, base, { description: '<p>Bring a <b>resume</b>.</p>  Free.' }), 'library'));
+  assert.strictEqual(a.description, 'Bring a resume . Free.');
+  const b = plain(Desk.net.normalise(Object.assign({}, base, { description: undefined }), 'library'));
+  assert.strictEqual(b.description, '');
 });
 
 test('normalise: all-day, no end, bad items', () => {
@@ -184,7 +198,7 @@ test('events: fetches each tier with dates, tier query and cursor; caches; redra
   assert.strictEqual(r.source, 'cache');
   assert.strictEqual(r.note, '');
   assert.ok(r.events.length >= 8);
-  assert.ok(r.events.every((e) => !('description' in e)));
+  assert.ok(r.events.every((e) => typeof e.description === 'string' && e.description.length <= 200));
   assert.ok(w.mem['searchdesk1:events'], 'cached under searchdesk1:events');
   assert.strictEqual(JSON.parse(w.mem['searchdesk1:events']).fetched, NOW);
   assert.strictEqual(w.redraws(), 1);
@@ -264,7 +278,7 @@ test('locale and tools/snapshot.py agree on the endpoint and tiers', { skip: gon
   assert.deepStrictEqual(pyWords, ev.tiers.find((t) => t.id === 'city').match, 'snapshot.py filters on the locale words');
 });
 
-test('the committed snapshot: both tiers, https links, no descriptions, sorted, unique', () => {
+test('the committed snapshot: both tiers, https links, description excerpts, sorted, unique', () => {
   const win = {};
   win.window = win;
   vm.runInContext(fs.readFileSync(path.join(root, 'data/events-snapshot.js'), 'utf8'), vm.createContext(win));
@@ -276,7 +290,8 @@ test('the committed snapshot: both tiers, https links, no descriptions, sorted, 
   const tiers = new Set(s.events.map((e) => e.tier));
   assert.deepStrictEqual([...tiers].sort(), ['city', 'library']);
   s.events.forEach((e) => {
-    assert.deepStrictEqual(Object.keys(e), ['id', 'title', 'start', 'end', 'venue', 'address', 'url', 'tier', 'tags']);
+    assert.deepStrictEqual(Object.keys(e), ['id', 'title', 'start', 'end', 'venue', 'address', 'url', 'tier', 'tags', 'description']);
+    assert.ok(e.description.length <= 200, e.id);
     assert.match(e.start, /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/);
     assert.ok(e.title && e.title.length <= 200);
     assert.ok(e.url === '' || /^https:\/\/[^\s<>"']+$/.test(e.url), e.id);

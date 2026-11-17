@@ -15,7 +15,7 @@ OUTPUT SHAPE
   window.DESK_EVENTS_SNAPSHOT = {
     generated: '2026-10-16T18:30:00Z',        // when this was made (UTC)
     source:    'https://staging.toronto.togather.foundation/api/v1/events',
-    events: [ {id, title, start, end, venue, address, url, tier, tags}, ... ]
+    events: [ {id, title, start, end, venue, address, url, tier, tags, description}, ... ]
   }
   id       the Togather event id (a ULID, the last part of the event's @id)
   title    text, whitespace tidied, at most 200 characters
@@ -25,7 +25,8 @@ OUTPUT SHAPE
   url      https link to the listing (see below), or '' if there is none
   tier     'library' or 'city' (ids from locale/toronto.js events.tiers)
   tags     the listing's keywords, lower case, at most 6
-  NO descriptions are kept (DESIGN 11: republishing listing text is a licence question; facts and links are not).
+  description  the first 200 characters of the listing's description, cut at a word, tags removed ('' if none). Only an
+               excerpt is kept (DESIGN 11): the full text is the listing's, and the link goes to it.
 
 WHAT WE LEARNED ABOUT THE API (checked 2026-10-16, staging)
   GET /api/v1/events?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&keywords=a,b&limit=200&after=<next_cursor>&context=document
@@ -97,6 +98,21 @@ def tidy(s, limit):
     return s[:limit].rstrip()
 
 
+DESC_MAX = 200  # characters of each listing's description that are kept (an excerpt, cut at a word); same in core/net.js
+
+
+def excerpt(s, limit=DESC_MAX):
+    """The first `limit` characters of a description, tags removed, cut at a word and ended with an ellipsis."""
+    s = tidy(re.sub(r"<[^>]*>", " ", s) if isinstance(s, str) else "", 100000)
+    if len(s) <= limit:
+        return s
+    cut = s[:limit - 1]
+    sp = cut.rfind(" ")
+    if sp > limit * 0.6:
+        cut = cut[:sp]
+    return cut.rstrip(" ,;:-\u2013\u2014.") + "\u2026"
+
+
 def tidy_place(s, limit):
     """A place name without the "Event location:" label some listings glue on ("MalvernEvent location: Malvern")."""
     s = tidy(s, 1000)
@@ -148,6 +164,7 @@ def normalise(item, tier, detail_url=""):
         "id": eid, "title": title, "start": start, "end": end if end >= start else "",
         "venue": tidy_place(place.get("name"), 120), "address": address,
         "url": https_url(detail_url) or page, "tier": tier, "tags": tags[:6],
+        "description": excerpt(item.get("description")),
     }
 
 

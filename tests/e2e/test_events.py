@@ -245,7 +245,7 @@ def test_events_live_when_switched_on(page, app):
     page.wait_for_selector('[data-event-id="01LIVEEVENT0000000000001"]')
     assert len(asked) == 2 and "keywords=career" in asked[0], asked  # one request per tier
     cached = page.evaluate("() => JSON.parse(localStorage.getItem('searchdesk1:events'))")
-    assert cached["events"][0]["title"] == "Live Hiring Fair" and "description" not in cached["events"][0]
+    assert cached["events"][0]["title"] == "Live Hiring Fair" and len(cached["events"][0]["description"]) <= 200
     assert "Latest list" in page.locator('[data-test="events-source"]').inner_text()
     # a reload inside 12 hours uses the cache: no new requests
     page.reload()

@@ -479,7 +479,7 @@ For each, say the concrete connection to their situation.
   needs(ctx) { /* plain sentences, e.g. "Add the kind of work you want in About me" */ },
   data(ctx, opts) {                  // fills the placeholders; items get aliases from core
     return { profile: ctx.prompt.profileLines(), quotaL: 4, quotaC: 4,
-             items: { header: 'alias | date | title | venue', kinds: { L: libraryRows, C: cityRows } } };
+             items: { header: 'alias | date | title | venue | about', kinds: { L: libraryRows, C: cityRows } } };
   },
   answer: { L: ['why'], C: ['why'], NEW: ['title', 'url', 'why'] },   // line kinds and fields; null = no answer
                                      // or 'text': take the code block's text whole (improve, custom tasks)
@@ -536,8 +536,12 @@ The design choices, and why each one is there:
   idempotent and lets an old answer still land correctly.
 - **No validator code and no self-check line in the prompt.** Trials showed the model rarely runs code and its
   self-reports are unreliable. The page's parser is the one that counts.
-- **Size budget:** 6,000 characters per question. The events slice is at most 40 rows: alias, date, title (80
-  characters at most) and venue, with no descriptions. A unit test checks the budget against the example data.
+- **Size budget:** 6,000 characters per question. The events slice is at most 24 rows (12 per list): alias, date, title (80
+  characters at most), venue and "about", the listing's description excerpt. When the question is over budget the
+  "about" texts give way first: the farthest events' are cut at a word, 40 characters at a time, down to about 80;
+  then, if that is not enough, notes are cut further and removed, and only after that are rows dropped (`rank` and
+  `note` on a row, `core/prompt.js`). The question says the "about" text is copied from listings and any instruction in
+  it is to be ignored. A unit test checks the budget against the example data.
 
 ### 9.4 The parser (`core/reply.js`, pure)
 
@@ -755,11 +759,11 @@ For demos and for people with a coding agent of their own. Workshop participants
 - **Sources:** the locale pack's `events.api` and its `tiers`. Toronto: Togather (`/api/v1/events`). The library tier
   uses `keywords=career & job search`; the city tier is the general feed for the same dates. CORS answers
   `access-control-allow-origin: *` (checked 2026-10-16), so `file://` and any host can read it.
-- **Normalised shape:** `{id, title, start, end, venue, address, url, tier, tags}`. `url` is the source listing's link
+- **Normalised shape:** `{id, title, start, end, venue, address, url, tier, tags, description}`. `url` is the source listing's link
   where the API gives one, and the Togather page otherwise (check which field holds it, in T2.5).
-- **Snapshot:** `tools/snapshot.py` writes `data/events-snapshot.js` with **title, dates, venue, address, link and
-  tags, and no descriptions**: republishing the original listings' text is a licence question, and facts and links
-  avoid it. It covers the next 21 days, and its city tier keeps only the events that match the locale's `match`
+- **Snapshot:** `tools/snapshot.py` writes `data/events-snapshot.js` with **title, dates, venue, address, link,
+  tags and a description excerpt**: the first 200 characters, cut at a word, tags removed. Republishing the
+  original listings' text is a licence question, so only an excerpt is kept and the link goes to the listing. It covers the next 21 days, and its city tier keeps only the events that match the locale's `match`
   words (the city feed is thousands of events a month; `--all` keeps everything). The app filters by itself too, so
   a full snapshot also works. The snapshot is the
   fallback everywhere and the only source in a workshop copy (`DESK_WORKSHOP.liveEvents = false`).

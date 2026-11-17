@@ -206,6 +206,35 @@ test('budget: over-long questions lose rows from the longest list, keep numberin
   assert.strictEqual(P.build(EVENTS, d, { code: '7Q3K', now: 0, budget: 0 }).truncated, false);
 });
 
+test('notes: a row with a note shows it as the last cell, one without shows nothing extra', () => {
+  const r = P.build({ id: 'x', template: '{items}', answer: null }, { items: { header: 'alias | title | about', kinds: { L: [
+    { id: 'a', cols: ['One'], note: 'About one | with a pipe' }, { id: 'b', cols: ['Two'] }] } } }, { code: '7Q3K', now: 0 });
+  assert.ok(r.text.includes('alias | title | about\nL1 | One | About one / with a pipe\nL2 | Two\n'), r.text);
+});
+
+test('notes: over budget, the note of the row with the highest rank is cut first, at a word, before any row goes', () => {
+  const words = (n) => Array.from({ length: n }, (_, i) => 'word' + i).join(' ');
+  const rows = [0, 1, 2, 3].map((i) => ({ id: 'e' + i, cols: ['2026-12-0' + (i + 1), 'T' + i, 'V'], note: words(40), rank: i }));
+  const items = { header: 'alias | date | title | venue | about', kinds: { L: rows } };
+  const full = P.build({ id: 'x', template: '{items}', answer: null }, { items }, { code: '7Q3K', now: 0, budget: 0 });
+  const fit = P.build({ id: 'x', template: '{items}', answer: null }, { items }, { code: '7Q3K', now: 0, budget: full.size - 150 });
+  assert.ok(fit.size <= full.size - 150);
+  assert.strictEqual(fit.truncated, false, 'no row was dropped');
+  const note = (text, alias) => (new RegExp('^' + alias + ' \\| .*$', 'm').exec(text) || [''])[0];
+  assert.strictEqual(note(fit.text, 'L1'), note(full.text, 'L1'), 'the nearest event keeps its whole note');
+  const last = note(fit.text, 'L4');
+  assert.ok(last.length < note(full.text, 'L4').length && last.endsWith('…'), last);
+  assert.ok(!/word\d+…$/.test(last) || /\bword\d+…$/.test(last), 'cut at a word');
+  // a tighter budget cuts the farthest notes to about 80 characters before it takes any note away
+  const tight = P.build({ id: 'x', template: '{items}', answer: null }, { items }, { code: '7Q3K', now: 0, budget: full.size - 600 });
+  assert.ok(tight.size <= full.size - 600 && !tight.truncated);
+  [1, 2, 3, 4].forEach((n) => assert.ok(note(tight.text, 'L' + n).includes('word'), 'L' + n + ' still has a note'));
+  assert.ok(note(tight.text, 'L4').length < note(tight.text, 'L1').length, 'the farthest is shorter than the nearest');
+  // a budget nothing can meet removes every note, and only then rows
+  const none = P.build({ id: 'x', template: '{items}', answer: null }, { items }, { code: '7Q3K', now: 0, budget: 1 });
+  assert.ok(!none.text.includes('word0') && none.truncated, 'notes gone, then rows');
+});
+
 test('envelope matches the golden file (UPDATE_GOLDEN=1 rewrites it)', () => {
   const r = P.build(EVENTS, {
     profile: P.profileLines(PROFILE), quotaL: 4, quotaC: 4, replyLanguage: 'English',

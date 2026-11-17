@@ -22,8 +22,8 @@ Desk.check('recipe-events', (t, f) => {
 
   const data = L.build(events, marks, profile, TODAY);
   const lrows = data.items.kinds.L, crows = data.items.kinds.C;
-  t.ok(lrows.length > 0 && lrows.length <= 20, 'at most 20 library rows (' + lrows.length + ')');
-  t.eq(crows.length, 20, 'at most 20 city rows, and the big feed fills them');
+  t.ok(lrows.length > 0 && lrows.length <= 12, 'at most 12 library rows (' + lrows.length + ')');
+  t.eq(crows.length, 12, 'at most 12 city rows, and the big feed fills them');
   const idsOf = (rows) => rows.map((r) => r.id);
   const all = idsOf(lrows).concat(idsOf(crows));
   ['lib0', 'lib7', 'city50', 'city100'].forEach((id) => t.ok(all.indexOf(id) < 0, id + ' is starred or hidden, so it is left out'));
@@ -36,22 +36,26 @@ Desk.check('recipe-events', (t, f) => {
   t.ok(all.every((id) => byId[id].start.slice(0, 10) >= TODAY && byId[id].start.slice(0, 10) <= day(20)), 'every row is today or within the next 21 days');
   const rest = L.pickRows(events, [], profile, TODAY, { max: 5000 });
   t.ok(rest.C.every((e) => e.start.slice(0, 10) >= TODAY && e.start.slice(0, 10) <= day(20)), 'old and far events are never rows');
-  t.ok(rest.C.length > 20, 'the window itself holds more than 20 city events (so the cap matters)');
+  t.ok(rest.C.length > 12, 'the window itself holds more than 12 city events (so the cap matters)');
 
   // best fit first: the keyword events win a place before the plain ones
   t.ok(crows.some((r) => /^Administration/.test(r.cols[1])), 'city events that fit the profile are picked');
   const fits = crows.filter((r) => /^Administration/.test(r.cols[1])).length;
   const possible = rest.C.filter((e) => /^Administration/.test(e.title)).length;
-  t.eq(fits, Math.min(20, possible), 'every fitting city event that can fit is picked before plain ones');
+  t.eq(fits, Math.min(12, possible), 'every fitting city event that can fit is picked before plain ones');
   const dates = (rows) => rows.map((r) => r.cols[0]);
   t.eq(dates(crows), dates(crows).slice().sort(), 'rows are in date order');
 
   // a ready-made row
-  t.eq(L.row({ id: 'x', title: 'A | B', start: '2026-10-20T18:30', venue: 'V' }), { id: 'x', cols: ['2026-10-20 18:30', 'A | B', 'V'] }, 'a row is date, title, venue');
+  t.eq(L.row({ id: 'x', title: 'A | B', start: '2026-10-20T18:30', venue: 'V' }).cols, ['2026-10-20 18:30', 'A | B', 'V'], 'a row is date, title, venue');
+  const withNote = L.row({ id: 'x', title: 'T', start: '2026-10-20', venue: '', description: 'About it.' });
+  const later = L.row({ id: 'y', title: 'T', start: '2026-10-25', venue: '', description: 'About it.' });
+  t.eq(withNote.note, 'About it.', 'the description is the row note');
+  t.ok(later.rank > withNote.rank, 'a later event has a higher rank, so its note is cut first'); 
   t.eq(L.row({ id: 'x', title: 'T', start: '2026-10-20', venue: '' }).cols[0], '2026-10-20', 'a date with no time stays a date');
   t.ok(L.row({ id: 'x', title: 'T', start: '2026-10-20', venue: 'v'.repeat(100) }).cols[2].length <= 40, 'a long venue is cut');
   t.eq(L.pickRows([], [], profile, TODAY), { L: [], C: [] }, 'no events gives no rows');
-  t.eq(L.pickRows(events, [], {}, TODAY).L.length, 20, 'with no profile words the earliest events are picked');
+  t.eq(L.pickRows(events, [], {}, TODAY).L.length, 12, 'with no profile words the earliest events are picked');
   t.eq(L.pickRows([{ id: 'a', title: 'Run', start: day(-2), end: day(1), tier: 'city' }], [], {}, TODAY).C.length, 1, 'an event that runs through today is kept');
 
   // the question fits the budget, with the real template

@@ -71,7 +71,9 @@ Up to {quota} picks. A short list is better than a padded one.
 {items}`,
   placeholders: { profile: 'what you chose to share', quota: 'how many to pick', items: 'the events list' },
   needs(ctx) { return ctx.profile().roles ? [] : ['Add the work you look for in About me.']; },
-  data(ctx, opts) { return { quota: 4, items: { header: 'alias | date | title', kinds: { L: rows } } }; },
+  data(ctx, opts) { return { quota: 4, items: { header: 'alias | date | title | about', kinds: { L: rows } } }; },
+  // a row is {id, cols: [date, title], note: 'a longer text', rank: 5}: when the question is over budget the notes of
+  // the highest ranks are cut first (core/prompt.js)
   answer: { L: ['why'] },
   example: 'L1 | why this one fits, in one sentence',
   apply(result, ctx) { /* return suggestions */ },

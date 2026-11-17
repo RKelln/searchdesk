@@ -41,6 +41,8 @@ window.Desk = window.Desk || {};
   P.BUDGET = 6000;      // characters per question (DESIGN 9.3)
   P.TITLE_MAX = 80;     // longest title cell, in characters
   P.KEEP = 30;          // prompt records kept
+  P.NOTE_STEP = 40;     // characters cut from a row's note each time the question is over budget
+  P.NOTE_FLOOR = 80;    // the first pass cuts notes no shorter than this
 
   function defaultRandom(n) {
     var a = new Uint8Array(n);
@@ -177,7 +179,11 @@ window.Desk = window.Desk || {};
   // ---- build -------------------------------------------------------------------------------------------------------
   // recipe: {id, template, answer, example, budget?}. `template` may be replaced by the person's edit: pass
   // opts.template. data: {profile: [...lines], <name>: text, replyLanguage?, items?: {header, kinds: {L: rows, C: rows}}}
-  // where a row is {id, cols: [...]}. opts: {code, now, budget, template}.
+  // where a row is {id, cols: [...], note?, rank?}. `note` is a longer text shown as the row's last cell. It is the
+  // first thing to give way when the question is over budget: the notes of the rows with the highest `rank` are cut
+  // at a word, 40 characters at a time, farthest first, down to about 80 characters; then, if that is not enough,
+  // shorter still and removed. Only after every note is gone are rows dropped.
+  // opts: {code, now, budget, template}.
   // Returns {text, code, aliases: {L1: id}, record, size, truncated, dropped, missing}.
   //   truncated: rows were dropped to fit the budget (never the task text or HOW TO ANSWER); dropped: how many.
   //   missing: {names} left visible as {name} because no value was given.
@@ -189,14 +195,20 @@ window.Desk = window.Desk || {};
     var items = d.items && d.items.kinds ? d.items : null;
     var kinds = items ? Object.keys(items.kinds) : [];
     var groups = {};
-    kinds.forEach(function (k) { groups[k] = (items.kinds[k] || []).map(function (row) { return Object.assign({ kind: k }, row); }); });
+    kinds.forEach(function (k) {
+      groups[k] = (items.kinds[k] || []).map(function (row) {
+        return Object.assign({ kind: k, noteNow: cell(row.note) }, row);
+      });
+    });
     var lang = o.replyLanguage || d.replyLanguage;
     var dropped = 0, res;
 
     function render() {
       var flat = [];
       kinds.forEach(function (k) { flat = flat.concat(groups[k]); });
-      var aliased = P.assignAliases(flat);
+      var aliased = P.assignAliases(flat.map(function (row) {
+        return Object.assign({}, row, { cols: row.noteNow ? (row.cols || []).concat([row.noteNow]) : row.cols });
+      }));
       var vars = {};
       Object.keys(d).forEach(function (k) { if (k !== 'items') vars[k] = d[k]; });
       var table = '';
@@ -213,8 +225,31 @@ window.Desk = window.Desk || {};
       return { text: text, aliases: map };
     }
 
+    // A note is cut at a word and ended with an ellipsis. Two passes: first the notes of the farthest rows are cut
+    // down to NOTE_FLOOR characters, one row and one step at a time; then, if that is not enough, notes are cut
+    // further and a note with fewer than NOTE_STEP characters left goes entirely.
+    function shortenNote(floor) {
+      var best = null;
+      kinds.forEach(function (k) {
+        groups[k].forEach(function (row) {
+          if (!row.noteNow || (floor && row.noteNow.length <= floor + 1)) return;
+          var rank = Number(row.rank) || 0, brank = best ? (Number(best.rank) || 0) : 0;
+          if (!best || rank >= brank) best = row; // on a tie the later row gives way first
+        });
+      });
+      if (!best) return false;
+      var t = best.noteNow.replace(/\u2026$/, ''), keep = t.length - P.NOTE_STEP;
+      if (floor) keep = Math.max(keep, floor);
+      else if (keep < P.NOTE_STEP) { best.noteNow = ''; return true; }
+      var cut = t.slice(0, keep), sp = cut.lastIndexOf(' ');
+      if (sp > keep * 0.6) cut = cut.slice(0, sp);
+      best.noteNow = cut.replace(/[ ,;:\-\u2013\u2014.]+$/, '') + '\u2026';
+      return true;
+    }
+
     res = render();
-    // Over budget: drop rows from the end of the longest list, one at a time, until it fits. Aliases are made again
+    while (budget && res.text.length > budget && (shortenNote(P.NOTE_FLOOR) || shortenNote(0))) res = render();
+    // Still over budget: drop rows from the end of the longest list, one at a time, until it fits. Aliases are made again
     // each time so the numbers stay unique and gap-free.
     while (budget && res.text.length > budget) {
       var big = null;
